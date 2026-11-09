@@ -1,0 +1,6 @@
+Recovery Status
+========================
+
+Recovery: 100%
+Level: Heavy training allowed
+Estimated Full Recovery: 0h

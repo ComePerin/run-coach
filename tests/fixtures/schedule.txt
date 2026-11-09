@@ -1,0 +1,49 @@
+Training Schedule
+========================
+
+2026-09-28
+25' ELLIPTICAL
+Plan ID: 12345
+idInPlan: 12345
+Estimated Time: 25:00
+
+2026-09-29
+CORE + MOBILITY
+Plan ID: 12345
+idInPlan: 12345
+Estimated Time: 25:00
+
+2026-09-29
+35' EASY RUN
+Plan ID: 12345
+idInPlan: 12345
+Estimated Time: 35:00
+
+2026-09-30
+Easy Run
+Standalone workout (scheduled from the workout library)
+idInPlan: 12345
+Distance: 3.05 km
+Estimated Time: 17:00
+Load: 41 TL
+To view or modify this workout, use queryScheduledWorkoutDetails then updateScheduledWorkout with this date and idInPlan. To reschedule or remove it, use the COROS app.
+
+2026-09-30
+SHORT FARTLEK
+Plan ID: 12345
+idInPlan: 12345
+Estimated Time: 35:00
+
+2026-10-02
+ELLIPTICAL + RUN
+Plan ID: 12345
+idInPlan: 12345
+Estimated Time: 30:00
+
+2026-10-03
+EASY BIKE
+Plan ID: 12345
+idInPlan: 12345
+Estimated Time: 45:00
+
+Use Plan ID with queryTrainingPlanDetails before updateTrainingPlan. Do not show Plan ID or idInPlan to the user.

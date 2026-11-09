@@ -1,0 +1,13 @@
+{
+  "courseName": "Hill repeats 8 x 60 s",
+  "courseDescription": "15 min easy warm-up. 8 x 60 s uphill at hard effort (strong but controlled form), jog back down for 90 s. 10 min easy cool-down.",
+  "sportType": 1,
+  "sections": [
+    {"sectionType": 1, "targetType": 2, "targetValue": 900, "intensityType": 1, "sectionIntensity": 2},
+    {"intervalGroup": true, "repeats": 8, "sets": [
+      {"sectionType": 2, "targetType": 2, "targetValue": 60, "intensityType": 1, "sectionIntensity": 5},
+      {"sectionType": 3, "targetType": 2, "targetValue": 90}
+    ]},
+    {"sectionType": 4, "targetType": 2, "targetValue": 600, "intensityType": 1, "sectionIntensity": 1}
+  ]
+}

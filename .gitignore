@@ -1,0 +1,21 @@
+.venv/
+.vendor/
+.cache/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+*.fit
+.env*
+# raw MCP dumps never go in git
+data/raw/
+dist/
+
+# ── personal data: never commit to the public template ──────────────────────
+# Your profile, plans and reports contain health data. They stay local by default.
+# To version them, use a PRIVATE copy of this repo and `git add -f` them there
+# (see "Your data" in README.md).
+athlete/profile.yaml
+plans/*/
+reports/

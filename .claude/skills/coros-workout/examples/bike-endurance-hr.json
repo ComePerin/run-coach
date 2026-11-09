@@ -1,0 +1,10 @@
+{
+  "courseName": "Endurance ride 90 min",
+  "courseDescription": "90 min steady endurance ride, heart rate 120-140 bpm. Flat or rolling route, high cadence.",
+  "sportType": 2,
+  "sections": [
+    {"sectionType": 1, "targetType": 2, "targetValue": 600, "intensityType": 1, "intensityValueStart": 105, "intensityValueEnd": 125},
+    {"sectionType": 2, "targetType": 2, "targetValue": 4500, "intensityType": 1, "intensityValueStart": 120, "intensityValueEnd": 140},
+    {"sectionType": 4, "targetType": 2, "targetValue": 300, "intensityType": 1, "intensityValueStart": 100, "intensityValueEnd": 120}
+  ]
+}
