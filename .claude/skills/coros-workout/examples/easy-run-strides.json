@@ -1,0 +1,12 @@
+{
+  "courseName": "Easy run + 6 strides",
+  "courseDescription": "40 min easy (pace zone 2), then 6 x 20 s strides: smooth and fast, not a sprint, with 60 s walk/jog recovery.",
+  "sportType": 1,
+  "sections": [
+    {"sectionType": 2, "targetType": 2, "targetValue": 2400, "intensityType": 2, "sectionIntensity": 2},
+    {"intervalGroup": true, "repeats": 6, "sets": [
+      {"sectionType": 2, "targetType": 2, "targetValue": 20, "intensityType": 2, "sectionIntensity": 6},
+      {"sectionType": 3, "targetType": 2, "targetValue": 60}
+    ]}
+  ]
+}

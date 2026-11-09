@@ -1,0 +1,10 @@
+{
+  "courseName": "Long run with marathon-pace finish",
+  "courseDescription": "70 min easy (4:45-5:10/km), then 20 min at marathon pace (4:07-4:14/km). Stay relaxed, take fluids every 20 min.",
+  "sportType": 1,
+  "sections": [
+    {"sectionType": 2, "targetType": 2, "targetValue": 4200, "intensityType": 2, "intensityValueStart": 285, "intensityValueEnd": 310},
+    {"sectionType": 2, "targetType": 2, "targetValue": 1200, "intensityType": 2, "intensityValueStart": 247, "intensityValueEnd": 254},
+    {"sectionType": 4, "targetType": 4}
+  ]
+}

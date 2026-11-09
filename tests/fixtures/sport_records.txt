@@ -1,0 +1,86 @@
+Sport Records — 2026-09-20 to 2026-10-01 (12 records)
+========================
+
+1. Bouldering — 2026-10-01
+   Location: Indoor Climbing
+   Time Window: startTimestamp=1790875390 | endTimestamp=1790881940
+   Duration: 1:37:11
+ | Avg HR: 94 bpm | Calories: 383 kcal
+   LabelId: 900000000000000000 | SportType: 801
+
+2. Outdoor Run — 2026-09-30
+   Location: Morning Run
+   Time Window: startTimestamp=1790786034 | endTimestamp=1790788828
+   Duration: 42:46 | Distance: 7.42 km
+   Average Pace: 5:46 /km | Avg HR: 147 bpm | Calories: 577 kcal
+   LabelId: 900000000000000001 | SportType: 100
+
+3. Bouldering — 2026-09-29
+   Location: Indoor Climbing
+   Time Window: startTimestamp=1790703373 | endTimestamp=1790711980
+   Duration: 2:23:27
+ | Avg HR: 84 bpm | Calories: 507 kcal
+   LabelId: 900000000000000002 | SportType: 801
+
+4. Outdoor Run — 2026-09-28
+   Location: Easy Run
+   Time Window: startTimestamp=1790613187 | endTimestamp=1790615648
+   Duration: 41:01 | Distance: 8.54 km
+   Average Pace: 4:48 /km | Avg HR: 149 bpm | Calories: 478 kcal
+   LabelId: 900000000000000003 | SportType: 100
+
+5. Outdoor Run — 2026-09-27
+   Location: City Run
+   Time Window: startTimestamp=1790525945 | endTimestamp=1790528032
+   Duration: 34:47 | Distance: 5.98 km
+   Average Pace: 5:49 /km | Avg HR: 143 bpm | Calories: 424 kcal
+   LabelId: 900000000000000004 | SportType: 100
+
+6. Outdoor Run — 2026-09-26
+   Location: Morning Run
+   Time Window: startTimestamp=1790404585 | endTimestamp=1790408314
+   Duration: 1:00:58 | Distance: 11.55 km
+   Average Pace: 5:17 /km | Avg HR: 156 bpm | Calories: 813 kcal
+   LabelId: 900000000000000005 | SportType: 100
+
+7. Padel — 2026-09-25
+   Location: Padel
+   Time Window: startTimestamp=1790353265 | endTimestamp=1790358439
+   Duration: 1:17:38 | Distance: 1.16 km
+   Average Speed: 0.9 km/h | Avg HR: 120 bpm | Calories: 485 kcal
+   LabelId: 900000000000000006 | SportType: 1006
+
+8. Outdoor Run — 2026-09-25
+   Location: Long Run
+   Time Window: startTimestamp=1790330691 | endTimestamp=1790333157
+   Duration: 41:06 | Distance: 7.79 km
+   Average Pace: 5:17 /km | Avg HR: 143 bpm | Calories: 550 kcal
+   LabelId: 900000000000000007 | SportType: 100
+
+9. Outdoor Run — 2026-09-23
+   Location: Morning Run
+   Time Window: startTimestamp=1790181714 | endTimestamp=1790185506
+   Duration: 1:01:00 | Distance: 11.40 km
+   Average Pace: 5:21 /km | Avg HR: 143 bpm | Calories: 851 kcal
+   LabelId: 900000000000000008 | SportType: 100
+
+10. Bouldering — 2026-09-22
+   Location: Indoor Climbing
+   Time Window: startTimestamp=1790097458 | endTimestamp=1790103903
+   Duration: 1:47:09
+ | Avg HR: 88 bpm | Calories: 351 kcal
+   LabelId: 900000000000000009 | SportType: 801
+
+11. Outdoor Run — 2026-09-21
+   Location: Morning Run
+   Time Window: startTimestamp=1789988774 | endTimestamp=1789992927
+   Duration: 1:02:19 | Distance: 8.87 km
+   Average Pace: 7:02 /km | Avg HR: 131 bpm | Calories: 634 kcal
+   LabelId: 900000000000000010 | SportType: 100
+
+12. Hike — 2026-09-20
+   Location: Mountain Hike
+   Time Window: startTimestamp=1789885876 | endTimestamp=1789899351
+   Duration: 3:44:35 | Distance: 12.98 km
+   Average Speed: 3.5 km/h | Avg HR: 99 bpm | Calories: 1099 kcal
+   LabelId: 900000000000000011 | SportType: 104

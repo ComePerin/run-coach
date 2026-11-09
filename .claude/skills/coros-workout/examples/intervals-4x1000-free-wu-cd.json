@@ -1,0 +1,13 @@
+{
+  "courseName": "Intervals 4 x 1000 m at 4:05/km",
+  "courseDescription": "Free warm-up: run at your own pace and press Lap when ready. Then 4 x 1000 m at 4:05/km with 2 minutes of rest between reps. Free cool-down with no target: press Lap to finish.",
+  "sportType": 1,
+  "sections": [
+    {"sectionType": 1, "targetType": 4},
+    {"intervalGroup": true, "repeats": 4, "sets": [
+      {"sectionType": 2, "targetType": 1, "targetValue": 1000, "intensityType": 2, "intensityValueStart": 245, "intensityValueEnd": 245},
+      {"sectionType": 3, "targetType": 2, "targetValue": 120}
+    ]},
+    {"sectionType": 4, "targetType": 4}
+  ]
+}

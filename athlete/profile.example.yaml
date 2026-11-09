@@ -1,0 +1,40 @@
+# Example only — a fictional athlete. Your real profile is athlete/profile.yaml:
+# `plan.py profile` creates it from your COROS data (baseline), you or the coach fill `preferences`.
+# athlete/profile.yaml is git-ignored: it contains personal health data.
+athlete:
+  height_cm: 175.0
+  weight_kg: 70.0
+  age: 35
+baseline:                       # refreshed by `plan.py profile`
+  updated: '2026-10-05'
+  vo2max: 52.0
+  running_level: 78.0
+  threshold_pace: '4:30'
+  race_predictions:
+    5k: '21:40'
+    10k: '45:10'
+    half: '1:40:30'
+    marathon: '3:30:00'
+  resting_hr_14d: 52
+  load_ratio: 1.05
+  last_8_weeks:
+    avg_run_km: 30.0
+    avg_minutes: 300
+    avg_sessions: 4.0
+    max_run_km: 38.0
+  pace_zones:
+    recovery: 5:56-6:32
+    easy: 5:19-5:56
+    marathon: 4:44-4:52
+    threshold: 4:25-4:35
+    interval: 4:11-4:19
+    repetition: 3:52-4:03
+preferences:                    # edited by hand or by the coach during intake
+  availability: Mon/Wed/Fri 60 min, Sat 120 min, Sun 90 min
+  sports:
+  - run
+  - bike
+  other_activities: Climbing Tue/Thu (1.5 h)
+  external_plans: ''
+  injuries: none
+  notes: ''

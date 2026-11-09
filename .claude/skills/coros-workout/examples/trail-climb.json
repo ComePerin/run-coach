@@ -1,0 +1,13 @@
+{
+  "courseName": "Trail climbs 5 x 100 m D+",
+  "courseDescription": "2 km easy warm-up. 5 climbs of 100 m elevation gain at 90-100% of effort threshold pace (grade-adjusted), easy jog down as recovery. 2 km easy cool-down.",
+  "sportType": 5,
+  "sections": [
+    {"sectionType": 1, "targetType": 1, "targetValue": 2000, "intensityType": 3, "sectionIntensity": 1},
+    {"intervalGroup": true, "repeats": 5, "sets": [
+      {"sectionType": 2, "targetType": 3, "targetValue": 100, "intensityType": 3, "intensityPercentStart": 90, "intensityPercentEnd": 100},
+      {"sectionType": 3, "targetType": 4}
+    ]},
+    {"sectionType": 4, "targetType": 1, "targetValue": 2000, "intensityType": 3, "sectionIntensity": 1}
+  ]
+}

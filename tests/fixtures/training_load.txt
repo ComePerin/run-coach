@@ -1,0 +1,170 @@
+Training Load Assessment
+========================
+
+2026-10-03
+Comment: Performance
+Short-Term Load: 45
+Long-Term Load: 62
+Load Ratio: 0.73
+
+2026-10-02
+Comment: Maintaining
+Short-Term Load: 51
+Long-Term Load: 62
+Load Ratio: 0.82
+
+2026-10-01
+Comment: Maintaining
+Short-Term Load: 60
+Long-Term Load: 64
+Load Ratio: 0.94
+
+2026-09-30
+Comment: Optimized
+Short-Term Load: 70
+Long-Term Load: 66
+Load Ratio: 1.06
+
+2026-09-29
+Comment: Maintaining
+Short-Term Load: 62
+Long-Term Load: 65
+Load Ratio: 0.95
+
+2026-09-28
+Comment: Optimized
+Short-Term Load: 73
+Long-Term Load: 66
+Load Ratio: 1.11
+
+2026-09-27
+Comment: Optimized
+Short-Term Load: 73
+Long-Term Load: 66
+Load Ratio: 1.11
+
+2026-09-26
+Comment: Optimized
+Short-Term Load: 79
+Long-Term Load: 67
+Load Ratio: 1.18
+
+2026-09-25
+Comment: Optimized
+Short-Term Load: 75
+Long-Term Load: 66
+Load Ratio: 1.14
+
+2026-09-24
+Comment: Optimized
+Short-Term Load: 70
+Long-Term Load: 65
+Load Ratio: 1.08
+
+2026-09-23
+Comment: Optimized
+Short-Term Load: 84
+Long-Term Load: 67
+Load Ratio: 1.25
+
+2026-09-22
+Comment: Optimized
+Short-Term Load: 80
+Long-Term Load: 66
+Load Ratio: 1.21
+
+2026-09-21
+Comment: Optimized
+Short-Term Load: 95
+Long-Term Load: 68
+Load Ratio: 1.40
+
+2026-09-20
+Comment: Optimized
+Short-Term Load: 98
+Long-Term Load: 68
+Load Ratio: 1.44
+
+2026-09-19
+Comment: Excessive
+Short-Term Load: 101
+Long-Term Load: 68
+Load Ratio: 1.49
+
+2026-09-18
+Comment: Maintaining
+Short-Term Load: 58
+Long-Term Load: 61
+Load Ratio: 0.95
+
+2026-09-17
+Comment: Optimized
+Short-Term Load: 63
+Long-Term Load: 62
+Load Ratio: 1.02
+
+2026-09-16
+Comment: Optimized
+Short-Term Load: 76
+Long-Term Load: 63
+Load Ratio: 1.21
+
+2026-09-15
+Comment: Optimized
+Short-Term Load: 76
+Long-Term Load: 63
+Load Ratio: 1.21
+
+2026-09-14
+Comment: Optimized
+Short-Term Load: 90
+Long-Term Load: 65
+Load Ratio: 1.38
+
+2026-09-13
+Comment: Optimized
+Short-Term Load: 98
+Long-Term Load: 66
+Load Ratio: 1.48
+
+2026-09-12
+Comment: Excessive
+Short-Term Load: 107
+Long-Term Load: 66
+Load Ratio: 1.62
+
+2026-09-11
+Comment: Maintaining
+Short-Term Load: 51
+Long-Term Load: 57
+Load Ratio: 0.89
+
+2026-09-10
+Comment: Maintaining
+Short-Term Load: 52
+Long-Term Load: 58
+Load Ratio: 0.90
+
+2026-09-09
+Comment: Optimized
+Short-Term Load: 64
+Long-Term Load: 59
+Load Ratio: 1.08
+
+2026-09-08
+Comment: Maintaining
+Short-Term Load: 51
+Long-Term Load: 57
+Load Ratio: 0.89
+
+2026-09-07
+Comment: Maintaining
+Short-Term Load: 53
+Long-Term Load: 58
+Load Ratio: 0.91
+
+2026-09-06
+Comment: Maintaining
+Short-Term Load: 51
+Long-Term Load: 58
+Load Ratio: 0.88

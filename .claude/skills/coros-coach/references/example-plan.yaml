@@ -1,0 +1,181 @@
+# Example plan.yaml — template only (paces for threshold 3:55/km). Weeks 2 sessions omit `course` on purpose.
+plan:
+  id: example-half
+  title: Example — half marathon block (first 2 weeks)
+  start: '2026-10-05'
+  weeks: 2
+  goal:
+    distance: half
+    date: '2026-12-06'
+    target_time: '1:22:00'
+  sessions_per_week: 4
+  weekly_minutes: 300
+  summary: 'Template showing the expected structure. Base phase: 1 quality session + strides + long run; bouldering
+    days kept, no hard run the day after.'
+  last_sync: null
+weeks:
+- n: 1
+  phase: base
+  focus: Aerobic volume, first tempo
+  recovery: false
+  sessions:
+  - id: w1-mon
+    date: '2026-10-05'
+    sport: run
+    type: easy
+    key: false
+    title: Easy run
+    planned:
+      duration_min: 45
+      target: 4:37–5:10/km
+      description: 45′ easy, conversational.
+    status: planned
+    course:
+      courseName: Easy run 45 min
+      courseDescription: 45 min easy at 4:37-5:10/km, conversational pace.
+      sportType: 1
+      sections:
+      - sectionType: 2
+        targetType: 2
+        targetValue: 2700
+        intensityType: 2
+        intensityValueStart: 277
+        intensityValueEnd: 310
+  - id: w1-wed
+    date: '2026-10-07'
+    sport: run
+    type: tempo
+    key: true
+    title: Tempo 20′
+    planned:
+      duration_min: 45
+      target: 3:52–3:58/km
+      description: 15′ easy, 20′ at threshold, 10′ easy.
+    status: planned
+    course:
+      courseName: Tempo 20 min at threshold
+      courseDescription: '15 min easy warm-up in pace zone 1, then 20 min continuous at threshold pace (3:52-3:58/km):
+        comfortably hard, you could say a few words. 10 min easy cool-down.'
+      sportType: 1
+      sections:
+      - sectionType: 1
+        targetType: 2
+        targetValue: 900
+        intensityType: 2
+        sectionIntensity: 1
+      - sectionType: 2
+        targetType: 2
+        targetValue: 1200
+        intensityType: 2
+        intensityValueStart: 232
+        intensityValueEnd: 238
+      - sectionType: 4
+        targetType: 2
+        targetValue: 600
+        intensityType: 2
+        sectionIntensity: 1
+  - id: w1-thu
+    date: '2026-10-08'
+    sport: run
+    type: easy
+    key: false
+    title: Easy + strides
+    planned:
+      duration_min: 45
+      target: 4:37–5:10/km
+      description: 40′ easy + 6×20″ strides.
+    status: planned
+    course:
+      courseName: Easy run + 6 strides
+      courseDescription: 40 min easy at 4:37-5:10/km, then 6 x 20 s strides (fast, relaxed) with 60 s jog.
+      sportType: 1
+      sections:
+      - sectionType: 2
+        targetType: 2
+        targetValue: 2400
+        intensityType: 2
+        intensityValueStart: 277
+        intensityValueEnd: 310
+      - intervalGroup: true
+        repeats: 6
+        sets:
+        - sectionType: 2
+          targetType: 2
+          targetValue: 20
+          intensityType: 2
+          intensityValueStart: 200
+          intensityValueEnd: 210
+        - sectionType: 3
+          targetType: 2
+          targetValue: 60
+  - id: w1-sat
+    date: '2026-10-10'
+    sport: run
+    type: long
+    key: true
+    title: Long run
+    planned:
+      duration_min: 90
+      target: 4:45–5:10/km
+      description: 90′ easy on rolling terrain.
+    status: planned
+    course:
+      courseName: Long run 90 min
+      courseDescription: 90 min easy at 4:45-5:10/km. Drink every 20 min.
+      sportType: 1
+      sections:
+      - sectionType: 2
+        targetType: 2
+        targetValue: 5400
+        intensityType: 2
+        intensityValueStart: 285
+        intensityValueEnd: 310
+- n: 2
+  phase: base
+  focus: Introduce VO2max reps
+  recovery: false
+  sessions:
+  - id: w2-mon
+    date: '2026-10-12'
+    sport: run
+    type: easy
+    key: false
+    title: Easy run
+    planned:
+      duration_min: 45
+      target: 4:37–5:10/km
+      description: 45′ easy.
+    status: planned
+  - id: w2-wed
+    date: '2026-10-14'
+    sport: run
+    type: intervals
+    key: true
+    title: 5 × 1000 m @ I
+    planned:
+      duration_min: 55
+      target: 3:39–3:46/km
+      description: 15′ easy + 4 strides, 5×1000 m at 3:39–3:46 with 2′30 jog, 10′ easy.
+    status: planned
+  - id: w2-thu
+    date: '2026-10-15'
+    sport: run
+    type: easy
+    key: false
+    title: Easy run
+    planned:
+      duration_min: 40
+      target: 4:37–5:10/km
+      description: 40′ easy.
+    status: planned
+  - id: w2-sat
+    date: '2026-10-17'
+    sport: run
+    type: long
+    key: true
+    title: Long run
+    planned:
+      duration_min: 95
+      target: 4:45–5:10/km
+      description: 95′ easy, last 15′ steady at 4:15–4:25.
+    status: planned

@@ -1,0 +1,5 @@
+Workout created on 20261003: Fractionné 4 x 1000 m à 4:05/km (Running).
+Other workouts already scheduled for this day:
+- EASY BIKE (Cycling; from a training plan)
+idInPlan: 12345
+To change this workout later, use queryScheduledWorkoutDetails then updateScheduledWorkout with this date and idInPlan. To move or remove it, use the COROS app. Do not show idInPlan to the user.

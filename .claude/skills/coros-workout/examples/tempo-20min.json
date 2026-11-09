@@ -1,0 +1,10 @@
+{
+  "courseName": "Tempo 20 min at threshold",
+  "courseDescription": "15 min easy warm-up in pace zone 1, then 20 min continuous at threshold pace (3:52-3:58/km): comfortably hard, you could say a few words. 10 min easy cool-down.",
+  "sportType": 1,
+  "sections": [
+    {"sectionType": 1, "targetType": 2, "targetValue": 900, "intensityType": 2, "sectionIntensity": 1},
+    {"sectionType": 2, "targetType": 2, "targetValue": 1200, "intensityType": 2, "intensityValueStart": 232, "intensityValueEnd": 238},
+    {"sectionType": 4, "targetType": 2, "targetValue": 600, "intensityType": 2, "sectionIntensity": 1}
+  ]
+}
