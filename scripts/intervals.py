@@ -33,6 +33,7 @@ KEY_FILE = CONFIG_DIR / "api-key"
 ATHLETE_FILE = CONFIG_DIR / "athlete-id"
 SETTINGS_PAGE = "https://intervals.icu/settings"
 EVENT_TYPE = {1: "Run", 2: "Ride", 5: "TrailRun"}
+USER_AGENT = "coros-coach (+https://github.com/Z3ZEL/coros-coach)"
 
 
 class IntervalsError(RuntimeError):
@@ -69,6 +70,8 @@ def _request(method: str, path: str, body: Any = None, params: dict | None = Non
     req = urllib.request.Request(url, data=data, method=method)
     req.add_header("Authorization", "Basic " + base64.b64encode(f"API_KEY:{key}".encode()).decode())
     req.add_header("Accept", "application/json")
+    # intervals.icu answers 403 to urllib's default "Python-urllib/x.y" user agent
+    req.add_header("User-Agent", USER_AGENT)
     if data is not None:
         req.add_header("Content-Type", "application/json")
     try:

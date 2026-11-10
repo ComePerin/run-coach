@@ -145,3 +145,29 @@ def test_push_refuses_courses_garmin_cannot_express(fake, tmp_path):
     PL.save_plan(plan, path)
     assert PL.cmd_push(str(path), 7, yes=True) == 1
     assert fake.calls == []
+
+
+def test_request_sends_auth_and_a_non_default_user_agent(monkeypatch):
+    """intervals.icu answers 403 to urllib's default 'Python-urllib' user agent."""
+    seen = {}
+
+    class Resp:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            return b'{"id": "i1"}'
+
+    def fake_urlopen(req, timeout):
+        seen.update({k.lower(): v for k, v in req.header_items()}, url=req.full_url)
+        return Resp()
+
+    monkeypatch.setenv("INTERVALS_API_KEY", "secret")
+    monkeypatch.setattr(I.urllib.request, "urlopen", fake_urlopen)
+    assert I._request("GET", "/athlete/0") == {"id": "i1"}
+    assert seen["authorization"] == "Basic " + base64.b64encode(b"API_KEY:secret").decode()
+    assert "python-urllib" not in seen["user-agent"].lower()
+    assert seen["url"] == "https://intervals.icu/api/v1/athlete/0"
