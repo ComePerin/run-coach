@@ -209,3 +209,61 @@ def test_export_plan(tmp_path, monkeypatch):
     assert saved["w1-wed"]["status"] == "pushed"
     assert saved["w1-wed"]["garmin"]["file"] == files[0]
     assert (tmp_path / "plan.md").exists()
+
+
+# ----------------------------------------------------------------------------- FIT checking pipeline
+
+def exportable_examples():
+    import fitworkout as F
+
+    out = []
+    for path in sorted(EXAMPLES.glob("*.json")):
+        course = json.loads(path.read_text())
+        if not F.validate_for_garmin(course):
+            out.append(pytest.param(course, id=path.stem))
+    return out
+
+
+@pytest.mark.parametrize("course", exportable_examples() + [pytest.param(INTERVALS, id="test-intervals")])
+def test_every_export_passes_the_checks(course):
+    import fitworkout as F
+
+    assert F.check_fit(F.course_to_fit(course, check=False), course) == []
+
+
+def test_repeat_step_has_a_target_type():
+    import fitworkout as F
+
+    _, steps = decode_steps(F.course_to_fit(INTERVALS))
+    assert steps[3]["target_type"] == "open"
+
+
+def test_check_detects_corruption():
+    import fitworkout as F
+
+    data = bytearray(F.course_to_fit(INTERVALS))
+    data[40] ^= 0xFF  # flip one byte in the data records
+    assert "integrity" in F.check_fit(bytes(data))[0]
+    assert F.check_fit(b"not a fit file at all") == ["not a FIT file (bad header signature)"]
+
+
+def test_check_detects_a_file_that_does_not_match_its_course():
+    import copy
+
+    import fitworkout as F
+
+    data = F.course_to_fit(INTERVALS)
+    other = copy.deepcopy(INTERVALS)
+    other["sections"][1]["repeats"] = 5
+    other["sections"][1]["sets"][0]["targetValue"] = 800
+    problems = F.check_fit(data, other)
+    assert any("repeat does not match" in p for p in problems)
+    assert any("duration_distance" in p for p in problems)
+
+
+def test_export_refuses_a_file_that_fails_the_checks(monkeypatch):
+    import fitworkout as F
+
+    monkeypatch.setattr(F, "check_fit", lambda data, course=None: ["simulated problem"])
+    with pytest.raises(F.FitCheckError, match="simulated problem"):
+        F.course_to_fit(INTERVALS)

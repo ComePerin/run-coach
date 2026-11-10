@@ -1,4 +1,4 @@
-"""Convert a workout ("course" JSON, docs/course-json.md) into a Garmin FIT workout file.
+"""Convert a workout ("course" JSON, docs/course-json.md) into a Garmin FIT workout file, and check it.
 
 The Garmin Personal API cannot write workouts, so Garmin athletes get a ``.fit`` file to copy to the watch
 (``GARMIN/NewFiles`` over USB, see docs/garmin-reference.md). The same course JSON as for COROS is used, so plans,
@@ -121,7 +121,7 @@ def _pace(seconds: int) -> str:
 def course_steps(course: dict) -> list:
     """FIT workout step messages for a course (repeat steps point back to the first step of their group)."""
     from fit_tool.profile.messages.workout_step_message import WorkoutStepMessage
-    from fit_tool.profile.profile_type import Intensity, WorkoutStepDuration
+    from fit_tool.profile.profile_type import Intensity, WorkoutStepDuration, WorkoutStepTarget
 
     steps: list = []
     sport_type = course.get("sportType", 1)
@@ -135,6 +135,7 @@ def course_steps(course: dict) -> list:
             rep.intensity = Intensity.ACTIVE
             rep.duration_type = WorkoutStepDuration.REPEAT_UNTIL_STEPS_CMPLT
             rep.duration_step = first
+            rep.target_type = WorkoutStepTarget.OPEN  # required field; the repeat count lives in target_value
             rep.target_repeat_steps = int(sec.get("repeats", 1))
             steps.append(rep)
         else:
@@ -142,8 +143,12 @@ def course_steps(course: dict) -> list:
     return steps
 
 
-def course_to_fit(course: dict) -> bytes:
-    """Encode a course as a FIT workout file and return its bytes."""
+def course_to_fit(course: dict, *, check: bool = True) -> bytes:
+    """Encode a course as a FIT workout file and return its bytes.
+
+    With ``check`` (default) the bytes go through ``check_fit`` and a ``FitCheckError`` is raised on any problem,
+    so a malformed file is never written to disk.
+    """
     from fit_tool.fit_file_builder import FitFileBuilder
     from fit_tool.profile.messages.file_id_message import FileIdMessage
     from fit_tool.profile.messages.workout_message import WorkoutMessage
@@ -168,7 +173,136 @@ def course_to_fit(course: dict) -> bytes:
     builder.add(file_id)
     builder.add(wkt)
     builder.add_all(steps)
-    return builder.build().to_bytes()
+    data = builder.build().to_bytes()
+    if check:
+        problems = check_fit(data, course)
+        if problems:
+            raise FitCheckError("generated FIT workout failed its checks:\n  " + "\n  ".join(problems))
+    return data
+
+
+# ----------------------------------------------------------------------------- checking pipeline
+
+class FitCheckError(ValueError):
+    """A generated FIT workout did not pass ``check_fit``."""
+
+
+# fit-tool rules we deliberately do not follow. Garmin's profile only says "number of valid steps"; we count every
+# workout_step message, repeat steps included, which is what Garmin's own workout files do.
+IGNORED_FIT_TOOL_RULES = ("num_valid_steps",)
+
+
+def check_fit(data: bytes, course: dict | None = None) -> list[str]:
+    """Check a FIT workout file; return a list of problems (empty = OK). Three independent layers:
+
+    1. Garmin's official decoder (garmin-fit-sdk): FIT signature, header + CRC integrity, no decode errors.
+    2. fit-tool conformance validator (wire, full profile, workout file-type rules).
+    3. Structure, decoded back with the official SDK: file type, one workout, contiguous step indexes, repeat
+       steps pointing backwards to a normal step, num_valid_steps, and — when ``course`` is given — the same
+       number of steps, durations, targets and repeat counts as the source course JSON.
+    """
+    problems: list[str] = []
+
+    # 1. official decoder
+    from garmin_fit_sdk import Decoder, Stream
+
+    decoder = Decoder(Stream.from_byte_array(bytearray(data)))
+    if not decoder.is_fit():
+        return ["not a FIT file (bad header signature)"]
+    if not decoder.check_integrity():
+        return ["FIT integrity check failed (header or CRC)"]
+    decoder = Decoder(Stream.from_byte_array(bytearray(data)))
+    messages, errors = decoder.read(convert_types_to_strings=True, expand_sub_fields=True,
+                                    expand_components=True, merge_heart_rates=False)
+    problems += [f"Garmin SDK decode error: {e}" for e in errors]
+
+    # 2. fit-tool conformance
+    from fit_tool.fit_file import FitFile
+    from fit_tool.validation import validate_fit_file
+    from fit_tool.validation.report import ProfileScope
+
+    report = validate_fit_file(FitFile.from_bytes(data), profile_scope=ProfileScope.FULL)
+    problems += [f"fit-tool: {f}" for f in report.errors
+                 if not any(rule in f.message for rule in IGNORED_FIT_TOOL_RULES)]
+
+    # 3. structure and round trip
+    file_ids = messages.get("file_id_mesgs") or []
+    workouts = messages.get("workout_mesgs") or []
+    steps = messages.get("workout_step_mesgs") or []
+    if len(file_ids) != 1 or file_ids[0].get("type") != "workout":
+        problems.append("file_id must be a single message of type 'workout'")
+    if len(workouts) != 1:
+        return problems + [f"expected exactly one workout message, found {len(workouts)}"]
+    if not steps:
+        return problems + ["workout has no steps"]
+    if workouts[0].get("num_valid_steps") != len(steps):
+        problems.append(f"num_valid_steps is {workouts[0].get('num_valid_steps')}, file has {len(steps)} steps")
+    if not workouts[0].get("wkt_name"):
+        problems.append("workout name is empty")
+    for i, st in enumerate(steps):
+        if st.get("message_index") != i:
+            problems.append(f"step {i}: message_index is {st.get('message_index')}")
+        if st.get("duration_type") == "repeat_until_steps_cmplt":
+            back = st.get("duration_value")
+            if back is None or not 0 <= back < i:
+                problems.append(f"step {i}: repeat must point to an earlier step, points to {back}")
+            elif steps[back].get("duration_type", "").startswith("repeat"):
+                problems.append(f"step {i}: repeat points to another repeat step (nesting is not supported)")
+            if not st.get("target_value") or st["target_value"] < 1:
+                problems.append(f"step {i}: repeat count must be >= 1")
+    if course is not None:
+        problems += _compare_with_course(steps, course)
+    return problems
+
+
+def _expected_steps(course: dict) -> list[dict]:
+    out: list[dict] = []
+    for sec in course.get("sections") or []:
+        if sec.get("intervalGroup"):
+            first = len(out)
+            out += [dict(sub) for sub in sec.get("sets") or []]
+            out.append({"repeat_from": first, "repeats": sec.get("repeats", 1)})
+        else:
+            out.append(dict(sec))
+    return out
+
+
+def _compare_with_course(steps: list[dict], course: dict) -> list[str]:
+    """Decoded steps must say the same thing as the course JSON they came from."""
+    expected = _expected_steps(course)
+    if len(expected) != len(steps):
+        return [f"course has {len(expected)} steps, FIT file has {len(steps)}"]
+    problems = []
+    duration = {1: ("distance", "duration_distance"), 2: ("time", "duration_time"), 4: ("open", None)}
+    for i, (exp, st) in enumerate(zip(expected, steps, strict=True)):
+        where = f"step {i}"
+        if "repeat_from" in exp:
+            if (st.get("duration_type"), st.get("duration_value"), st.get("target_value")) != (
+                    "repeat_until_steps_cmplt", exp["repeat_from"], exp["repeats"]):
+                problems.append(f"{where}: repeat does not match the interval group")
+            continue
+        kind, field = duration.get(exp.get("targetType"), ("open", None))
+        if st.get("duration_type") != kind:
+            problems.append(f"{where}: duration type {st.get('duration_type')} instead of {kind}")
+        elif field and abs((st.get(field) or 0) - exp["targetValue"]) > 0.01:
+            problems.append(f"{where}: {field} {st.get(field)} instead of {exp['targetValue']}")
+        it = exp.get("intensityType")
+        want = {1: "heart_rate", 2: "speed", 4: "power"}.get(it, "open")
+        if st.get("target_type") != want:
+            problems.append(f"{where}: target {st.get('target_type')} instead of {want}")
+        elif it == 2:
+            lo, hi = st.get("custom_target_speed_low"), st.get("custom_target_speed_high")
+            slow, fast = max(exp["intensityValueStart"], exp["intensityValueEnd"]), \
+                min(exp["intensityValueStart"], exp["intensityValueEnd"])
+            if not (lo and hi and lo <= 1000 / slow + 0.01 and hi >= 1000 / fast - 0.01 and lo < hi):
+                problems.append(f"{where}: speed range {lo}-{hi} m/s does not cover the pace target")
+        elif it == 1 and not exp.get("sectionIntensity"):
+            if (st.get("custom_target_heart_rate_low"), st.get("custom_target_heart_rate_high")) != (
+                    exp["intensityValueStart"] + 100, exp["intensityValueEnd"] + 100):
+                problems.append(f"{where}: heart-rate range does not match")
+        elif it == 1 and st.get("target_hr_zone") != exp["sectionIntensity"]:
+            problems.append(f"{where}: heart-rate zone does not match")
+    return problems
 
 
 def file_name(day: str, course: dict) -> str:
@@ -182,4 +316,31 @@ COPY_HELP = """Copy the .fit file(s) to the watch:
   • USB: plug the watch in and copy into GARMIN/NewFiles/ (newer watches mount over MTP: use your file manager,
     or `gio copy FILE mtp://…/Internal Storage/GARMIN/NewFiles/` on Linux, Android File Transfer on macOS).
   • Unplug: the watch imports it and the workout appears under Training → Workouts.
-  Workouts are not scheduled on a date: start it from the Workouts list on the planned day."""
+  Workouts are not scheduled on a date: start it from the Workouts list on the planned day.
+  ⚠ Garmin Connect's website "Import Data" does NOT accept workout files (only activities and courses): it answers
+    "One of your files was not accepted by the system" even for valid workouts. Copy to the watch instead."""
+
+
+def main(argv: list[str] | None = None) -> int:
+    """`fitworkout.py check FILE.fit [...]`: run the checking pipeline on existing files."""
+    import argparse
+    from pathlib import Path
+
+    ap = argparse.ArgumentParser(description="Check FIT workout files (Garmin SDK decode, fit-tool, structure).")
+    ap.add_argument("cmd", choices=["check"])
+    ap.add_argument("files", nargs="+")
+    a = ap.parse_args(argv)
+    bad = 0
+    for f in a.files:
+        problems = check_fit(Path(f).read_bytes())
+        print(f"{'OK  ' if not problems else 'FAIL'} {f}")
+        for pr in problems:
+            print(f"     {pr}")
+        bad += bool(problems)
+    return 1 if bad else 0
+
+
+if __name__ == "__main__":
+    import sys
+
+    sys.exit(main())

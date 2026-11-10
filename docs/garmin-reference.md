@@ -59,6 +59,31 @@ storage: use the file manager (Linux: `gio`/GVFS, macOS: Android File Transfer o
 watch imports the file and lists it under *Training → Workouts*. FIT workouts are **not dated**: the athlete starts
 them from the list on the planned day, and they do not appear in the Garmin Connect calendar.
 
+**Garmin Connect's website cannot import workout files.** *Import Data* only accepts activities and courses, and
+answers *"One of your files was not accepted by the system. Please contact Support for assistance."* for any
+workout `.fit`, including files copied from a Garmin watch (community reports:
+[1](https://forums.garmin.com/apps-software/mobile-apps-web/f/garmin-connect-web/383688/workout-fit-file-not-importing-copied-from-watch),
+[2](https://forums.garmin.com/apps-software/mobile-apps-web/f/garmin-connect-web/412177/import-workout-to-garmin-connect),
+[3](https://forums.garmin.com/developer/fit-sdk/f/discussion/426425/the-fit-workout-generated-by-a-tool-i-made-keeps-getting-rejected-by-the-garmin-connect-website/2005568)).
+That error does not mean the file is malformed: run `scripts/fitworkout.py check FILE.fit`. The watch is the only
+destination.
+
+### Checking pipeline
+
+Every generated file is checked before it is written (`course_to_fit` raises `FitCheckError` otherwise), and the
+same checks run in `pytest` / CI on every exportable example:
+
+1. **Garmin's official FIT SDK** (`garmin-fit-sdk`) decodes it: FIT signature, header and CRC integrity, no decode
+   errors.
+2. **fit-tool's conformance validator** (wire format, full profile, workout file-type rules).
+3. **Round trip**: the decoded steps are compared with the course JSON — step count, durations, targets (speed
+   range covers the pace, bpm, zones), repeat steps pointing back to the right step with the right count.
+
+Check existing files by hand with `.venv/bin/python scripts/fitworkout.py check exports/*.fit`.
+
+One fit-tool rule is ignored on purpose: it wants `num_valid_steps` to exclude repeat steps. Garmin's profile only
+says "number of valid steps"; we count every step message, as Garmin's own workout files do.
+
 Limits of the conversion (`fitworkout.validate_for_garmin` rejects them with a clear message):
 
 | COROS feature | Garmin |

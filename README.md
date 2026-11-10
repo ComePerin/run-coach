@@ -165,7 +165,10 @@ auto-detected (COROS helper installed → COROS, Garmin key found → Garmin).
 ```
 
 Plug the watch in and copy the files into `GARMIN/NewFiles/` (newer watches mount over MTP: use your file manager).
-After unplugging, they appear under *Training → Workouts*; start the right one on the planned day. Climb targets,
+After unplugging, they appear under *Training → Workouts*; start the right one on the planned day. The Garmin
+Connect website's *Import Data* page does **not** accept workout files (it rejects every workout `.fit`, even
+valid ones): copy them to the watch.
+Each file is checked with Garmin's official FIT SDK before it is written (`scripts/fitworkout.py check FILE.fit`). Climb targets,
 % effort and pace zones are COROS-only: the agent uses absolute paces, HR or power for Garmin.
 
 Details, endpoints, limits and what is estimated: [`docs/garmin-reference.md`](docs/garmin-reference.md).
@@ -264,6 +267,10 @@ This repository is meant to be shared, your training data is not:
 ```bash
 .venv/bin/ruff check . && .venv/bin/pytest -q
 ```
+
+CI (`.github/workflows/ci.yml`) runs both on Python 3.10 and 3.12 for every pull request. The tests generate every
+exportable example workout as FIT, decode it with Garmin's official FIT SDK, validate it with fit-tool and compare it
+step by step with its course JSON.
 
 Issues and pull requests are welcome. Never include personal data (yours or anyone's) in fixtures, examples,
 issues or PRs.
