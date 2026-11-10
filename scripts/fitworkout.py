@@ -267,8 +267,13 @@ def _expected_steps(course: dict) -> list[dict]:
     return out
 
 
-def _compare_with_course(steps: list[dict], course: dict) -> list[str]:
-    """Decoded steps must say the same thing as the course JSON they came from."""
+def _compare_with_course(steps: list[dict], course: dict, *, external: bool = False) -> list[str]:
+    """Decoded steps must say the same thing as the course JSON they came from.
+
+    ``external``: the file was built by another tool from the same course (intervals.icu). HR then goes through
+    % of max HR (±1 bpm rounding), zones are resolved by that tool's own zone settings (only the target type is
+    checked), and power may be lap-average power.
+    """
     expected = _expected_steps(course)
     if len(expected) != len(steps):
         return [f"course has {len(expected)} steps, FIT file has {len(steps)}"]
@@ -288,7 +293,9 @@ def _compare_with_course(steps: list[dict], course: dict) -> list[str]:
             problems.append(f"{where}: {field} {st.get(field)} instead of {exp['targetValue']}")
         it = exp.get("intensityType")
         want = {1: "heart_rate", 2: "speed", 4: "power"}.get(it, "open")
-        if st.get("target_type") != want:
+        if external and want == "power" and st.get("target_type") == "power_lap":
+            pass
+        elif st.get("target_type") != want:
             problems.append(f"{where}: target {st.get('target_type')} instead of {want}")
         elif it == 2:
             lo, hi = st.get("custom_target_speed_low"), st.get("custom_target_speed_high")
@@ -297,10 +304,12 @@ def _compare_with_course(steps: list[dict], course: dict) -> list[str]:
             if not (lo and hi and lo <= 1000 / slow + 0.01 and hi >= 1000 / fast - 0.01 and lo < hi):
                 problems.append(f"{where}: speed range {lo}-{hi} m/s does not cover the pace target")
         elif it == 1 and not exp.get("sectionIntensity"):
-            if (st.get("custom_target_heart_rate_low"), st.get("custom_target_heart_rate_high")) != (
-                    exp["intensityValueStart"] + 100, exp["intensityValueEnd"] + 100):
-                problems.append(f"{where}: heart-rate range does not match")
-        elif it == 1 and st.get("target_hr_zone") != exp["sectionIntensity"]:
+            tol = 1 if external else 0
+            got = (st.get("custom_target_heart_rate_low"), st.get("custom_target_heart_rate_high"))
+            want_hr = (exp["intensityValueStart"] + 100, exp["intensityValueEnd"] + 100)
+            if None in got or any(abs(g - w) > tol for g, w in zip(got, want_hr, strict=True)):
+                problems.append(f"{where}: heart-rate range {got} does not match {want_hr} (bpm + 100)")
+        elif it == 1 and not external and st.get("target_hr_zone") != exp["sectionIntensity"]:
             problems.append(f"{where}: heart-rate zone does not match")
     return problems
 

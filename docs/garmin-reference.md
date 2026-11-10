@@ -52,7 +52,10 @@ Connect calendar. One-time setup by the athlete:
 
 1. Free account on intervals.icu → *Settings → Connections → Garmin* → tick **"Upload planned workouts"** (Garmin asks
    to authorise intervals.icu).
-2. *Settings → Developer Settings* → API key → `scripts/setup.sh --intervals` (stored in
+2. *Settings → Run*: set a **threshold pace** (and max HR) — intervals.icu needs them to send pace and HR targets
+   to Garmin.
+3. *Settings → Developer Settings* → API key (not the "application" form: that is for OAuth apps) →
+   `scripts/setup.sh --intervals` (stored in
    `~/.config/intervals/api-key`, mode 600, or `$INTERVALS_API_KEY`; athlete id `0` = the key's own athlete,
    override with `$INTERVALS_ATHLETE_ID`).
 
@@ -65,13 +68,31 @@ Connect calendar. One-time setup by the athlete:
 
 How it works (`scripts/intervals.py`, [API docs](https://intervals.icu/api/v1/docs)):
 
-- Basic auth, user `API_KEY`, password = the key. Workouts are created with `POST /api/v1/athlete/{id}/events/bulk`
-  as `category: WORKOUT` events that carry the **checked FIT file** (`file_contents_base64`) plus name and
-  description, so the structure is exactly what `fitworkout.py` produced.
+- Basic auth, user `API_KEY`, password = the key, and an explicit `User-Agent` (the default `Python-urllib` one
+  gets HTTP 403). Workouts are created with `POST /api/v1/athlete/{id}/events/bulk` as `category: WORKOUT` events
+  written in **intervals.icu's own workout text**, generated from the course JSON by `intervals.course_to_text`:
+
+  ```
+  - Warm-up 10m Press lap
+
+  4x
+  - Run 1km 4:00-4:10/km Pace
+  - Recover 2m
+
+  - Cool-down 10m Press lap
+  ```
+- Why text and not our FIT file: intervals.icu turned the uploaded FIT's absolute paces into % of threshold pace
+  (silently dropped without a threshold), and read durations hidden in step names ("Recover 2'" became 4 min).
+- Traps of the text format, all covered by tests: **`400m` means 400 minutes** (distances are written in km:
+  `0.4km`); digits in a step's cue are added to its duration (cues are plain words); there is no absolute-bpm
+  syntax (bpm become % of the max HR set in intervals.icu, ±1 bpm); **pace targets are dropped from what goes to
+  Garmin when the sport has no threshold pace in intervals.icu** — `preflight()` refuses to send until it is set.
 - The returned event id is stored in `plan.yaml` (`intervals.event_id`); an `adjusted` session is updated in place
   with `PUT …/events/{id}` (no duplicate). Matching on `external_id` is reserved to OAuth apps, so ids are used.
-- After each write the event is read back: `verify()` checks that intervals.icu parsed the steps and reports its
-  `push_errors` (Garmin upload problems). `plan.py push` exits non-zero when there is one.
+- After each write, the FIT file intervals.icu builds for Garmin (`GET …/events/{id}/download.fit`) is decoded with
+  Garmin's FIT SDK and compared step by step with the course (durations, distances, repeats, targets), and the
+  event's `push_errors` (Garmin upload problems) are reported. `plan.py push` / `workout.py send` exit non-zero
+  on any difference.
 - intervals.icu only uploads the next ~7 days to Garmin Connect (on purpose, to avoid filling the watch), matching
   the rolling 7-day push of the coach. Workouts appear dated in the Garmin Connect calendar (website and app) and
   sync to the watch with the app.

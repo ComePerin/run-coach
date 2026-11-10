@@ -155,8 +155,8 @@ Same agent, same plans and reports; data comes from Garmin's official **Personal
    .venv/bin/python scripts/plan.py profile   # your baseline → athlete/profile.yaml (records provider: garmin)
    ```
 3. **Workouts into Garmin Connect (recommended)**: create a free [intervals.icu](https://intervals.icu) account,
-   then in its settings link Garmin and tick **"Upload planned workouts"**, and copy your API key
-   (*Developer Settings*):
+   then in its settings link Garmin and tick **"Upload planned workouts"**, set your Run **threshold pace** (needed
+   for pace targets), and copy your API key (*Developer Settings*):
    ```bash
    scripts/setup.sh --intervals         # asks for the intervals.icu API key (hidden input), checks it
    ```

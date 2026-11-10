@@ -673,12 +673,22 @@ def cmd_push_intervals(path: str, days: int, yes: bool) -> int:
             todo.append(("update" if ref else "create", s))
     for _, s in todo:
         errors += [f"{s['id']}: {e}" for e in F.validate_for_garmin(s["course"])]
-    if errors:
-        print("plan has validation errors, fix them first:\n  " + "\n  ".join(errors), file=sys.stderr)
-        return 1
-    if not todo:
+    if not todo and not errors:
         print("nothing to push")
         return 0
+    settings: dict[str, dict] = {}
+    try:
+        for _, s in todo:
+            sport = I.EVENT_TYPE.get(s["course"].get("sportType", 1), "Run")
+            if sport not in settings:
+                settings[sport] = I.sport_settings(s["course"])
+            errors += [f"{s['id']}: {e}" for e in I.preflight(s["course"], settings[sport])]
+    except I.IntervalsError as exc:
+        errors.append(str(exc))
+    errors = list(dict.fromkeys(errors))
+    if errors:
+        print("cannot push, fix these first:\n  " + "\n  ".join(errors), file=sys.stderr)
+        return 1
     for action, s in todo:
         print(f"{'DRY-RUN ' if not yes else ''}{action:6} {s['date']} {s['title']} → intervals.icu → Garmin Connect")
     if not yes:
@@ -687,8 +697,8 @@ def cmd_push_intervals(path: str, days: int, yes: bool) -> int:
     slug = plan["plan"].get("id", "plan")
     failed = False
     for action, s in todo:
-        fit = F.course_to_fit(s["course"])  # raises FitCheckError if the file does not pass check_fit
-        ev = I.event_payload(s["date"], s["course"], fit, F.file_name(s["date"], s["course"]),
+        sport = I.EVENT_TYPE.get(s["course"].get("sportType", 1), "Run")
+        ev = I.event_payload(s["date"], s["course"], settings[sport].get("max_hr"),
                              external_id=f"coros-coach:{slug}:{s['id']}")
         try:
             if action == "create":
@@ -698,12 +708,13 @@ def cmd_push_intervals(path: str, days: int, yes: bool) -> int:
                 event_id = s["intervals"]["event_id"]
                 I.update(event_id, ev)
             back = I.get(event_id)
+            fit = I.download_fit(event_id)
         except I.IntervalsError as exc:
             save_plan(plan, path)
             print(f"FAILED {action} {s['id']}: {exc}\nCheck `intervals.py day {s['date']}` before retrying.",
                   file=sys.stderr)
             return 1
-        problems = I.verify(back, s["course"])
+        problems = I.verify(back, s["course"], fit)
         s["intervals"] = {"event_id": event_id, "pushed_at": datetime.now().strftime("%Y-%m-%d %H:%M")}
         s["status"] = "pushed"
         save_plan(plan, path)

@@ -7,7 +7,7 @@
     workout.py show YYYY-MM-DD ID_IN_PLAN
     workout.py day YYYY-MM-DD                           # what is already scheduled that day
     workout.py export YYYY-MM-DD COURSE.json [--out DIR] [--yes]   # Garmin: write a FIT workout file
-    workout.py send YYYY-MM-DD COURSE.json [--yes]      # Garmin: intervals.icu → Garmin Connect calendar
+    workout.py send YYYY-MM-DD COURSE.json [--update EVENT_ID] [--yes]   # Garmin: intervals.icu → Garmin Connect
 
 COROS: create/update/show/day use the COROS calendar. Garmin (read-only API): `send` puts the workout on the
 intervals.icu calendar, which uploads it to Garmin Connect; or `export` a .fit file to copy to the watch
@@ -96,6 +96,7 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("send")
     p.add_argument("date")
     p.add_argument("course")
+    p.add_argument("--update", metavar="EVENT_ID", help="replace this intervals.icu event instead of creating one")
     p.add_argument("--yes", action="store_true")
     p = sub.add_parser("export")
     p.add_argument("date")
@@ -113,17 +114,29 @@ def main(argv: list[str] | None = None) -> int:
                 print("INVALID course for Garmin:\n  " + "\n  ".join(errors))
                 return 1
             print(f"valid {sport} course '{course['courseName']}': {estimate(course)}")
+            settings = I.sport_settings(course)
+            missing = I.preflight(course, settings)
+            if missing:
+                print("cannot send yet:\n  " + "\n  ".join(missing))
+                return 1
+            event = I.event_payload(a.date, course, settings.get("max_hr"))
             if not a.yes:
-                print(f"DRY RUN — would add it to intervals.icu on {a.date}. Already planned that day:")
-                for ev in I.day_events(a.date):
-                    print(f"- {I.summary(ev)}")
+                verb = f"replace event {a.update}" if a.update else "add it to intervals.icu"
+                print(f"DRY RUN — would {verb} on {a.date} as:\n\n{event['description']}")
+                planned = I.day_events(a.date)
+                print("Already planned that day: " + (", ".join(I.summary(ev) for ev in planned) or "nothing"))
                 print("Re-run with --yes after the user confirms.")
                 return 0
-            fit = F.course_to_fit(course)
-            created = I.create([I.event_payload(a.date, course, fit, F.file_name(a.date, course))])
-            back = I.get(created[0]["id"])
-            print(f"created on intervals.icu: {I.summary(back)}")
-            problems = I.verify(back, course)
+            if a.update:
+                event_id = a.update
+                I.update(event_id, event)
+            else:
+                event_id = I.create([event])[0]["id"]
+            back = I.get(event_id)
+            print(f"{'updated' if a.update else 'created'} on intervals.icu: {I.summary(back)}")
+            problems = I.verify(back, course, I.download_fit(event_id))
+            if not problems:
+                print("✓ the FIT file intervals.icu builds for Garmin matches the workout step by step")
             for pr in problems:
                 print(f"⚠ {pr}")
             print("intervals.icu uploads it to Garmin Connect if \"Upload planned workouts\" is ticked in its settings "
