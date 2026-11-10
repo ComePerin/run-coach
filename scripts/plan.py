@@ -6,9 +6,10 @@ Commands (PLAN = path to plans/<slug>/ or to its plan.yaml):
     plan.py validate PLAN           # schema, COROS course JSON, load/intensity guardrails
     plan.py render PLAN             # regenerate plan.md
     plan.py status PLAN             # current week + next sessions (terminal)
-    plan.py push PLAN [--days 7] [--yes]     # create/update sessions on the COROS calendar (dry run without --yes)
+    plan.py push PLAN [--days 7] [--yes]     # COROS: create/update on the calendar · Garmin: export FIT files
+                                             # (dry run without --yes)
     plan.py sync PLAN [--details] [--no-readiness]  # fetch activities + readiness, match, render
-    plan.py profile                 # refresh athlete/profile.yaml baseline from COROS
+    plan.py profile                 # refresh athlete/profile.yaml baseline from COROS or Garmin
     plan.py readiness               # readiness snapshot only (no plan needed)
     plan.py zones [--threshold 3:55] # pace zones from threshold pace (defaults to athlete profile)
 """
@@ -27,6 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import parsers as P  # noqa: E402
 import readiness as R  # noqa: E402
+import source as S  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PROFILE_PATH = REPO_ROOT / "athlete" / "profile.yaml"
@@ -423,7 +425,7 @@ def match_activities(plan: dict, activities: list[dict], until: date) -> dict:
         by_date.setdefault(a["date"], []).append(a)
 
     def compatible(session_sport: str, act: dict) -> bool:
-        fam = P.sport_family(act.get("sport_type"))
+        fam = P.family(act)
         if session_sport in ("run", "trail"):
             return fam in ("run", "trail")
         if session_sport == "bike":
@@ -500,41 +502,27 @@ def match_activities(plan: dict, activities: list[dict], until: date) -> dict:
     return changes
 
 
-# ----------------------------------------------------------------------------- COROS-backed commands
+# ----------------------------------------------------------------------------- provider-backed commands
 
 def fetch_activities(start: date, end: date) -> list[dict]:
-    """Fetch all activities in [start, end], splitting the range when the 100-record cap is hit."""
-    import coros
-
-    args = {"startDate": P.yyyymmdd(start), "endDate": P.yyyymmdd(end), "sportTypeCodes": [65535],
-            "minDistanceKm": None, "maxDistanceKm": None, "minDurationMinutes": None,
-            "maxDurationMinutes": None, "maxAveragePace": None, "locationKeyword": None, "limit": 100}
-    text = coros.call("querySportRecords", args)
-    acts = P.parse_sport_records(text if isinstance(text, str) else "")
-    if len(acts) >= 100 and start < end:
-        mid = start + (end - start) / 2
-        return fetch_activities(start, mid) + fetch_activities(mid + timedelta(days=1), end)
-    return acts
+    """All activities in [start, end] from the active provider (see scripts/source.py)."""
+    return S.activities(start, end)
 
 
 def fetch_readiness() -> dict:
-    import coros
-
     t = today()
-    hrv = P.parse_sleep_hrv(coros.call("querySleepHrv", {
-        "startDate": P.yyyymmdd(t - timedelta(days=6)), "endDate": P.yyyymmdd(t), "days": 7}))
-    rhr = P.parse_resting_hr(coros.call("queryRestingHeartRate", {"days": 14}))
-    sleep = P.parse_sleep_overview(coros.call("querySleepOverview", {"days": 7}))
-    recovery = P.parse_recovery(coros.call("queryRecoveryStatus", {}))
-    load = P.parse_training_load(coros.call("queryTrainingLoadAssessment", {"days": 14}))
+    hrv = S.hrv(t - timedelta(days=6), t)
+    rhr = S.resting_hr(14)
+    sleep = S.sleep(7)
+    recovery = S.recovery()
+    load = S.load(14)
     snap = R.compute(hrv, rhr, sleep, recovery, load)
     snap["date"] = t.isoformat()
+    snap["source"] = S.label()
     return snap
 
 
 def cmd_sync(path: str, details: bool, with_readiness: bool) -> None:
-    import coros
-
     plan = load_plan(path)
     meta = plan["plan"]
     start = d(meta["start"])
@@ -544,7 +532,9 @@ def cmd_sync(path: str, details: bool, with_readiness: bool) -> None:
         return
     acts = fetch_activities(start, end)
     changes = match_activities(plan, acts, until=today())
-    if details:
+    if details and S.provider() == "coros":
+        import coros
+
         for _, s in iter_sessions(plan):
             a = s.get("actual") or {}
             if s.get("key") and a.get("label_id") and "training_load" not in a:
@@ -567,6 +557,8 @@ def cmd_sync(path: str, details: bool, with_readiness: bool) -> None:
 
 
 def cmd_push(path: str, days: int, yes: bool) -> int:
+    if S.provider() == "garmin":
+        return cmd_export(path, days, yes)
     import coros
 
     plan = load_plan(path)
@@ -618,25 +610,60 @@ def cmd_push(path: str, days: int, yes: bool) -> int:
     return 0
 
 
-def cmd_profile() -> None:
-    import coros
+def cmd_export(path: str, days: int, yes: bool, out_dir: str | Path | None = None) -> int:
+    """Garmin: write the next sessions as FIT workout files (the Personal API cannot write to the calendar)."""
+    import fitworkout as F
 
+    plan = load_plan(path)
+    errors, _ = validate(plan)
+    horizon = today() + timedelta(days=days)
+    todo = [s for _, s in iter_sessions(plan)
+            if s.get("course") and today() <= d(s["date"]) <= horizon
+            and s.get("status", "planned") in ("planned", "adjusted")]
+    for s in todo:
+        errors += [f"{s['id']}: {e}" for e in F.validate_for_garmin(s["course"])]
+    if errors:
+        print("plan has validation errors, fix them first:\n  " + "\n  ".join(errors), file=sys.stderr)
+        return 1
+    if not todo:
+        print("nothing to export")
+        return 0
+    folder = Path(out_dir) if out_dir else REPO_ROOT / "exports"
+    for s in todo:
+        print(f"{'DRY-RUN ' if not yes else ''}export {s['date']} {s['title']} → "
+              f"{folder.name}/{F.file_name(s['date'], s['course'])}")
+    if not yes:
+        print("\nRe-run with --yes to write the FIT workout files.")
+        return 0
+    folder.mkdir(parents=True, exist_ok=True)
+    for s in todo:
+        name = F.file_name(s["date"], s["course"])
+        (folder / name).write_bytes(F.course_to_fit(s["course"]))
+        s["garmin"] = {"file": name, "exported_at": datetime.now().strftime("%Y-%m-%d %H:%M")}
+        s["status"] = "pushed"
+        save_plan(plan, path)
+        print(f"OK export {s['date']} {s['title']} → {folder / name}")
+    print("\n" + F.COPY_HELP)
+    cmd_render(path)
+    return 0
+
+
+def cmd_profile() -> None:
     profile = {}
     if PROFILE_PATH.exists():
         profile = _norm_dates(yaml.safe_load(PROFILE_PATH.read_text(encoding="utf-8")) or {})
-    fit = P.parse_fitness(coros.call("queryFitnessAssessmentOverview", {}))
-    user = P.parse_key_values(coros.call("queryUserInfo", {}))
-    load = P.parse_training_load(coros.call("queryTrainingLoadAssessment", {"days": 7}))
-    rhr = [r["rhr"] for r in P.parse_resting_hr(coros.call("queryRestingHeartRate", {"days": 14})) if r["rhr"]]
     since = today() - timedelta(weeks=8)
     acts = fetch_activities(since, today())
+    fit = S.fitness(acts)
+    load = S.load(7, fetch_activities(today() - timedelta(days=35), today()) if S.provider() == "garmin" else None)
+    rhr = [r["rhr"] for r in S.resting_hr(14) if r["rhr"]]
     weekly: dict[str, dict] = {}
     for a in acts:
         wk = (d(a["date"]) - timedelta(days=d(a["date"]).weekday())).isoformat()
         w = weekly.setdefault(wk, {"run_km": 0.0, "minutes": 0.0, "sessions": 0})
         w["minutes"] += (a.get("duration_s") or 0) / 60
         w["sessions"] += 1
-        if P.sport_family(a.get("sport_type")) in ("run", "trail"):
+        if P.family(a) in ("run", "trail"):
             w["run_km"] += a.get("distance_km") or 0
     weeks_sorted = [weekly[k] for k in sorted(weekly)]
     baseline = {
@@ -645,6 +672,7 @@ def cmd_profile() -> None:
         "running_level": fit["running_level"],
         "threshold_pace": fit["threshold_pace"],
         "race_predictions": fit["predictions"],
+        **({"fitness_source": fit["source"]} if fit.get("source") else {}),
         "resting_hr_14d": round(sum(rhr) / len(rhr)) if rhr else None,
         "load_ratio": load[-1]["ratio"] if load else None,
         "last_8_weeks": {
@@ -657,11 +685,12 @@ def cmd_profile() -> None:
     if fit["threshold_pace"]:
         zones = R.pace_zones(P.pace_to_seconds(fit["threshold_pace"]))
         baseline["pace_zones"] = {z: f"{P.seconds_to_pace(a)}-{P.seconds_to_pace(b)}" for z, (a, b) in zones.items()}
-    profile["athlete"] = {
-        "height_cm": P._num((user.get("Height") or "").split()[0] if user.get("Height") else None),
-        "weight_kg": P._num((user.get("Weight") or "").split()[0] if user.get("Weight") else None),
-        "age": int(user["Birthday"].split("Age:")[1].strip(" )")) if "Age:" in user.get("Birthday", "") else None,
-    }
+    user = S.user()
+    athlete = profile.get("athlete") or {}
+    # keep hand-entered values when the provider has none (the Garmin Personal API exposes no height/age)
+    profile["athlete"] = {k: user.get(k) if user.get(k) is not None else athlete.get(k)
+                          for k in ("height_cm", "weight_kg", "age")}
+    profile["provider"] = S.provider()
     profile["baseline"] = baseline
     profile.setdefault("preferences", {
         "availability": "TODO: days/times available, e.g. Mon-Fri 60 min, Sat 120 min, Sun 90 min",

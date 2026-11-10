@@ -1,6 +1,6 @@
 ---
 name: coros-report
-description: Draft a "current state of training" report from the athlete's COROS data and their active training plan. Use when the user asks for a training report, a status / progress update, a recap of the plan so far, "where am I in my training?", "how is my plan going?", a weekly or monthly summary, or a report to share with a coach. Read-only - it never writes to COROS.
+description: Draft a "current state of training" report from the athlete's COROS or Garmin data and their active training plan. Use when the user asks for a training report, a status / progress update, a recap of the plan so far, "where am I in my training?", "how is my plan going?", a weekly or monthly summary, or a report to share with a coach. Read-only - it never writes to COROS.
 ---
 
 # COROS training report
@@ -22,7 +22,8 @@ not in the script output or in data you fetched.**
    .venv/bin/python scripts/report.py plans/<slug> --weeks 4        # → plans/<slug>/reports/YYYY-MM-DD.md
    .venv/bin/python scripts/report.py --weeks 8                     # no plan → reports/YYYY-MM-DD.md
    ```
-   If the COROS login is missing, follow *Setup* in `AGENTS.md`.
+   If the COROS login / Garmin key is missing, follow *Setup* in `AGENTS.md`. With Garmin, the fitness numbers are
+   estimates (the report says so) and the load ratio is computed from HR zones: present them as such.
 
 3. **Dig where it matters** (optional, 1–3 extra calls max), e.g. for the last key sessions:
    `scripts/coros.py call queryActivityLapData '{"labelId": "...", "sportType": 100}'` to check rep paces vs target

@@ -6,6 +6,10 @@
     workout.py update YYYY-MM-DD ID_IN_PLAN COURSE.json [--yes]
     workout.py show YYYY-MM-DD ID_IN_PLAN
     workout.py day YYYY-MM-DD                           # what is already scheduled that day
+    workout.py export YYYY-MM-DD COURSE.json [--out DIR] [--yes]   # Garmin: write a FIT workout file
+
+COROS: create/update/show/day use the COROS calendar. Garmin (read-only API): use `export`, then copy the
+.fit file to the watch (GARMIN/NewFiles). `validate` checks both formats.
 
 COURSE.json may be '-' to read from stdin. The course format is documented in docs/course-json.md.
 """
@@ -20,6 +24,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import coros  # noqa: E402
+import fitworkout as F  # noqa: E402
 import parsers as P  # noqa: E402
 from plan import validate_course  # noqa: E402
 
@@ -85,9 +90,31 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("id_in_plan")
     p = sub.add_parser("day")
     p.add_argument("date")
+    p = sub.add_parser("export")
+    p.add_argument("date")
+    p.add_argument("course")
+    p.add_argument("--out", help="output folder (default: exports/)")
+    p.add_argument("--yes", action="store_true")
     a = ap.parse_args(argv)
 
     try:
+        if a.cmd == "export":
+            course = load_course(a.course)
+            sport = SPORT_BY_CODE.get(course.get("sportType"), "run")
+            errors = validate_course(course, sport) + F.validate_for_garmin(course)
+            if errors:
+                print("INVALID course for Garmin:\n  " + "\n  ".join(errors))
+                return 1
+            folder = Path(a.out) if a.out else Path(__file__).resolve().parent.parent / "exports"
+            target = folder / F.file_name(a.date, course)
+            print(f"valid {sport} course '{course['courseName']}': {estimate(course)}")
+            if not a.yes:
+                print(f"DRY RUN — would write {target}. Re-run with --yes.")
+                return 0
+            folder.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(F.course_to_fit(course))
+            print(f"wrote {target}\n\n{F.COPY_HELP}")
+            return 0
         if a.cmd in ("validate", "create", "update"):
             course = load_course(a.course)
             sport = getattr(a, "sport", None) or SPORT_BY_CODE.get(course.get("sportType"), "run")
@@ -97,6 +124,9 @@ def main(argv: list[str] | None = None) -> int:
                 return 1
             print(f"valid {sport} course '{course['courseName']}': {estimate(course)}")
             if a.cmd == "validate":
+                garmin_errors = F.validate_for_garmin(course)
+                if garmin_errors:
+                    print("note — not exportable to Garmin:\n  " + "\n  ".join(garmin_errors))
                 return 0
             if not a.yes:
                 print(f"DRY RUN — would {a.cmd} on {a.date}. Re-run with --yes after the user confirms.")

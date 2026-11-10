@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draft a "current state of training" report from COROS data (and the active plan, if any).
+"""Draft a "current state of training" report from COROS or Garmin data (and the active plan, if any).
 
     report.py [PLAN] [--weeks 4] [--no-sync] [--out FILE] [--stdout]
 
@@ -25,25 +25,30 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import parsers as P  # noqa: E402
 import plan as PL  # noqa: E402
 import readiness as R  # noqa: E402
+import source as S  # noqa: E402
 
 GOAL_TO_PREDICTION = {"5k": "5k", "10k": "10k", "half": "half", "half marathon": "half", "marathon": "marathon"}
 LEVEL_ICON = {"green": "🟢", "yellow": "🟡", "red": "🔴"}
 
 
 def fetch_inputs(weeks: int) -> dict:
-    """Everything the report needs from COROS (read-only)."""
-    import coros
-
+    """Everything the report needs from the active provider, COROS or Garmin (read-only)."""
     t = PL.today()
+    garmin = S.provider() == "garmin"
+    start = t - timedelta(weeks=weeks, days=t.weekday())
+    # Garmin computes load (28 days back) and fitness (8 weeks) from activities: fetch a longer window once
+    acts = PL.fetch_activities(min(start, t - timedelta(weeks=8)) - timedelta(days=28) if garmin else start, t)
+    since = start.isoformat()
     return {
-        "fitness": P.parse_fitness(coros.call("queryFitnessAssessmentOverview", {})),
-        "load": P.parse_training_load(coros.call("queryTrainingLoadAssessment", {"days": 28})),
-        "hrv": P.parse_sleep_hrv(coros.call("querySleepHrv", {
-            "startDate": P.yyyymmdd(t - timedelta(days=6)), "endDate": P.yyyymmdd(t), "days": 7})),
-        "rhr": P.parse_resting_hr(coros.call("queryRestingHeartRate", {"days": 28})),
-        "sleep": P.parse_sleep_overview(coros.call("querySleepOverview", {"days": 14})),
-        "recovery": P.parse_recovery(coros.call("queryRecoveryStatus", {})),
-        "activities": PL.fetch_activities(t - timedelta(weeks=weeks, days=t.weekday()), t),
+        "source": S.label(),
+        "fitness": S.fitness([a for a in acts if a["date"] >= (t - timedelta(weeks=8)).isoformat()]
+                             if garmin else None),
+        "load": S.load(28, acts if garmin else None),
+        "hrv": S.hrv(t - timedelta(days=6), t),
+        "rhr": S.resting_hr(28),
+        "sleep": S.sleep(14),
+        "recovery": S.recovery(),
+        "activities": [a for a in acts if a["date"] >= since],
     }
 
 
@@ -59,9 +64,9 @@ def weekly_volume(activities: list[dict], weeks: int, until: date) -> list[dict]
         acts = [a for a in activities if ws <= PL.d(a["date"]) <= we]
         fam: dict[str, float] = {}
         for a in acts:
-            f = P.sport_family(a.get("sport_type"))
+            f = P.family(a)
             fam[f] = fam.get(f, 0) + (a.get("duration_s") or 0) / 3600
-        run = [a for a in acts if P.sport_family(a.get("sport_type")) in ("run", "trail")]
+        run = [a for a in acts if P.family(a) in ("run", "trail")]
         rows.append({
             "week_start": ws.isoformat(),
             "run_km": round(sum(a.get("distance_km") or 0 for a in run), 1),
@@ -137,7 +142,7 @@ def build_report(data: dict, plan: dict | None, weeks: int, until: date) -> str:
     vol = weekly_volume(data["activities"], weeks, until)
     out: list[str] = []
     title = plan["plan"]["title"] if plan else "Training"
-    out += [f"# Training report — {title}", "", f"*{until:%A %d %B %Y}* · data: COROS MCP", ""]
+    out += [f"# Training report — {title}", "", f"*{until:%A %d %B %Y}* · data: {data.get('source', 'COROS')}", ""]
 
     # --- headline
     out += ["## Summary", "", "<!-- COACH: 3-5 sentences: where the athlete stands, the main positive, the main "
@@ -181,7 +186,8 @@ def build_report(data: dict, plan: dict | None, weeks: int, until: date) -> str:
             if goal.get("target_time"):
                 line += f", target {goal['target_time']}"
             if pred:
-                line += f" · COROS prediction today: **{pred}**"
+                who = "estimated" if fit.get("source") else "COROS"
+                line += f" · {who} prediction today: **{pred}**"
             out.append(line)
         out += ["", "| Week | Start | Phase | Planned | Done | Sessions | Unplanned |", "|---|---|---|---|---|---|---|"]
         for w in prog["weeks_table"]:
@@ -251,8 +257,12 @@ def build_report(data: dict, plan: dict | None, weeks: int, until: date) -> str:
     # --- fitness
     if fit.get("vo2max") or fit.get("predictions"):
         preds = " · ".join(f"{k} {v}" for k, v in fit.get("predictions", {}).items())
-        out += ["## Fitness", "", f"- VO2max {fit.get('vo2max') or 0:g} · running level {fit.get('running_level') or 0:g}"
-                f" · threshold pace {fit.get('threshold_pace') or '?'}/km", f"- Race predictions: {preds}", ""]
+        if fit.get("source"):  # Garmin: computed locally, no VO2max
+            first = f"- Threshold pace {fit.get('threshold_pace') or '?'}/km ({fit['source']})"
+        else:
+            first = (f"- VO2max {fit.get('vo2max') or 0:g} · running level {fit.get('running_level') or 0:g}"
+                     f" · threshold pace {fit.get('threshold_pace') or '?'}/km")
+        out += ["## Fitness", "", first, f"- Race predictions: {preds}", ""]
 
     # --- next 7 days
     if plan:

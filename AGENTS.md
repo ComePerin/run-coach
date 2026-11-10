@@ -1,4 +1,4 @@
-# AGENTS.md — working with the COROS MCP in this repo
+# AGENTS.md — working with COROS or Garmin data in this repo
 
 Guide for AI agents (Claude Code, Codex, …) operating this repository. Read it fully once per session.
 
@@ -8,7 +8,7 @@ Your **first reply of every session** starts with this short menu, in the athlet
 one line each), before anything else:
 
 ```
-Here is what I can do with your COROS data:
+Here is what I can do with your COROS / Garmin data:
 1. 📊 Analyse — activities, laps, sleep, HRV, resting HR, training load ("how did my week go?")
 2. ⌚ Create a workout on your watch — "4×1000 at 4:05 today, 2' rest"            (coros-workout)
 3. 🗓️ Build an adaptive training plan — goal, weeks, sessions/week, time budget   (coros-coach)
@@ -17,11 +17,19 @@ Here is what I can do with your COROS data:
 6. 📝 Training report — progress, adherence, load, fitness vs goal                 (coros-report)
 ```
 
-Then add one status line from quick checks (at most one COROS call, no data fetching):
+Use the brand name of the active provider in the first line ("your COROS data" or "your Garmin data"). For Garmin,
+item 2 reads "⌚ Create a workout for your watch (.fit file to copy over USB)".
 
+Then add one status line from quick checks (at most one provider call, no data fetching):
+
+- Provider: `COACH_PROVIDER`, else `provider:` in `athlete/profile.yaml`, else COROS if `.vendor/COROS-MCP` exists,
+  else Garmin if a Garmin key exists (`$GARMIN_PERSONAL_API_KEY` or `~/.config/garmin/connect-personal-api-key`).
+  Nothing set up yet → ask once: "COROS or Garmin?".
 - COROS: `.venv/bin/python scripts/coros.py status` → "connected as …", or "not connected → I can run the setup
   (you will just have to open a login link)" if `.venv/`/`.vendor/` are missing or the login expired.
   If COROS tools are available natively (`mcp__coros__*` connector), say "connected via the COROS connector".
+- Garmin: `.venv/bin/python scripts/garmin.py status` → "Garmin connected", or "not connected → create a Personal API
+  key at https://connect.garmin.com/app/settings/personalApiToken and I will set it up".
 - Plans: the folders in `plans/` whose dates include today ("active plan: …"), or "no plan yet".
 
 Then handle the athlete's first message. If it was only a greeting, end with one question: "What would you like to
@@ -29,27 +37,35 @@ do?". Show the menu again whenever the athlete asks for "menu", "help", "what ca
 
 ## What this repo is
 
-Tools + skills to use the athlete's **COROS** account through the official **COROS MCP** server:
-read activities/health/fitness data, create workouts on the watch, and run an adaptive training plan.
+Tools + skills to use the athlete's **COROS** account through the official **COROS MCP** server, or their
+**Garmin** account through Garmin's official **Personal API** (read-only): read activities/health/fitness data,
+create workouts for the watch, and run an adaptive training plan. `scripts/source.py` hides the difference: plan,
+readiness and report code receives the same data shapes from both.
 
 | Path | Role |
 |---|---|
+| `scripts/source.py` | provider switch (COROS / Garmin) → normalized activities, HRV, RHR, sleep, recovery, load, fitness |
 | `scripts/coros.py` | call any COROS MCP tool (wraps the official helper in `.vendor/`) |
 | `scripts/parsers.py` | parse COROS text outputs into data |
-| `scripts/workout.py` | validate → create/update → read back one scheduled workout |
-| `scripts/plan.py` | plan engine: init / validate / render / push / sync / profile / readiness / zones |
-| `scripts/readiness.py` | deterministic readiness score + pace zones |
+| `scripts/garmin.py` | call a read-only Garmin Personal API endpoint (official client) |
+| `scripts/garmin_parsers.py` | parse Garmin JSON into the same data shapes |
+| `scripts/fitworkout.py` | course JSON → Garmin FIT workout file |
+| `scripts/workout.py` | COROS: validate → create/update → read back one scheduled workout · Garmin: `export` a FIT file |
+| `scripts/plan.py` | plan engine: init / validate / render / push (COROS calendar or FIT export) / sync / profile / readiness / zones |
+| `scripts/readiness.py` | deterministic readiness score + pace zones + Garmin substitutes (TRIMP load ratio, Riegel threshold) |
 | `scripts/report.py` | draft a training-status report (markdown with `<!-- COACH -->` placeholders) |
 | `.claude/skills/coros-workout/` | skill: build one workout from natural language |
 | `.claude/skills/coros-coach/` | skill: endurance coach (plan, push, review, adapt) |
 | `.claude/skills/coros-report/` | skill: current-state training report (read-only) |
-| `docs/mcp-reference.md` | **all 34 tools, formats, units, limits, quirks** |
+| `docs/mcp-reference.md` | **all 34 COROS tools, formats, units, limits, quirks** |
+| `docs/garmin-reference.md` | Garmin Personal API: endpoints used, computed substitutes, FIT export and its limits |
 | `docs/course-json.md` | workout JSON format |
 | `docs/coaching-science.md` | training rules with sources |
 | `athlete/profile.yaml` | athlete baseline + preferences (generated by `plan.py profile`, preferences edited by hand) — **git-ignored** |
 | `athlete/profile.example.yaml` | what a profile looks like (fictional athlete) |
 | `plans/<slug>/` | `plan.yaml` (truth) · `plan.md` (generated) · `journal.md` (log) · `reports/` — **git-ignored** |
 | `reports/` | reports made without a plan — **git-ignored** |
+| `exports/` | Garmin FIT workout files — **git-ignored** |
 
 ## Setup (once per machine/container)
 
@@ -67,6 +83,21 @@ scripts/setup.sh                                  # clones coroslab/COROS-MCP in
 - Alternative: if the COROS MCP is configured as a native connector (`https://mcp.coros.com/mcp`), its tools can be
   called directly; keep using `plan.py` for plan logic (it needs the helper login, though).
 
+### Garmin
+
+```bash
+scripts/setup.sh --garmin                         # .venv with the Garmin client (Python >= 3.12), stores the key
+.venv/bin/python scripts/garmin.py status         # → "Garmin Personal API OK — …"
+```
+
+- The athlete creates the key at <https://connect.garmin.com/app/settings/personalApiToken>. They paste it into
+  `setup.sh --garmin` (hidden input) themselves; **never ask them to paste it in the chat**, never print it.
+  It is stored in `~/.config/garmin/connect-personal-api-key` (mode 600) or read from `$GARMIN_PERSONAL_API_KEY`.
+- Read-only: there is no Garmin write. Workouts become FIT files (`workout.py export`, `plan.py push` on Garmin)
+  that the athlete copies to `GARMIN/NewFiles/` on the watch. See `docs/garmin-reference.md`.
+- No VO2max / threshold / load / recovery from Garmin: the scripts compute substitutes and label them
+  (`fitness_source`, "Body Battery", computed load ratio). Say "estimated" when you quote them.
+
 ## Calling tools
 
 ```bash
@@ -76,7 +107,9 @@ scripts/setup.sh                                  # clones coroslab/COROS-MCP in
 .venv/bin/python scripts/coros.py call querySleepHrv '{"startDate":"20261001","endDate":"20261003","days":3}'
 ```
 
-Raw responses are cached in `.cache/mcp/` (git-ignored). Before using an unfamiliar tool, `describe` it — the server
+Garmin: `.venv/bin/python scripts/garmin.py endpoints` / `call NAME '{"start_date": "…", "end_date": "…"}'`.
+
+Raw responses are cached in `.cache/mcp/` and `.cache/garmin/` (git-ignored). Before using an unfamiliar tool, `describe` it — the server
 evolves faster than its README.
 
 ## Essentials about the COROS MCP (details in docs/mcp-reference.md)
@@ -93,13 +126,13 @@ evolves faster than its README.
 
 ## Rules of engagement
 
-1. **Read-only by default.** Any write (create/update/schedule) needs an explicit request from the user in the
-   conversation. Dry-run first (`workout.py … ` / `plan.py push` without `--yes`), show what will be written, then
-   run with `--yes`.
+1. **Read-only by default.** Any write (create/update/schedule on COROS, FIT export for Garmin) needs an explicit
+   request from the user in the conversation. Dry-run first (`workout.py … ` / `plan.py push` without `--yes`), show
+   what will be written, then run with `--yes`.
 2. Never retry a failed write without checking the calendar (`workout.py day DATE`).
-3. Never show internal IDs (`labelId`, `idInPlan`, plan/workout IDs) or tokens to the user.
+3. Never show internal IDs (`labelId`, `idInPlan`, `activityId`, plan/workout IDs), tokens or API keys to the user.
 4. **Personal data never goes public.** This repository is a public template: `athlete/profile.yaml`, `plans/*/`,
-   `reports/` and `.cache/` are git-ignored because they hold the athlete's health data. Do not send them to other
+   `reports/`, `exports/` and `.cache/` are git-ignored because they hold the athlete's health data. Do not send them to other
    services, issues or PR descriptions. See *Persistence* below before committing any of them.
 5. `plan.md` is generated: edit `plan.yaml`, then `plan.py render`.
 6. Before committing: `.venv/bin/ruff check . && .venv/bin/pytest -q`. Work on a branch, open a PR; never push to

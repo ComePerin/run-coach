@@ -1,6 +1,6 @@
 ---
 name: coros-workout
-description: Create or edit a single structured workout (running, cycling or trail running) directly on the user's COROS calendar so it syncs to their watch. Use when the user asks to add, create, schedule, put on the watch, modify or shorten one workout on a given day, e.g. "create a 4x1000 at 4:05 for today", "add a 45-minute easy ride tomorrow", "make Thursday's tempo 15 minutes shorter".
+description: Create or edit a single structured workout (running, cycling or trail running) directly on the user's COROS calendar so it syncs to their watch, or as a FIT workout file for a Garmin watch. Use when the user asks to add, create, schedule, put on the watch, modify or shorten one workout on a given day, e.g. "create a 4x1000 at 4:05 for today", "add a 45-minute easy ride tomorrow", "make Thursday's tempo 15 minutes shorter".
 ---
 
 # COROS workout builder
@@ -59,6 +59,19 @@ must open a login link — never ask for their password). If the COROS MCP is co
    - moving/deleting the workout requires the COROS app.
    Never show `idInPlan`, `labelId` or other internal IDs. Keep the returned `idInPlan` in your context (or in the
    plan YAML `coros.id_in_plan`) for later edits.
+
+## Garmin watches (FIT file)
+
+When the provider is Garmin (`AGENTS.md` → Session start), there is no calendar write: build the same course JSON,
+then export it as a FIT workout file.
+
+1. Resolve the request as above, with these limits (Garmin cannot express them, the script refuses them):
+   no climb targets, no % effort, no percentages, **no pace zones** → absolute paces from `plan.py zones`;
+   HR zones 1–5 and power zones are fine.
+2. `.venv/bin/python scripts/workout.py export 2026-10-03 /tmp/course.json` (dry run) → confirm → `--yes`.
+3. Tell the athlete: copy `exports/<date>-<name>.fit` into `GARMIN/NewFiles/` on the watch (USB; MTP on newer
+   watches), unplug, then start it from *Training → Workouts* on that day. It is not dated and does not appear in the
+   Garmin Connect calendar. To change it, export a new file and delete the old workout on the watch.
 
 ## Editing an existing workout on a date
 

@@ -40,6 +40,7 @@ weeks:
     course: {courseName: ..., courseDescription: ..., sportType: 1, sections: [...]}   # COROS JSON
     status: planned                # planned | pushed | adjusted | done | partial | missed | skipped
     coros: {id_in_plan: '11', pushed_at: '2026-10-05 20:00'}   # set by plan.py push — internal, never show
+    garmin: {file: 2026-10-06-easy-run.fit, exported_at: '2026-10-05 20:00'}  # Garmin: set by plan.py push (FIT export)
     actual:                        # set by plan.py sync
       label_id: '…'                # internal, never show
       matched_date: '2026-10-06'
@@ -69,6 +70,8 @@ skipped: set by the coach when a session is intentionally dropped (with a note)
 - `sync` marks a past open session `missed` if no compatible activity exists on its date (±1 day).
 - `partial`: compliance < 80 %.
 - Edit freely sessions in `planned`. For `pushed` sessions, edit then set `adjusted`.
+- Garmin: `pushed` means "FIT file exported to `exports/`", not "on the watch" — the athlete still has to copy it.
+  An `adjusted` session is exported again as a new file; tell the athlete to delete the old workout on the watch.
 - A pushed session that must disappear: the MCP cannot delete. Either turn it into the replacement session
   (`adjusted`) or ask the athlete to delete it in the COROS app, then set `skipped`.
 
