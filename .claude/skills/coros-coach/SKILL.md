@@ -27,7 +27,7 @@ Tools (run from the repo root, with `.venv/bin/python`):
 | `scripts/plan.py readiness` | today's readiness (HRV, RHR, sleep, recovery, load ratio) |
 | `scripts/plan.py init/validate/render/status` | create, check, render, view a plan |
 | `scripts/plan.py sync PLAN [--details]` | fetch activities + readiness, match to sessions, render |
-| `scripts/plan.py push PLAN [--days 7] [--yes]` | COROS: create/update the next sessions on the calendar · Garmin: write them as FIT files in `exports/` (dry run without `--yes`) |
+| `scripts/plan.py push PLAN [--days 7] [--yes] [--files]` | COROS: create/update the next sessions on the calendar · Garmin: send them to intervals.icu → Garmin Connect calendar (updates in place), or FIT files in `exports/` without intervals.icu / with `--files` (dry run without `--yes`) |
 | `scripts/coros.py call TOOL '{json}'` | any other COROS tool (laps, FIT, sleep…) — see `docs/mcp-reference.md` |
 | `scripts/garmin.py call NAME '{json}'` | any other Garmin endpoint (activity detail, stress, original file…) — see `docs/garmin-reference.md` |
 
@@ -52,7 +52,8 @@ zones, no percentages, no climb targets, no % effort (`plan.py push` refuses the
 5. **Present** the plan: phases, weekly volumes, key sessions, the first week in detail, and the link/path to
    `plan.md`. Ask for approval or changes.
 6. **Push** (only after the athlete says yes): `plan.py push PLAN --days 7` (dry run) → show the list →
-   `--yes`. COROS: report other workouts on the same days and remind to sync the watch. Garmin: give the copy
+   `--yes`. COROS: report other workouts on the same days and remind to sync the watch. Garmin + intervals.icu:
+   report `⚠` lines and remind to sync the watch from the Garmin Connect app. Garmin with files: give the copy
    instructions printed by the script (files → `GARMIN/NewFiles/`, start each from *Workouts* on its day).
 7. Persist `plans/<slug>/` (see *Persistence*).
 

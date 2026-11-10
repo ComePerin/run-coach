@@ -44,14 +44,46 @@ Activity types are mapped to families by `typeKey`: `*_running`/`running`/`tread
 The estimates are only as good as the recent efforts: if the athlete has not run hard for 8 weeks the threshold pace
 is too slow. Say so, and prefer a recent race or a field test (30-min time trial) entered by hand in the profile.
 
-## Workouts → FIT files
+## Workouts → Garmin Connect via intervals.icu (recommended)
 
-The API cannot write, so workouts are delivered as **FIT workout files** generated from the same course JSON as
-COROS (`docs/course-json.md`):
+The Personal API cannot write and Garmin Connect cannot import workout files, but
+[intervals.icu](https://intervals.icu) is an official Garmin partner that uploads planned workouts to the Garmin
+Connect calendar. One-time setup by the athlete:
+
+1. Free account on intervals.icu → *Settings → Connections → Garmin* → tick **"Upload planned workouts"** (Garmin asks
+   to authorise intervals.icu).
+2. *Settings → Developer Settings* → API key → `scripts/setup.sh --intervals` (stored in
+   `~/.config/intervals/api-key`, mode 600, or `$INTERVALS_API_KEY`; athlete id `0` = the key's own athlete,
+   override with `$INTERVALS_ATHLETE_ID`).
+
+```bash
+.venv/bin/python scripts/intervals.py status
+.venv/bin/python scripts/workout.py send 2026-11-12 course.json [--yes]    # one workout
+.venv/bin/python scripts/plan.py push plans/<slug> --days 7 [--yes]       # next 7 days of the plan
+.venv/bin/python scripts/intervals.py day 2026-11-12                      # what is planned, Garmin upload status
+```
+
+How it works (`scripts/intervals.py`, [API docs](https://intervals.icu/api/v1/docs)):
+
+- Basic auth, user `API_KEY`, password = the key. Workouts are created with `POST /api/v1/athlete/{id}/events/bulk`
+  as `category: WORKOUT` events that carry the **checked FIT file** (`file_contents_base64`) plus name and
+  description, so the structure is exactly what `fitworkout.py` produced.
+- The returned event id is stored in `plan.yaml` (`intervals.event_id`); an `adjusted` session is updated in place
+  with `PUT …/events/{id}` (no duplicate). Matching on `external_id` is reserved to OAuth apps, so ids are used.
+- After each write the event is read back: `verify()` checks that intervals.icu parsed the steps and reports its
+  `push_errors` (Garmin upload problems). `plan.py push` exits non-zero when there is one.
+- intervals.icu only uploads the next ~7 days to Garmin Connect (on purpose, to avoid filling the watch), matching
+  the rolling 7-day push of the coach. Workouts appear dated in the Garmin Connect calendar (website and app) and
+  sync to the watch with the app.
+
+## Workouts → FIT files (offline alternative)
+
+Without intervals.icu, or with `--files`, workouts are delivered as **FIT workout files** generated from the same
+course JSON as COROS (`docs/course-json.md`):
 
 ```bash
 .venv/bin/python scripts/workout.py export 2026-11-12 course.json --yes   # → exports/2026-11-12-<name>.fit
-.venv/bin/python scripts/plan.py push plans/<slug> --days 7 --yes         # Garmin provider: exports the next 7 days
+.venv/bin/python scripts/plan.py push plans/<slug> --days 7 --yes --files # Garmin provider: exports the next 7 days
 ```
 
 Copy each file into `GARMIN/NewFiles/` on the watch (USB). Recent watches connect over MTP instead of USB mass
@@ -65,8 +97,8 @@ workout `.fit`, including files copied from a Garmin watch (community reports:
 [1](https://forums.garmin.com/apps-software/mobile-apps-web/f/garmin-connect-web/383688/workout-fit-file-not-importing-copied-from-watch),
 [2](https://forums.garmin.com/apps-software/mobile-apps-web/f/garmin-connect-web/412177/import-workout-to-garmin-connect),
 [3](https://forums.garmin.com/developer/fit-sdk/f/discussion/426425/the-fit-workout-generated-by-a-tool-i-made-keeps-getting-rejected-by-the-garmin-connect-website/2005568)).
-That error does not mean the file is malformed: run `scripts/fitworkout.py check FILE.fit`. The watch is the only
-destination.
+That error does not mean the file is malformed: run `scripts/fitworkout.py check FILE.fit`. Use intervals.icu
+(above) to get workouts into Garmin Connect, or copy the file to the watch.
 
 ### Checking pipeline
 

@@ -5,8 +5,9 @@ It reads everything through the official [COROS MCP](https://github.com/coroslab
 [Personal API](https://developer.garmin.com/gc-developer-program/personal/personal-api), creates structured workouts
 for your watch from one sentence, builds a training plan and adapts it to what you actually ran.
 
-> **Garmin users**: everything works except writing to the Garmin calendar (Garmin's API is read-only) — workouts
-> come as `.fit` files you copy to the watch. Jump to [Use it with Garmin](#use-it-with-garmin).
+> **Garmin users**: everything works. Garmin's API is read-only, so planned workouts reach your Garmin Connect
+> calendar through a free [intervals.icu](https://intervals.icu) account (or as `.fit` files you copy to the watch).
+> Jump to [Use it with Garmin](#use-it-with-garmin).
 
 ```
 "Create a session for today: free warm-up, 4×1000 at 4:05 with 2' rest, free cool-down"
@@ -142,7 +143,7 @@ Same agent, same plans and reports; data comes from Garmin's official **Personal
 | 🗓️ Build a plan · 🔄 review and adapt · 📝 report | ✅ |
 | 🚦 What should I do today? | ✅ HRV, resting HR, sleep, **Body Battery** (instead of COROS recovery), **load ratio computed** from HR zones |
 | Threshold pace, race predictions | ⚠️ **estimated** from your best recent efforts (no VO2max) |
-| ⌚ Workout on the watch | ⚠️ as a **`.fit` file** you copy to the watch over USB — no calendar sync |
+| ⌚ Workout on the watch | ✅ via **intervals.icu** → Garmin Connect calendar (website, app, watch), next ~7 days · or ⚠️ `.fit` files copied over USB |
 
 ### Setup
 
@@ -153,21 +154,31 @@ Same agent, same plans and reports; data comes from Garmin's official **Personal
    scripts/setup.sh --garmin            # creates .venv, asks for the key (hidden input), checks it
    .venv/bin/python scripts/plan.py profile   # your baseline → athlete/profile.yaml (records provider: garmin)
    ```
-3. **Talk to it**: `claude` in the repo folder, then *"hi"*.
+3. **Workouts into Garmin Connect (recommended)**: create a free [intervals.icu](https://intervals.icu) account,
+   then in its settings link Garmin and tick **"Upload planned workouts"**, and copy your API key
+   (*Developer Settings*):
+   ```bash
+   scripts/setup.sh --intervals         # asks for the intervals.icu API key (hidden input), checks it
+   ```
+4. **Talk to it**: `claude` in the repo folder, then *"hi"*.
 
 The provider is picked from `COACH_PROVIDER=garmin|coros`, else `provider:` in `athlete/profile.yaml`, else
 auto-detected (COROS helper installed → COROS, Garmin key found → Garmin).
 
 ### Getting workouts on the watch
 
+Garmin's API cannot write and Garmin Connect cannot import workout files (its *Import Data* page only takes
+activities). Two ways around it:
+
 ```bash
-.venv/bin/python scripts/plan.py push plans/<slug> --days 7 --yes   # → exports/<date>-<name>.fit
+# 1. intervals.icu (with an API key set up): dated workouts in the Garmin Connect calendar, app and watch
+.venv/bin/python scripts/plan.py push plans/<slug> --days 7 --yes
+# 2. files: exports/<date>-<name>.fit, to copy into GARMIN/NewFiles/ on the watch over USB
+.venv/bin/python scripts/plan.py push plans/<slug> --days 7 --yes --files
 ```
 
-Plug the watch in and copy the files into `GARMIN/NewFiles/` (newer watches mount over MTP: use your file manager).
-After unplugging, they appear under *Training → Workouts*; start the right one on the planned day. The Garmin
-Connect website's *Import Data* page does **not** accept workout files (it rejects every workout `.fit`, even
-valid ones): copy them to the watch.
+intervals.icu uploads the next ~7 days of planned workouts to Garmin Connect; changed sessions are updated in place.
+With files, the workouts appear under *Training → Workouts* on the watch, undated.
 Each file is checked with Garmin's official FIT SDK before it is written (`scripts/fitworkout.py check FILE.fit`). Climb targets,
 % effort and pace zones are COROS-only: the agent uses absolute paces, HR or power for Garmin.
 
@@ -209,6 +220,8 @@ This repository is meant to be shared, your training data is not:
   private (`gh repo view --json visibility`).
 - COROS login tokens live in `~/.coros-mcp-skill-gateway/`, outside the repo. FIT download URLs work without
   authentication: never paste them anywhere public.
+- The intervals.icu API key lives in `~/.config/intervals/api-key` (or `$INTERVALS_API_KEY`). Workouts sent there
+  are stored on intervals.icu (its [privacy policy](https://intervals.icu/privacy-policy.html) applies).
 - The Garmin Personal API key lives in `~/.config/garmin/connect-personal-api-key` (or `$GARMIN_PERSONAL_API_KEY`),
   outside the repo. Anyone with it can read your Garmin data: revoke it in Garmin Connect if it leaks.
 - The test fixtures in `tests/fixtures/` are synthetic: real COROS / Garmin output format, made-up values.
@@ -227,6 +240,7 @@ This repository is meant to be shared, your training data is not:
 # one workout
 .venv/bin/python scripts/workout.py create 2026-10-03 course.json        # COROS, dry run
 .venv/bin/python scripts/workout.py create 2026-10-03 course.json --yes
+.venv/bin/python scripts/workout.py send 2026-10-03 course.json --yes    # Garmin → intervals.icu → Garmin Connect
 .venv/bin/python scripts/workout.py export 2026-10-03 course.json --yes  # Garmin → exports/*.fit
 
 # plan
@@ -254,10 +268,10 @@ This repository is meant to be shared, your training data is not:
 | `.claude/skills/coros-report/` | training-status report skill (read-only) |
 | `claude-chat/` | project instructions for Claude chat |
 | `docs/mcp-reference.md` | the 34 COROS MCP tools, formats, units, limits, quirks, sport codes |
-| `docs/garmin-reference.md` | Garmin Personal API: endpoints used, computed substitutes, FIT export, limits |
+| `docs/garmin-reference.md` | Garmin Personal API: endpoints used, computed substitutes, intervals.icu delivery, FIT export, limits |
 | `docs/course-json.md` | workout JSON cheat sheet |
 | `docs/coaching-science.md` | training rules and their sources |
-| `scripts/` | `source.py` (provider switch), `coros.py` + `parsers.py` (COROS), `garmin.py` + `garmin_parsers.py` (Garmin), `fitworkout.py` (FIT export), `workout.py`, `plan.py`, `readiness.py`, `report.py`, `setup.sh`, `chat-bundle.sh` |
+| `scripts/` | `source.py` (provider switch), `coros.py` + `parsers.py` (COROS), `garmin.py` + `garmin_parsers.py` (Garmin), `fitworkout.py` (FIT export + checks), `intervals.py` (workouts → Garmin Connect via intervals.icu), `workout.py`, `plan.py`, `readiness.py`, `report.py`, `setup.sh`, `chat-bundle.sh` |
 | `athlete/` | your `profile.yaml` (git-ignored) and an example |
 | `plans/` | one folder per plan (git-ignored) |
 | `tests/` | pytest on synthetic COROS and Garmin outputs |

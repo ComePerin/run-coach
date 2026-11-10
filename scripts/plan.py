@@ -6,8 +6,9 @@ Commands (PLAN = path to plans/<slug>/ or to its plan.yaml):
     plan.py validate PLAN           # schema, COROS course JSON, load/intensity guardrails
     plan.py render PLAN             # regenerate plan.md
     plan.py status PLAN             # current week + next sessions (terminal)
-    plan.py push PLAN [--days 7] [--yes]     # COROS: create/update on the calendar · Garmin: export FIT files
-                                             # (dry run without --yes)
+    plan.py push PLAN [--days 7] [--yes] [--files]   # COROS: create/update on the calendar
+                                             # Garmin: send to intervals.icu → Garmin Connect calendar, or with
+                                             # --files (or no intervals.icu key) export FIT files (dry run without --yes)
     plan.py sync PLAN [--details] [--no-readiness]  # fetch activities + readiness, match, render
     plan.py profile                 # refresh athlete/profile.yaml baseline from COROS or Garmin
     plan.py readiness               # readiness snapshot only (no plan needed)
@@ -556,8 +557,12 @@ def cmd_sync(path: str, details: bool, with_readiness: bool) -> None:
                       "readiness": plan.get("readiness"), "next_7_days": upcoming}, indent=1, ensure_ascii=False))
 
 
-def cmd_push(path: str, days: int, yes: bool) -> int:
+def cmd_push(path: str, days: int, yes: bool, files: bool = False) -> int:
     if S.provider() == "garmin":
+        import intervals
+
+        if intervals.configured() and not files:
+            return cmd_push_intervals(path, days, yes)
         return cmd_export(path, days, yes)
     import coros
 
@@ -646,6 +651,70 @@ def cmd_export(path: str, days: int, yes: bool, out_dir: str | Path | None = Non
     print("\n" + F.COPY_HELP)
     cmd_render(path)
     return 0
+
+
+def cmd_push_intervals(path: str, days: int, yes: bool) -> int:
+    """Garmin: create/update the next sessions on intervals.icu, which uploads them to the Garmin Connect calendar."""
+    import fitworkout as F
+    import intervals as I
+
+    plan = load_plan(path)
+    errors, _ = validate(plan)
+    horizon = today() + timedelta(days=days)
+    todo = []
+    for _, s in iter_sessions(plan):
+        status = s.get("status", "planned")
+        if not s.get("course") or not today() <= d(s["date"]) <= horizon:
+            continue
+        ref = (s.get("intervals") or {}).get("event_id")
+        if status == "planned" and not ref:
+            todo.append(("create", s))
+        elif status == "adjusted":
+            todo.append(("update" if ref else "create", s))
+    for _, s in todo:
+        errors += [f"{s['id']}: {e}" for e in F.validate_for_garmin(s["course"])]
+    if errors:
+        print("plan has validation errors, fix them first:\n  " + "\n  ".join(errors), file=sys.stderr)
+        return 1
+    if not todo:
+        print("nothing to push")
+        return 0
+    for action, s in todo:
+        print(f"{'DRY-RUN ' if not yes else ''}{action:6} {s['date']} {s['title']} → intervals.icu → Garmin Connect")
+    if not yes:
+        print("\nRe-run with --yes to write these to intervals.icu (it uploads the next ~7 days to Garmin Connect).")
+        return 0
+    slug = plan["plan"].get("id", "plan")
+    failed = False
+    for action, s in todo:
+        fit = F.course_to_fit(s["course"])  # raises FitCheckError if the file does not pass check_fit
+        ev = I.event_payload(s["date"], s["course"], fit, F.file_name(s["date"], s["course"]),
+                             external_id=f"coros-coach:{slug}:{s['id']}")
+        try:
+            if action == "create":
+                created = I.create([ev])
+                event_id = created[0]["id"]
+            else:
+                event_id = s["intervals"]["event_id"]
+                I.update(event_id, ev)
+            back = I.get(event_id)
+        except I.IntervalsError as exc:
+            save_plan(plan, path)
+            print(f"FAILED {action} {s['id']}: {exc}\nCheck `intervals.py day {s['date']}` before retrying.",
+                  file=sys.stderr)
+            return 1
+        problems = I.verify(back, s["course"])
+        s["intervals"] = {"event_id": event_id, "pushed_at": datetime.now().strftime("%Y-%m-%d %H:%M")}
+        s["status"] = "pushed"
+        save_plan(plan, path)
+        print(f"OK {action} {s['date']} {I.summary(back)}")
+        for pr in problems:
+            failed = True
+            print(f"   ⚠ {pr}")
+    print("\nintervals.icu uploads planned workouts to Garmin Connect (next ~7 days) when \"Upload planned workouts\" "
+          "is ticked in https://intervals.icu/settings. Sync the watch from the Garmin Connect app.")
+    cmd_render(path)
+    return 1 if failed else 0
 
 
 def cmd_profile() -> None:
@@ -755,6 +824,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("plan")
     p.add_argument("--days", type=int, default=7)
     p.add_argument("--yes", action="store_true")
+    p.add_argument("--files", action="store_true", help="Garmin: export FIT files instead of using intervals.icu")
     p = sub.add_parser("sync")
     p.add_argument("plan")
     p.add_argument("--details", action="store_true", help="fetch getActivityDetail for key sessions")
@@ -781,7 +851,7 @@ def main(argv: list[str] | None = None) -> int:
     elif a.cmd == "status":
         cmd_status(a.plan)
     elif a.cmd == "push":
-        return cmd_push(a.plan, a.days, a.yes)
+        return cmd_push(a.plan, a.days, a.yes, a.files)
     elif a.cmd == "sync":
         cmd_sync(a.plan, a.details, not a.no_readiness)
     elif a.cmd == "profile":

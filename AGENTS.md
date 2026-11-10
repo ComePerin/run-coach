@@ -18,7 +18,7 @@ Here is what I can do with your COROS / Garmin data:
 ```
 
 Use the brand name of the active provider in the first line ("your COROS data" or "your Garmin data"). For Garmin,
-item 2 reads "⌚ Create a workout for your watch (.fit file to copy over USB)".
+item 2 reads "⌚ Create a workout for your watch (via intervals.icu → Garmin Connect, or a .fit file)".
 
 Then add one status line from quick checks (at most one provider call, no data fetching):
 
@@ -29,7 +29,9 @@ Then add one status line from quick checks (at most one provider call, no data f
   (you will just have to open a login link)" if `.venv/`/`.vendor/` are missing or the login expired.
   If COROS tools are available natively (`mcp__coros__*` connector), say "connected via the COROS connector".
 - Garmin: `.venv/bin/python scripts/garmin.py status` → "Garmin connected", or "not connected → create a Personal API
-  key at https://connect.garmin.com/app/settings/personalApiToken and I will set it up".
+  key at https://connect.garmin.com/app/settings/personalApiToken and I will set it up". Add "workouts via
+  intervals.icu" if an intervals.icu key exists (`$INTERVALS_API_KEY` or `~/.config/intervals/api-key`), else
+  "workouts as .fit files (intervals.icu not set up)".
 - Plans: the folders in `plans/` whose dates include today ("active plan: …"), or "no plan yet".
 
 Then handle the athlete's first message. If it was only a greeting, end with one question: "What would you like to
@@ -49,8 +51,9 @@ readiness and report code receives the same data shapes from both.
 | `scripts/parsers.py` | parse COROS text outputs into data |
 | `scripts/garmin.py` | call a read-only Garmin Personal API endpoint (official client) |
 | `scripts/garmin_parsers.py` | parse Garmin JSON into the same data shapes |
-| `scripts/fitworkout.py` | course JSON → Garmin FIT workout file |
-| `scripts/workout.py` | COROS: validate → create/update → read back one scheduled workout · Garmin: `export` a FIT file |
+| `scripts/fitworkout.py` | course JSON → Garmin FIT workout file, and its checking pipeline |
+| `scripts/intervals.py` | Garmin: planned workouts → intervals.icu → Garmin Connect calendar |
+| `scripts/workout.py` | COROS: validate → create/update → read back one scheduled workout · Garmin: `send` (intervals.icu) or `export` (FIT file) |
 | `scripts/plan.py` | plan engine: init / validate / render / push (COROS calendar or FIT export) / sync / profile / readiness / zones |
 | `scripts/readiness.py` | deterministic readiness score + pace zones + Garmin substitutes (TRIMP load ratio, Riegel threshold) |
 | `scripts/report.py` | draft a training-status report (markdown with `<!-- COACH -->` placeholders) |
@@ -93,8 +96,11 @@ scripts/setup.sh --garmin                         # .venv with the Garmin client
 - The athlete creates the key at <https://connect.garmin.com/app/settings/personalApiToken>. They paste it into
   `setup.sh --garmin` (hidden input) themselves; **never ask them to paste it in the chat**, never print it.
   It is stored in `~/.config/garmin/connect-personal-api-key` (mode 600) or read from `$GARMIN_PERSONAL_API_KEY`.
-- Read-only: there is no Garmin write. Workouts become FIT files (`workout.py export`, `plan.py push` on Garmin)
-  that the athlete copies to `GARMIN/NewFiles/` on the watch. See `docs/garmin-reference.md`.
+- Read-only: there is no Garmin write, and Garmin Connect cannot import workout files. Workouts reach Garmin Connect
+  through **intervals.icu** (`scripts/setup.sh --intervals`, then `workout.py send` / `plan.py push`), or become FIT
+  files (`workout.py export`, `plan.py push --files`) that the athlete copies to `GARMIN/NewFiles/` on the watch.
+  Same rule for the intervals.icu key as for the Garmin key: the athlete pastes it into the setup script, never in
+  the chat. See `docs/garmin-reference.md`.
 - No VO2max / threshold / load / recovery from Garmin: the scripts compute substitutes and label them
   (`fitness_source`, "Body Battery", computed load ratio). Say "estimated" when you quote them.
 
@@ -126,7 +132,7 @@ evolves faster than its README.
 
 ## Rules of engagement
 
-1. **Read-only by default.** Any write (create/update/schedule on COROS, FIT export for Garmin) needs an explicit
+1. **Read-only by default.** Any write (create/update/schedule on COROS, intervals.icu or FIT export for Garmin) needs an explicit
    request from the user in the conversation. Dry-run first (`workout.py … ` / `plan.py push` without `--yes`), show
    what will be written, then run with `--yes`.
 2. Never retry a failed write without checking the calendar (`workout.py day DATE`).

@@ -2,8 +2,32 @@
 # One-time setup.
 #   scripts/setup.sh            COROS: fetch the official COROS MCP helper, create a venv, start login
 #   scripts/setup.sh --garmin   Garmin: create a venv with the Garmin Personal API client, store your API key
+#   scripts/setup.sh --intervals  Garmin: store your intervals.icu API key (workouts → Garmin Connect calendar)
 set -euo pipefail
 cd "$(dirname "$0")/.."
+
+if [ "${1:-}" = "--intervals" ]; then
+  # Garmin users: intervals.icu puts planned workouts into the Garmin Connect calendar
+  KEY_FILE="$HOME/.config/intervals/api-key"
+  if [ -z "${INTERVALS_API_KEY:-}" ] && [ ! -s "$KEY_FILE" ]; then
+    echo "1. In https://intervals.icu/settings: Connections → Garmin → tick \"Upload planned workouts\"."
+    echo "2. Same page, Developer Settings: copy your API key."
+    if [ -t 0 ]; then
+      read -r -s -p "Paste the intervals.icu API key (input hidden), or press Enter to skip: " KEY; echo
+      if [ -n "$KEY" ]; then
+        mkdir -p "$(dirname "$KEY_FILE")"
+        (umask 077 && printf '%s' "$KEY" > "$KEY_FILE")
+        echo "→ key saved to $KEY_FILE (only readable by you)"
+      fi
+    fi
+    if [ ! -s "$KEY_FILE" ]; then
+      echo "Then save it with:  (umask 077; mkdir -p ~/.config/intervals; cat > $KEY_FILE)   # paste, Ctrl-D"
+      exit 0
+    fi
+  fi
+  .venv/bin/python scripts/intervals.py status
+  exit 0
+fi
 
 if [ "${1:-}" = "--garmin" ]; then
   PY=python3
