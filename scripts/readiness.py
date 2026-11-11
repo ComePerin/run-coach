@@ -2,7 +2,7 @@
 
 The coach (LLM) must not invent thresholds: it reads the output of these
 functions and applies the action table in
-``.claude/skills/coros-coach/references/decision-process.md``.
+``.claude/skills/run-coach/references/decision-process.md``.
 
 Signals are scored -2..+2. Rules (see docs/coaching-science.md for sources):
 

@@ -12,7 +12,7 @@ coach. Main reading scene for the session recap: on a phone, right after the run
 glancing rather than studying.
 
 ## Product Purpose
-coros-coach turns an AI agent into an adaptive running / trail / cycling coach: it reads watch data (COROS MCP or
+run-coach turns an AI agent into an adaptive running / trail / cycling coach: it reads watch data (COROS MCP or
 Garmin Personal API), creates structured workouts for the watch, builds a training plan and adapts it to what the
 athlete actually ran. Success: the athlete knows how the session went and what changes next, without opening the
 watch app.

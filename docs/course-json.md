@@ -67,7 +67,7 @@ Use it **only when requested** (e.g. "warm-up until ready", "cool-down with manu
 
 ## Full examples
 
-See `.claude/skills/coros-workout/examples/`:
+See `.claude/skills/run-workout/examples/`:
 
 | File | Pattern |
 |---|---|

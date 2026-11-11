@@ -11,7 +11,7 @@ import readiness as R
 from test_plan import INTERVALS, make_plan
 
 FIX = Path(__file__).parent / "fixtures"
-EXAMPLES = Path(__file__).resolve().parent.parent / ".claude" / "skills" / "coros-workout" / "examples"
+EXAMPLES = Path(__file__).resolve().parent.parent / ".claude" / "skills" / "run-workout" / "examples"
 
 
 def load(name):
