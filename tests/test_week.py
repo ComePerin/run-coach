@@ -2,6 +2,7 @@ import json
 import re
 from datetime import date
 
+import recap as RC
 import week as WK
 import yaml
 
@@ -56,7 +57,7 @@ def test_blocks_keep_repeats_and_targets():
     assert work["s"] == 225 and work["zone"] == 5            # 225 s/km: faster than the 240 threshold
     assert rec["kind"] == "jog" and rec["length"] == "2′" and rec["target"] == "5:17–5:48/km"   # recovery zone
     assert bl[0]["steps"][0]["target"] == "4:43–5:17/km"                   # warm-up: easy zone
-    assert bl[2]["steps"][0]["length"] == "until lap" and bl[2]["steps"][0]["s"] == WK.FREE_STEP_S
+    assert bl[2]["steps"][0]["length"] == RC.short_dur(WK.FREE_STEP_S) and bl[2]["steps"][0]["s"] == WK.FREE_STEP_S
     assert WK.total_seconds(bl) == 900 + 2 * (225 + 120) + WK.FREE_STEP_S
 
 
