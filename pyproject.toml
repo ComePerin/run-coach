@@ -1,5 +1,5 @@
 [project]
-name = "coros-coach"
+name = "run-coach"
 version = "0.1.0"
 description = "COROS / Garmin data helpers, workout builder and adaptive endurance coach for AI agents"
 requires-python = ">=3.10"

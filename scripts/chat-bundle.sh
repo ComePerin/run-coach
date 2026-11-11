@@ -9,9 +9,9 @@ rm -rf "$out"
 mkdir -p "$out"
 cp claude-chat/project-instructions.md \
    docs/mcp-reference.md docs/garmin-reference.md docs/course-json.md docs/coaching-science.md \
-   .claude/skills/coros-coach/references/decision-process.md \
-   .claude/skills/coros-coach/references/periodization.md \
-   .claude/skills/coros-coach/references/session-library.md \
+   .claude/skills/run-coach/references/decision-process.md \
+   .claude/skills/run-coach/references/periodization.md \
+   .claude/skills/run-coach/references/session-library.md \
    scripts/readiness.py \
    .claude/skills/coros-workout/examples/*.json \
    "$out/"

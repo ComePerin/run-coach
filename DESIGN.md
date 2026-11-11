@@ -1,5 +1,5 @@
 ---
-name: coros-coach
+name: run-coach
 description: Quiet post-run reports built from type, space, hairlines and one muted green; the plan sits as a soft band under what you ran.
 colors:
   page: "#fbfbfa"
@@ -180,7 +180,7 @@ components:
     height: "28px"
 ---
 
-# Design System: coros-coach
+# Design System: run-coach
 
 ## Overview
 

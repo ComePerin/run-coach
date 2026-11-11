@@ -35,7 +35,7 @@ not in the script output or in data you fetched.**
      coming days.
    - **Key sessions** comment: paces vs targets, HR response, consistency, compliance.
    - **Coach's assessment**: *What's going well* · *What to watch* · *Recommended adjustments* · *Questions for the
-     athlete*. Base the recommendations on `.claude/skills/coros-coach/references/decision-process.md` and name the
+     athlete*. Base the recommendations on `.claude/skills/run-coach/references/decision-process.md` and name the
      rule (e.g. "load ratio 1.58 = Excessive → no added intensity this week"). Compare goal vs COROS prediction
      honestly.
    - Interpret, don't repeat the tables. Use the athlete's language for the prose (the template headings stay in
@@ -47,7 +47,7 @@ not in the script output or in data you fetched.**
    - Show the athlete a short version in chat (summary + 3–5 bullets + the recommended adjustments) and the path of
      the full report.
    - Recommended plan changes are **proposals**: apply them to `plan.yaml` only if the athlete agrees, through the
-     `coros-coach` workflow (validate → render → journal → push after OK).
+     `run-coach` workflow (validate → render → journal → push after OK).
    - Persist: reports are git-ignored (personal health data). Commit `plans/<slug>/reports/` (or `reports/`) only
      under the conditions of *Persistence of personal data* in `AGENTS.md` (athlete agrees, repo is `PRIVATE`,
      `git add -f`, branch + PR, never `main`). If the athlete wants to share it, offer to export it (e.g. render to

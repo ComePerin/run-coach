@@ -68,7 +68,7 @@ def test_preflight():
 
 
 def test_event_payload():
-    ev = I.event_payload("2026-09-23", INTERVALS, 195, external_id="coros-coach:demo:w1-wed")
+    ev = I.event_payload("2026-09-23", INTERVALS, 195, external_id="run-coach:demo:w1-wed")
     assert ev["category"] == "WORKOUT" and ev["type"] == "Run"
     assert ev["start_date_local"] == "2026-09-23T00:00:00"
     assert ev["name"] == INTERVALS["courseName"] and ev["description"] == I.course_to_text(INTERVALS, 195)

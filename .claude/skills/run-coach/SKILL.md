@@ -1,5 +1,5 @@
 ---
-name: coros-coach
+name: run-coach
 description: Act as the athlete's endurance coach (running, trail, cycling) using their COROS or Garmin data. Use when the user asks for a training plan ("build me an 8-week half-marathon plan, 5 sessions a week, max 6 h"), a check-in or review ("how did my week go?", "update my plan", "what should I do today?"), to adapt the plan to fatigue/HRV/missed sessions, or to push the next sessions to the watch. Plans live in plans/<slug>/ (plan.yaml source of truth, generated plan.md, journal.md).
 ---
 

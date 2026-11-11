@@ -11,9 +11,9 @@ one line each), before anything else:
 Here is what I can do with your COROS / Garmin data:
 1. 📊 Analyse — activities, laps, sleep, HRV, resting HR, training load ("how did my week go?")
 2. ⌚ Create a workout on your watch — "4×1000 at 4:05 today, 2' rest"            (coros-workout)
-3. 🗓️ Build an adaptive training plan — goal, weeks, sessions/week, time budget   (coros-coach)
-4. 🔄 Review and adapt the plan — "update my plan", missed sessions, fatigue       (coros-coach)
-5. 🚦 What should I do today? — readiness (HRV, RHR, sleep, load) → today's session (coros-coach)
+3. 🗓️ Build an adaptive training plan — goal, weeks, sessions/week, time budget   (run-coach)
+4. 🔄 Review and adapt the plan — "update my plan", missed sessions, fatigue       (run-coach)
+5. 🚦 What should I do today? — readiness (HRV, RHR, sleep, load) → today's session (run-coach)
 6. 📝 Training report — progress, adherence, load, fitness vs goal                 (coros-report)
 ```
 
@@ -59,7 +59,7 @@ readiness and report code receives the same data shapes from both.
 | `scripts/recap.py` | HTML recap of one session: FIT laps vs planned steps, HR drift, zones, readiness + coach `recap:` block |
 | `scripts/report.py` | draft a training-status report (markdown with `<!-- COACH -->` placeholders) |
 | `.claude/skills/coros-workout/` | skill: build one workout from natural language |
-| `.claude/skills/coros-coach/` | skill: endurance coach (plan, push, review, adapt) |
+| `.claude/skills/run-coach/` | skill: endurance coach (plan, push, review, adapt) |
 | `.claude/skills/coros-report/` | skill: current-state training report (read-only) |
 | `docs/mcp-reference.md` | **all 34 COROS tools, formats, units, limits, quirks** |
 | `docs/garmin-reference.md` | Garmin Personal API: endpoints used, computed substitutes, FIT export and its limits |
@@ -162,8 +162,8 @@ keep them local and tell the athlete once that they are not saved in git.
 
 - **coros-workout** — "create a 4×1000 at 4:05 for today": builds the course JSON, validates, confirms, creates,
   reads back. See `.claude/skills/coros-workout/SKILL.md`.
-- **coros-coach** — "build me a 10-week half-marathon plan, 5 sessions/week", "how did my week go?", "what should I
-  do today?": plan → push → sync → adapt loop. See `.claude/skills/coros-coach/SKILL.md`.
+- **run-coach** — "build me a 10-week half-marathon plan, 5 sessions/week", "how did my week go?", "what should I
+  do today?": plan → push → sync → adapt loop. See `.claude/skills/run-coach/SKILL.md`.
 - **coros-report** — "give me a report on my training / where am I in my plan?": `scripts/report.py` drafts the
   numbers (progress, adherence, key sessions, volume, load, readiness, fitness vs goal, next 7 days), the agent writes
   the assessment. Read-only. See `.claude/skills/coros-report/SKILL.md`.
