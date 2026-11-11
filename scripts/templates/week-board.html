@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300..600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --page: #fbfbfa;
+  --ink: #18181a;
+  --ink-2: #5c5c62;
+  --muted: #707076;
+  --rule: #ececea;
+  --axis: #d6d6d3;
+  --accent: #2f6f55;
+  --target: #e6f0ea;
+  --target-edge: #b9d3c4;
+  --hit: #2f6f55;
+  --off: #d0603f;
+  --off-ink: #b04a2c;
+  --z1: #dcebe2; --z2: #b3d2c0; --z3: #7fb198; --z4: #4b8a6c; --z5: #2f6f55;
+  --chip: #f3f3f1;
+  --focus: #2f6f55;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #111113; --ink: #ededee; --ink-2: #a8a8ad; --muted: #8a8a90;
+  --rule: #232326; --axis: #333337; --accent: #7fc3a2;
+  --target: rgba(127,195,162,.13); --target-edge: rgba(127,195,162,.4);
+  --hit: #7fc3a2; --off: #ec8a6b; --off-ink: #f09a7d;
+  --z1: #24392f; --z2: #2f5443; --z3: #3f7a5f; --z4: #5c9e7f; --z5: #7fc3a2;
+  --chip: #1b1b1e; --focus: #7fc3a2;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font-family: "Onest", system-ui, sans-serif; font-size: 16px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--target); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+svg.i { width: 1em; height: 1em; flex: none; }
+[hidden] { display: none !important; }
+
+main { max-width: 680px; margin: 0 auto; padding: 20px 20px 64px; }
+.chrome { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 40px; }
+.mock { font-size: 12px; color: var(--muted); }
+.icon-btn {
+  display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+  background: transparent; color: var(--ink-2); border: 0; cursor: pointer; font-size: 18px; padding: 0;
+}
+.icon-btn:hover { background: var(--chip); }
+
+header { padding: 32px 0 0; }
+.meta { margin: 0; font-size: 14px; color: var(--muted); }
+h1 { margin: 10px 0 0; font-weight: 500; font-size: clamp(32px, 7vw, 44px); line-height: 1.1; letter-spacing: -.025em; text-wrap: balance; }
+
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 32px; padding: 24px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.stat .l { font-size: 13px; color: var(--muted); }
+.stat b { display: block; font-size: 28px; line-height: 1.2; font-weight: 400; letter-spacing: -.02em; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.stat b small { font-size: 15px; color: var(--muted); font-weight: 400; letter-spacing: 0; margin-left: 3px; }
+.stat .p { font-size: 13px; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+section.block { margin-top: 56px; min-width: 0; }
+h2 { margin: 0; font-size: 19px; line-height: 1.3; font-weight: 500; letter-spacing: -.01em; }
+.sub { margin: 4px 0 16px; color: var(--muted); font-size: 14px; max-width: 64ch; }
+
+/* session list */
+.list { list-style: none; margin: 0; padding: 0; }
+.list li { border-top: 1px solid var(--rule); }
+.list li:first-child { border-top: 0; }
+.row { display: block; padding: 22px 0; color: inherit; text-decoration: none; }
+.row:hover h3 { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.row-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); }
+.row-top .l { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.row-top .chev { color: var(--ink-2); font-size: 18px; }
+.row h3 { margin: 4px 0 0; font-size: 21px; font-weight: 500; line-height: 1.3; letter-spacing: -.012em; }
+.facts { display: grid; grid-template-columns: repeat(3, max-content); gap: 0; margin-top: 14px; }
+.facts > div { padding: 0 20px; border-left: 1px solid var(--rule); }
+.facts > div:first-child { padding-left: 0; border-left: 0; }
+.facts .l { font-size: 13px; color: var(--muted); }
+.facts b { display: block; font-size: 22px; font-weight: 400; line-height: 1.25; letter-spacing: -.015em; font-variant-numeric: tabular-nums; }
+.facts b small { font-size: 14px; color: var(--muted); margin-left: 2px; }
+.diff { display: flex; gap: 3px; height: 29px; align-items: center; }
+.diff i { width: 14px; height: 4px; border-radius: 2px; background: var(--rule); }
+.diff i.on { background: var(--accent); }
+.row .desc { margin: 14px 0 0; font-size: 15px; color: var(--ink-2); max-width: 62ch;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.st { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; color: var(--ink-2); white-space: nowrap; }
+.st::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--axis); }
+.st.ok::before { background: var(--hit); }
+.st.off { color: var(--off-ink); }
+.st.off::before { background: var(--off); }
+.empty { color: var(--muted); font-size: 15px; }
+
+/* volume */
+.big { display: flex; align-items: baseline; gap: 8px; margin: 0 0 12px; }
+.big b { font-size: 48px; line-height: 1; font-weight: 300; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.big span { color: var(--muted); font-size: 15px; }
+svg.chart { display: block; width: 100%; overflow: visible; }
+svg.chart text { font-family: inherit; }
+svg.chart .hit { cursor: crosshair; }
+svg.chart .hit:focus { outline: none; }
+svg.chart .hit:focus-visible { fill: var(--target); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); margin-top: 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.sw-line { width: 14px; height: 2px; border-radius: 1px; display: inline-block; }
+
+/* session detail, unfolded in place */
+.list details > summary { list-style: none; cursor: pointer; }
+.list details > summary::-webkit-details-marker { display: none; }
+.row-top .chev { transition: transform .2s cubic-bezier(.16,1,.3,1); display: inline-flex; }
+.list details[open] .chev { transform: rotate(90deg); }
+.list details[open] .desc { -webkit-line-clamp: unset; }
+.detail { padding: 4px 0 28px; }
+.detail h4 { margin: 24px 0 10px; font-size: 13px; font-weight: 400; color: var(--muted); }
+.workout { position: relative; height: 112px; display: flex; align-items: flex-end; gap: 2px; margin-top: 4px;
+  background: linear-gradient(var(--rule) 1px, transparent 1px) 0 0 / 100% 32px; }
+.workout i { display: block; border-radius: 3px 3px 0 0; min-width: 2px; cursor: default; }
+.workout i:focus-visible { outline-offset: 2px; }
+.steps { list-style: none; padding: 0; margin: 16px 0 0; }
+.steps > li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; padding: 14px 0; border-top: 1px solid var(--rule); align-items: center; }
+.steps > li:first-child { border-top: 0; }
+.step { display: grid; grid-template-columns: 3px minmax(0, 1fr); gap: 14px; padding: 4px 0; }
+.step + .step { margin-top: 10px; }
+.step .bar { border-radius: 2px; }
+.step .n { font-size: 15px; color: var(--ink-2); }
+.step .v { font-size: 17px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.step .v span { color: var(--muted); font-weight: 400; }
+.rep { font-size: 28px; font-weight: 300; letter-spacing: -.02em; color: var(--ink); font-variant-numeric: tabular-nums;
+  padding-left: 16px; border-left: 1px solid var(--rule); align-self: stretch; display: flex; align-items: center; }
+.ran { margin: 0; font-size: 16px; font-variant-numeric: tabular-nums; }
+.note { margin: 0; font-size: 16px; line-height: 1.6; max-width: 58ch; }
+.note + .note { margin-top: 12px; }
+
+
+#tip {
+  position: fixed; pointer-events: none; z-index: 10; opacity: 0; transform: translateY(4px);
+  transition: opacity .16s cubic-bezier(.16,1,.3,1), transform .16s cubic-bezier(.16,1,.3,1);
+  background: var(--ink); color: var(--page); border-radius: 8px; padding: 8px 11px; font-size: 13px; max-width: 240px;
+  font-variant-numeric: tabular-nums;
+}
+#tip.on { opacity: 1; transform: none; }
+#tip .t { font-weight: 500; margin-bottom: 2px; }
+#tip .r { opacity: .8; }
+
+@media (max-width: 520px) {
+  .stats { gap: 12px; }
+  .stat b { font-size: 24px; }
+  .facts > div { padding: 0 14px; }
+  .facts b { font-size: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { #tip, .row-top .chev { transition: none; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-moon" viewBox="0 0 20 20"><path d="M15.5 12.6A6.5 6.5 0 017.4 4.5a6.5 6.5 0 108.1 8.1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+  <symbol id="i-close" viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 20 20"><path d="M8 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<main id="home">
+  <div class="chrome">
+    <span class="mock" id="badge"></span>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle light or dark theme"><svg class="i"><use href="#i-moon"/></svg></button>
+  </div>
+
+  <header>
+    <p class="meta" id="meta"></p>
+    <h1 id="title"></h1>
+  </header>
+
+  <section class="stats" id="overview" aria-label="Week overview"></section>
+
+  <section class="block">
+    <h2>Sessions</h2>
+    <ol class="list" id="list" style="margin-top:8px"></ol>
+  </section>
+
+  <section class="block" id="volSec">
+    <h2>Volume</h2>
+    <div class="big" id="volBig" style="margin-top:12px"></div>
+    <div id="volChart"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--target);box-shadow:inset 0 0 0 1px var(--target-edge)"></i>Planned</span>
+      <span><i class="sw-line" style="background:var(--hit)"></i>Run</span>
+    </div>
+  </section>
+</main>
+
+<div id="tip" role="tooltip"></div>
+
+<script id="week-data" type="application/json">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById("week-data").textContent);
+const NS = "http://www.w3.org/2000/svg";
+const HEIGHT = { 1: 30, 2: 46, 3: 62, 4: 80, 5: 100 };
+const color = st => `var(--z${st.kind === "jog" ? 1 : st.zone})`;
+const $ = id => document.getElementById(id);
+function h(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) if (v != null) e.setAttribute(k, v);
+  for (const k of kids) if (k != null) e.append(k);
+  return e;
+}
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+const fmtMin = m => !m ? "—" : m >= 60 ? `${Math.floor(m / 60)}h${String(Math.round(m % 60)).padStart(2, "0")}` : `${Math.round(m)}`;
+const fmtSec = s => s >= 60 ? (s % 60 ? `${Math.floor(s / 60)}′${String(Math.round(s % 60)).padStart(2, "0")}` : `${s / 60}′`) : `${Math.round(s)}″`;
+
+// ---------------------------------------------------------------- tooltip
+const tip = $("tip");
+function showTip(x, y, title, rows) {
+  tip.replaceChildren(h("div", { class: "t" }, title), ...rows.map(r => h("div", { class: "r" }, r)));
+  tip.classList.add("on");
+  let tx = x + 14, ty = y - tip.offsetHeight - 12;
+  if (tx + tip.offsetWidth > innerWidth - 8) tx = x - tip.offsetWidth - 14;
+  if (tx < 8) tx = 8; if (ty < 8) ty = y + 18;
+  tip.style.left = tx + "px"; tip.style.top = ty + "px";
+}
+const hideTip = () => tip.classList.remove("on");
+function tipOn(node, title, rows) {
+  const at = e => { const r = node.getBoundingClientRect(); showTip(e.clientX ?? r.left + r.width / 2, e.clientY ?? r.top, title, rows); };
+  node.addEventListener("pointerenter", at); node.addEventListener("pointermove", at);
+  node.addEventListener("pointerleave", hideTip);
+  node.addEventListener("focus", () => { const r = node.getBoundingClientRect(); showTip(r.left + r.width / 2, r.top, title, rows); });
+  node.addEventListener("blur", hideTip);
+}
+addEventListener("scroll", hideTip, { passive: true, capture: true });
+
+// ---------------------------------------------------------------- shared bits
+function facts(s) {
+  const wrap = h("div", { class: "facts" });
+  const dur = s.minutes ? (s.minutes >= 60 ? h("b", {}, fmtMin(s.minutes)) : h("b", {}, String(s.minutes), h("small", {}, "min"))) : h("b", {}, "—");
+  const dist = s.km ? h("b", {}, String(s.km), h("small", {}, "km")) : h("b", {}, "—");
+  const diff = h("div", { class: "diff", role: "img", "aria-label": `Difficulty ${s.difficulty} of 5` });
+  for (let i = 1; i <= 5; i++) diff.append(h("i", { class: i <= s.difficulty ? "on" : "" }));
+  wrap.append(h("div", {}, h("div", { class: "l" }, "Duration"), dur),
+              h("div", {}, h("div", { class: "l" }, "Distance"), dist),
+              h("div", {}, h("div", { class: "l" }, "Difficulty"), diff));
+  return wrap;
+}
+function kicker(s, node) {
+  node.replaceChildren(h("span", {}, `Session ${s.n} of ${s.of}` + (s.key ? " · Key session" : "")));
+  if (s.status_word) node.append(h("span", { class: `st ${s.status_level}` }, s.status_word));
+  return node;
+}
+
+// ---------------------------------------------------------------- home
+$("badge").textContent = D.badge || "";
+$("meta").textContent = D.meta;
+$("title").textContent = D.title;
+for (const t of D.overview) {
+  const b = h("b", {}, t.value);
+  if (t.unit) b.append(h("small", {}, t.unit));
+  $("overview").append(h("div", { class: "stat" }, h("div", { class: "l" }, t.label), b, h("div", { class: "p" }, t.of)));
+}
+if (!D.sessions.length) $("list").append(h("li", { class: "empty" }, "No session planned this week."));
+for (const s of D.sessions) {
+  const sum = h("summary", { class: "row" });
+  const top = h("div", { class: "row-top" }, kicker(s, h("span", { class: "l" })));
+  top.append(h("span", { class: "chev", "aria-hidden": "true" }, (() => { const x = el("svg", { class: "i" }); el("use", { href: "#i-chev" }, x); return x; })()));
+  sum.append(top, h("h3", {}, s.title), facts(s));
+  if (s.description) sum.append(h("p", { class: "desc" }, s.description));
+  const det = h("details", { id: `session-${s.n}` }, sum, detail(s));
+  det.addEventListener("toggle", hideTip);
+  $("list").append(h("li", {}, det));
+}
+
+// ---------------------------------------------------------------- volume chart
+function drawVolume() {
+  const V = D.volume;
+  if (!V || !V.weeks.length) { $("volSec").hidden = true; return; }
+  $("volBig").replaceChildren();
+  if (V.avg != null) $("volBig").append(h("b", {}, String(V.avg)), h("span", {}, `km/week · last ${V.avg_n} weeks`));
+  const box = $("volChart"); box.replaceChildren();
+  const W = box.clientWidth || 600, H = W < 520 ? 210 : 240, L = 34, R = 6, T = 10, B = 26;
+  const vals = V.weeks.flatMap(w => [w.planned || 0, w.done || 0]);
+  const step = Math.max(...vals) > 60 ? 20 : 10;
+  const top = Math.max(step * 2, Math.ceil(Math.max(...vals, 1) / step) * step);
+  const n = V.weeks.length, slot = (W - L - R) / n;
+  const x = i => L + slot * i + slot / 2, y = v => T + (H - T - B) * (1 - v / top);
+  const svg = el("svg", { class: "chart", width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img" }, box);
+  for (let v = 0; v <= top; v += step) {
+    el("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: v ? "var(--rule)" : "var(--axis)" }, svg);
+    const t = el("text", { x: L - 8, y: y(v) + 4, "text-anchor": "end", fill: "var(--muted)", "font-size": 12 }, svg);
+    t.textContent = v;
+  }
+  const every = n > 8 && W < 600 ? 3 : n > 8 ? 2 : 1;
+  V.weeks.forEach((w, i) => {
+    if (w.planned) {
+      const bw = Math.min(28, slot * .62);
+      el("rect", { x: x(i) - bw / 2, y: y(w.planned), width: bw, height: y(0) - y(w.planned), rx: 3,
+        fill: "var(--target)", stroke: "var(--target-edge)", "stroke-width": 1 }, svg);
+    }
+    if ((n - 1 - i) % every === 0) {
+      const t = el("text", { x: x(i), y: H - 6, "text-anchor": "middle", fill: w.current ? "var(--ink-2)" : "var(--muted)", "font-size": 12 }, svg);
+      t.textContent = w.current ? "This week" : w.label;
+      if (w.current && x(i) + 30 > W) t.setAttribute("text-anchor", "end"), t.setAttribute("x", W - R);
+    }
+  });
+  const pts = V.weeks.map((w, i) => w.done == null ? null : [x(i), y(w.done), w, i]).filter(Boolean);
+  if (pts.length > 1) el("polyline", { points: pts.map(p => p[0] + "," + p[1]).join(" "), fill: "none",
+    stroke: "var(--hit)", "stroke-width": 1.75, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+  const aria = [];
+  for (const [px, py, w] of pts) {
+    const short = !w.current && w.planned && w.done < w.planned * .8;
+    el("circle", { cx: px, cy: py, r: 4, fill: w.current ? "var(--page)" : short ? "var(--off)" : "var(--hit)",
+      stroke: w.current ? "var(--hit)" : "var(--page)", "stroke-width": 2 }, svg);
+    aria.push(`${w.current ? "this week" : "week of " + w.label}: ${w.done} km${w.planned ? ` of ${w.planned} planned` : ""}`);
+  }
+  V.weeks.forEach((w, i) => {
+    const hit = el("rect", { class: "hit", x: L + slot * i, y: T, width: slot, height: H - T - B, fill: "transparent", tabindex: 0,
+      "aria-label": `${w.label}: ${w.done ?? "no data"} km run${w.planned ? `, ${w.planned} km planned` : ""}` }, svg);
+    const rows = [`Run ${w.done ?? "—"} km`];
+    if (w.planned) rows.push(`Planned ${w.planned} km`);
+    if (w.week) rows.push(`Plan week ${w.week}`);
+    tipOn(hit, w.current ? "This week (in progress)" : `Week of ${w.label}`, rows);
+  });
+  svg.setAttribute("aria-label", "Kilometres per week. " + aria.join("; ") + ".");
+}
+drawVolume();
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawVolume, 120); });
+
+// ---------------------------------------------------------------- session detail
+function detail(s) {
+  const box = h("div", { class: "detail" });
+  if (s.blocks.length) {
+    const wk = h("div", { class: "workout", role: "img" });
+    for (const st of s.blocks.flatMap(b => Array.from({ length: b.repeats }, () => b.steps).flat())) {
+      const bar = h("i", { tabindex: 0, "aria-label": `${st.name}: ${st.length}${st.target ? " at " + st.target : ""}` });
+      bar.style.flex = `${st.s} 1 0`;
+      bar.style.height = (st.kind === "jog" ? 20 : HEIGHT[st.zone]) + "%";
+      bar.style.background = color(st);
+      tipOn(bar, st.name, [st.length + (st.target ? ` · ${st.target}` : "")]);
+      wk.append(bar);
+    }
+    wk.setAttribute("aria-label", "Workout profile: " + s.blocks.map(b => (b.repeats > 1 ? `${b.repeats} times ` : "") + b.steps.map(x => `${x.name} ${x.length}`).join(" + ")).join(", "));
+    const list = h("ol", { class: "steps" });
+    for (const b of s.blocks) {
+      const col = h("div");
+      for (const st of b.steps) {
+        const bar = h("span", { class: "bar" }); bar.style.background = color(st);
+        const v = h("div", { class: "v" }, st.length);
+        if (st.target) v.append(h("span", {}, " at "), st.target);
+        col.append(h("div", { class: "step" }, bar, h("div", {}, h("div", { class: "n" }, st.name), v)));
+      }
+      const li = h("li", {}, col);
+      if (b.repeats > 1) li.append(h("div", { class: "rep", "aria-label": `repeat ${b.repeats} times` }, `× ${b.repeats}`));
+      list.append(li);
+    }
+    box.append(wk, list);
+  }
+  if (s.actual) box.append(h("h4", {}, "What you ran"), h("p", { class: "ran" }, s.actual));
+  const notes = [s.notes, s.feedback ? `“${s.feedback}”` : ""].filter(Boolean);
+  if (notes.length) box.append(h("h4", {}, "Coach"), ...notes.map(t => h("p", { class: "note" }, t)));
+  return box;
+}
+if (/^#session-\d+$/.test(location.hash)) { const d = document.querySelector(location.hash); if (d) d.open = true; }
+
+$("themeBtn").addEventListener("click", () => {
+  const root = document.documentElement;
+  root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+});
+</script>
+</body>
+</html>

@@ -29,6 +29,7 @@ Tools (run from the repo root, with `.venv/bin/python`):
 | `scripts/plan.py sync PLAN [--details]` | fetch activities + readiness, match to sessions, render |
 | `scripts/plan.py push PLAN [--days 7] [--yes] [--files]` | COROS: create/update the next sessions on the calendar · Garmin: send them to intervals.icu → Garmin Connect calendar (updates in place), or FIT files in `exports/` without intervals.icu / with `--files` (dry run without `--yes`) |
 | `scripts/recap.py build --plan PLAN --session ID` | HTML recap of one done session (laps from the FIT file vs planned steps, HR drift, zones, readiness) → `plans/<slug>/recaps/` |
+| `scripts/week.py build --plan PLAN [--week N]` | HTML board of one plan week (default: this week): its sessions (duration, distance, difficulty; tap → workout steps, targets, repeats, coach note) and km/week of the last 12 weeks, planned vs run → `plans/<slug>/weeks/` |
 | `scripts/coros.py call TOOL '{json}'` | any other COROS tool (laps, FIT, sleep…) — see `docs/mcp-reference.md` |
 | `scripts/garmin.py call NAME '{json}'` | any other Garmin endpoint (activity detail, stress, original file…) — see `docs/garmin-reference.md` |
 
@@ -56,6 +57,8 @@ zones, no percentages, no climb targets, no % effort (`plan.py push` refuses the
    `--yes`. COROS: report other workouts on the same days and remind to sync the watch. Garmin + intervals.icu:
    report `⚠` lines and remind to sync the watch from the Garmin Connect app. Garmin with files: give the copy
    instructions printed by the script (files → `GARMIN/NewFiles/`, start each from *Workouts* on its day).
+   Then build the week board (`week.py build --plan PLAN`) and give the athlete the file path: it shows the whole
+   week at a glance, which the watch app does not.
 7. Persist `plans/<slug>/` (see *Persistence*).
 
 ## Workflow B — check-in / review ("how did it go", "update my plan", weekly)
@@ -76,6 +79,9 @@ zones, no percentages, no climb targets, no % effort (`plan.py push` refuses the
    `recap.py build --plan PLAN --session ID`. It prints `coach_fields_missing` and `warnings` (e.g. lap count ≠
    planned steps): fill what is missing, rerun, and give the athlete the file path. Never invent the RPE or the quote.
 8. Persist (see *Persistence*).
+
+**"Show / send me my week"**: `plan.py sync PLAN` first when sessions may be done, then `week.py build --plan PLAN`
+(`--week N` for another week). If a delivery channel such as Telegram is configured, send the file there.
 
 ## Workflow C — status report
 

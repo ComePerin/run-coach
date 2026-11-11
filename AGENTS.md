@@ -57,6 +57,7 @@ readiness and report code receives the same data shapes from both.
 | `scripts/plan.py` | plan engine: init / validate / render / push (COROS calendar or FIT export) / sync / profile / readiness / zones |
 | `scripts/readiness.py` | deterministic readiness score + pace zones + Garmin substitutes (TRIMP load ratio, Riegel threshold) |
 | `scripts/recap.py` | HTML recap of one session: FIT laps vs planned steps, HR drift, zones, readiness + coach `recap:` block |
+| `scripts/week.py` | HTML board of one plan week: its sessions with workout detail, done vs planned, weekly volume chart |
 | `scripts/report.py` | draft a training-status report (markdown with `<!-- COACH -->` placeholders) |
 | `scripts/telegram.py` | send recaps (HTML), reports (markdown → text), images or a short message to the athlete's Telegram chat |
 | `.claude/skills/run-workout/` | skill: build one workout from natural language |
