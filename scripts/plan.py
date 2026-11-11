@@ -699,7 +699,7 @@ def cmd_push_intervals(path: str, days: int, yes: bool) -> int:
     for action, s in todo:
         sport = I.EVENT_TYPE.get(s["course"].get("sportType", 1), "Run")
         ev = I.event_payload(s["date"], s["course"], settings[sport].get("max_hr"),
-                             external_id=f"coros-coach:{slug}:{s['id']}")
+                             external_id=f"run-coach:{slug}:{s['id']}")
         try:
             if action == "create":
                 created = I.create([ev])

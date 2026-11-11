@@ -57,7 +57,7 @@ For each session: `id` (`w<week>-<weekday>` e.g. `w3-tue`, unique), `date`, `spo
 `title` (athlete-facing), `planned.duration_min`, optional `planned.distance_km`, `planned.target`
 (e.g. "4:37–5:10/km"), `planned.description`, and `course` (COROS JSON — required to push). Build course JSON with
 absolute pace ranges from `plan.py zones`, following `docs/course-json.md` and the examples of the
-`coros-workout` skill.
+`run-workout` skill.
 
 To keep `plan.yaml` readable, you may write the `course` only for the next 2 weeks and fill later weeks just before
 pushing (validate warns, it does not fail).

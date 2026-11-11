@@ -1,5 +1,5 @@
 ---
-name: coros-workout
+name: run-workout
 description: Create or edit a single structured workout (running, cycling or trail running) directly on the user's COROS calendar so it syncs to their watch, or as a FIT workout file for a Garmin watch. Use when the user asks to add, create, schedule, put on the watch, modify or shorten one workout on a given day, e.g. "create a 4x1000 at 4:05 for today", "add a 45-minute easy ride tomorrow", "make Thursday's tempo 15 minutes shorter".
 ---
 
