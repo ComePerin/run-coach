@@ -58,6 +58,7 @@ readiness and report code receives the same data shapes from both.
 | `scripts/readiness.py` | deterministic readiness score + pace zones + Garmin substitutes (TRIMP load ratio, Riegel threshold) |
 | `scripts/recap.py` | HTML recap of one session: FIT laps vs planned steps, HR drift, zones, readiness + coach `recap:` block |
 | `scripts/report.py` | draft a training-status report (markdown with `<!-- COACH -->` placeholders) |
+| `scripts/telegram.py` | send recaps (HTML), reports (markdown → text), images or a short message to the athlete's Telegram chat |
 | `.claude/skills/coros-workout/` | skill: build one workout from natural language |
 | `.claude/skills/coros-coach/` | skill: endurance coach (plan, push, review, adapt) |
 | `.claude/skills/coros-report/` | skill: current-state training report (read-only) |
@@ -104,6 +105,21 @@ scripts/setup.sh --garmin                         # .venv with the Garmin client
   the chat. See `docs/garmin-reference.md`.
 - No VO2max / threshold / load / recovery from Garmin: the scripts compute substitutes and label them
   (`fitness_source`, "Body Battery", computed load ratio). Say "estimated" when you quote them.
+
+### Telegram (optional delivery channel)
+
+```bash
+.venv/bin/python scripts/telegram.py status                           # → "Telegram OK — bot @… → chat …"
+.venv/bin/python scripts/telegram.py send plans/<slug>/recaps/<file>.html --caption "Recap — Tue intervals"
+.venv/bin/python scripts/telegram.py send plans/<slug>/reports/<date>.md   # markdown → plain text messages
+.venv/bin/python scripts/telegram.py text "Today: easy 40', HRV low"
+```
+
+- Token in `~/.config/telegram/bot-token`, chat id in `~/.config/telegram/chat-id` (mode 600), or
+  `$TELEGRAM_BOT_TOKEN` / `$TELEGRAM_CHAT_ID`. Never print the token. `telegram.py chat-id` finds the id after the
+  athlete messages the bot once.
+- When Telegram is configured, offer to send each recap / report you finish ("Send it to Telegram?"); send only
+  finished files (no `<!-- COACH -->` placeholders left). The chat is the athlete's own: this is not "public".
 
 ## Calling tools
 
