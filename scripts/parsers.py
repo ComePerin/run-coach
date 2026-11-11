@@ -32,6 +32,11 @@ def sport_family(sport_type: int | None) -> str:
     return "other"
 
 
+def family(activity: dict) -> str:
+    """Sport family of a normalized activity (Garmin activities carry it, COROS ones derive it from the code)."""
+    return activity.get("family") or sport_family(activity.get("sport_type"))
+
+
 def hms_to_seconds(value: str) -> int:
     """'1:02:03' -> 3723, '42:18' -> 2538."""
     parts = [int(p) for p in value.strip().split(":")]

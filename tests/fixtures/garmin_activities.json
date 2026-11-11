@@ -1,0 +1,97 @@
+[
+ {
+  "activityId": 1001,
+  "activityName": "Morning run",
+  "startTimeLocal": "2026-09-21 07:02:11",
+  "beginTimestamp": 1789966931000,
+  "activityType": {
+   "typeId": 1,
+   "typeKey": "running",
+   "parentTypeId": 17
+  },
+  "distance": 10012.5,
+  "duration": 3005.2,
+  "averageSpeed": 3.332,
+  "averageHR": 142.0,
+  "calories": 640.0,
+  "aerobicTrainingEffect": 2.8,
+  "hrTimeInZone_1": 120.0,
+  "hrTimeInZone_2": 1800.0,
+  "hrTimeInZone_3": 1085.2,
+  "hrTimeInZone_4": 0.0,
+  "hrTimeInZone_5": 0.0,
+  "fastestSplit_1000": 281.0,
+  "fastestSplit_5000": 1460.0,
+  "fastestSplit_10000": 2990.0
+ },
+ {
+  "activityId": 1002,
+  "activityName": "Intervals",
+  "startTimeLocal": "2026-09-23 18:30:00",
+  "beginTimestamp": 1790181000000,
+  "activityType": {
+   "typeId": 1,
+   "typeKey": "track_running",
+   "parentTypeId": 17
+  },
+  "distance": 11000.0,
+  "duration": 3300.0,
+  "averageSpeed": 3.333,
+  "averageHR": 158.0,
+  "calories": 720.0,
+  "aerobicTrainingEffect": 3.9,
+  "hrTimeInZone_1": 300.0,
+  "hrTimeInZone_2": 900.0,
+  "hrTimeInZone_3": 600.0,
+  "hrTimeInZone_4": 1200.0,
+  "hrTimeInZone_5": 300.0,
+  "fastestSplit_1000": 236.0,
+  "fastestSplit_5000": 1290.0
+ },
+ {
+  "activityId": 1003,
+  "activityName": "Hill trail",
+  "startTimeLocal": "2026-09-27 09:15:00",
+  "beginTimestamp": 1790500500000,
+  "activityType": {
+   "typeId": 6,
+   "typeKey": "trail_running",
+   "parentTypeId": 17
+  },
+  "distance": 15500.0,
+  "duration": 6300.0,
+  "averageSpeed": 2.46,
+  "averageHR": 145.0,
+  "calories": 1100.0
+ },
+ {
+  "activityId": 1004,
+  "activityName": "Commute",
+  "startTimeLocal": "2026-09-24 08:00:00",
+  "beginTimestamp": 1790229600000,
+  "activityType": {
+   "typeId": 10,
+   "typeKey": "road_biking",
+   "parentTypeId": 2
+  },
+  "distance": 20000.0,
+  "duration": 2700.0,
+  "averageSpeed": 7.4,
+  "averageHR": 120.0
+ },
+ {
+  "activityId": 1005,
+  "activityName": "Pool",
+  "startTimeLocal": "2026-09-25 12:00:00",
+  "activityType": {
+   "typeKey": "lap_swimming"
+  },
+  "distance": 1500.0,
+  "duration": 1800.0,
+  "averageSpeed": 0.83
+ },
+ {
+  "activityName": "broken row without id",
+  "startTimeLocal": "2026-09-26 12:00:00"
+ }
+]

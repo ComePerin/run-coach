@@ -1,0 +1,21 @@
+[
+ {
+  "calendarDate": "2026-09-27",
+  "sleepTimeSeconds": 27900,
+  "deepSleepSeconds": 5580,
+  "sleepScores": {
+   "overall": {
+    "value": 82
+   }
+  }
+ },
+ {
+  "calendarDate": "2026-09-28",
+  "sleepTimeSeconds": 21000,
+  "deepSleepSeconds": 3150
+ },
+ {
+  "calendarDate": "2026-09-26",
+  "sleepTimeSeconds": 0
+ }
+]

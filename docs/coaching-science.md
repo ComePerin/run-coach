@@ -63,7 +63,8 @@ Taper length: 5K/10K 7–10 days · half 10–14 days · marathon ~3 weeks. Post
   ([guide](https://www.athletedata.health/guides/hrv-guided-training), [HRV4Training](https://www.hrv4training.com/blog2/redefining-hrv4trainings-daily-advice)).
 - **Resting HR** > +5 bpm vs 7-day mean → negative signal; rising trend → illness/overreaching/travel.
 - **Sleep** < 6 h strong negative, < 7 h mild negative.
-- **COROS recovery %**: 0–19 exhausted, 20–69 fatigued, 70–89 normal, 90–100 fresh.
+- **COROS recovery %**: 0–19 exhausted, 20–69 fatigued, 70–89 normal, 90–100 fresh. **Garmin**: the day's peak
+  Body Battery (0–100) is scored with the same cut-offs — a proxy, not the same model.
 - **Missing data lowers confidence; it is never a bad signal.** When signals conflict, lean towards caution.
 
 ## 7. Session quality checks
@@ -74,7 +75,21 @@ Taper length: 5K/10K 7–10 days · half 10–14 days · marathon ~3 weeks. Post
 - Interval compliance: rep paces within ±2 % of target and consistent (last rep not > 3 % slower).
 - Easy runs drifting into zone 3 (HR > ~85 % LTHR) repeatedly → remind and lower the target.
 
-## 8. Missed sessions
+## 8. Garmin substitutes (computed locally)
+
+The Garmin Personal API has no training-load, VO2max or threshold endpoint, so `readiness.py` computes:
+
+- **Training load — Edwards TRIMP**: minutes in HR zone 1–5 × zone number, summed per activity (Edwards, *Sports
+  Training Handbook*, 1993). Simple, needs only time-in-zone, which every Garmin activity has.
+- **Load ratio — ACWR**: 7-day load ÷ mean weekly load of the last 28 days, read with the same table as COROS (≥ 1.5
+  excessive, ≥ 1.3 high, 0.8–1.3 optimal). The acute:chronic ratio is a fatigue/spike flag, not an injury predictor
+  (Gabbett, *Br J Sports Med* 2016; Impellizzeri et al. 2020 on its limits) — use it with the other signals.
+- **Race predictions — Riegel**: T₂ = T₁ × (D₂ / D₁)^1.06 (Riegel, *American Scientist* 1981), from the best recent
+  effort of 5 km or more.
+- **Threshold pace**: pace of the predicted ~60-minute race (Daniels' threshold ≈ 1-hour race pace, *Daniels'
+  Running Formula*). Zones in section 1 are then derived from it as for COROS.
+
+## 9. Missed sessions
 
 Never stack a missed session onto another day. Move a missed key session only if ≥ 48 h separate it from the next
 hard day; otherwise drop it. The long run has priority over secondary quality. After ≥ 2 missed weeks, repeat the

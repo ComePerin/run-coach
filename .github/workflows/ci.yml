@@ -1,0 +1,24 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # 3.10: COROS-only install (the Garmin API client needs >= 3.12); 3.12: everything
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e '.[dev,garmin]'
+      - run: ruff check .
+      # includes the FIT workout checks: every exportable example is generated, decoded with Garmin's
+      # official FIT SDK, validated with fit-tool and compared step by step with its course JSON
+      - run: pytest -q

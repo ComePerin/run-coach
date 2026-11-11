@@ -1,12 +1,14 @@
 [project]
 name = "coros-coach"
 version = "0.1.0"
-description = "COROS MCP helpers, workout builder and adaptive endurance coach for AI agents"
+description = "COROS / Garmin data helpers, workout builder and adaptive endurance coach for AI agents"
 requires-python = ">=3.10"
-dependencies = ["pyyaml>=6", "fitdecode>=0.10"]
+dependencies = ["pyyaml>=6", "fitdecode>=0.10", "fit-tool>=0.9.17", "garmin-fit-sdk>=21.0"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.5"]
+# Garmin's official Personal API client (needs Python >= 3.12)
+garmin = ["garmin-connect-personal-api-python>=1,<2; python_version >= '3.12'"]
 
 [tool.setuptools]
 py-modules = []

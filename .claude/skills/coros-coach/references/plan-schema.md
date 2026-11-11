@@ -40,6 +40,8 @@ weeks:
     course: {courseName: ..., courseDescription: ..., sportType: 1, sections: [...]}   # COROS JSON
     status: planned                # planned | pushed | adjusted | done | partial | missed | skipped
     coros: {id_in_plan: '11', pushed_at: '2026-10-05 20:00'}   # set by plan.py push — internal, never show
+    intervals: {event_id: 12345, pushed_at: '2026-10-05 20:00'}  # Garmin via intervals.icu: set by plan.py push
+    garmin: {file: 2026-10-06-easy-run.fit, exported_at: '2026-10-05 20:00'}  # Garmin with --files (FIT export)
     actual:                        # set by plan.py sync
       label_id: '…'                # internal, never show
       matched_date: '2026-10-06'
@@ -53,6 +55,15 @@ weeks:
       anaerobic_te: 2.4
     feedback: ''                   # athlete's words (RPE, pain, feelings) — fill from conversation
     notes: ''                      # coach's notes, e.g. why it was adjusted
+    recap:                         # coach-written parts of the HTML session recap (scripts/recap.py), athlete's language
+      lang: fr
+      verdict: Séance réussie dans l'ensemble… (2–3 sentences: how it went and why)
+      rpe: 8                       # athlete's RPE /10, from the conversation
+      rpe_expected: [7, 8]
+      quote: Jambes lourdes sur les deux dernières, souffle OK.   # athlete's words (falls back to feedback:)
+      tags: [Heavy legs, Breathing fine]
+      impact:                      # proposals only, nothing applied before the athlete's OK
+      - {title: Volume inchangé, text: La progression de la semaine 5 reste la même.}
   unplanned:                       # activities not matching a session (set by sync)
   - {date: '2026-10-07', sport: Bouldering, duration_min: 95}
 ```
@@ -69,6 +80,12 @@ skipped: set by the coach when a session is intentionally dropped (with a note)
 - `sync` marks a past open session `missed` if no compatible activity exists on its date (±1 day).
 - `partial`: compliance < 80 %.
 - Edit freely sessions in `planned`. For `pushed` sessions, edit then set `adjusted`.
+- Garmin via intervals.icu: `pushed` means "on the intervals.icu calendar" (uploaded to Garmin Connect when within
+  ~7 days); an `adjusted` session updates the same event. A session to remove: delete its event
+  (`intervals.delete([event_id])`) after the athlete agrees.
+- Garmin with files: `pushed` means "FIT file exported to `exports/`", not "on the watch" — the athlete still has to
+  copy it. An `adjusted` session is exported again as a new file; tell the athlete to delete the old workout on the
+  watch.
 - A pushed session that must disappear: the MCP cannot delete. Either turn it into the replacement session
   (`adjusted`) or ask the athlete to delete it in the COROS app, then set `skipped`.
 

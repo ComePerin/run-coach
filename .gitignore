@@ -19,3 +19,4 @@ dist/
 athlete/profile.yaml
 plans/*/
 reports/
+exports/
