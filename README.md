@@ -257,6 +257,10 @@ This repository is meant to be shared, your training data is not:
 .venv/bin/python scripts/report.py --weeks 8                       # no plan → reports/<date>.md
 .venv/bin/python scripts/recap.py build --plan plans/2026-12-half --session w4-tue  # → plans/2026-12-half/recaps/<date>-w4-tue.html
 .venv/bin/python scripts/recap.py build --date 2026-11-05          # no plan: laps only → reports/recaps/
+
+# Telegram (token in ~/.config/telegram/bot-token, chat id in ~/.config/telegram/chat-id)
+.venv/bin/python scripts/telegram.py send reports/recaps/<file>.html --caption "Recap"   # .md → text, .png → photo
+.venv/bin/python scripts/telegram.py text "Easy 40' today"
 ```
 
 ## Repository layout
@@ -273,7 +277,7 @@ This repository is meant to be shared, your training data is not:
 | `docs/garmin-reference.md` | Garmin Personal API: endpoints used, computed substitutes, intervals.icu delivery, FIT export, limits |
 | `docs/course-json.md` | workout JSON cheat sheet |
 | `docs/coaching-science.md` | training rules and their sources |
-| `scripts/` | `source.py` (provider switch), `coros.py` + `parsers.py` (COROS), `garmin.py` + `garmin_parsers.py` (Garmin), `fitworkout.py` (FIT export + checks), `intervals.py` (workouts → Garmin Connect via intervals.icu), `workout.py`, `plan.py`, `readiness.py`, `report.py`, `recap.py` (HTML session recap, template in `scripts/templates/`), `setup.sh`, `chat-bundle.sh` |
+| `scripts/` | `source.py` (provider switch), `coros.py` + `parsers.py` (COROS), `garmin.py` + `garmin_parsers.py` (Garmin), `fitworkout.py` (FIT export + checks), `intervals.py` (workouts → Garmin Connect via intervals.icu), `workout.py`, `plan.py`, `readiness.py`, `report.py`, `recap.py` (HTML session recap, template in `scripts/templates/`), `telegram.py` (send recaps/reports to Telegram), `setup.sh`, `chat-bundle.sh` |
 | `athlete/` | your `profile.yaml` (git-ignored) and an example |
 | `plans/` | one folder per plan (git-ignored) |
 | `tests/` | pytest on synthetic COROS and Garmin outputs |
