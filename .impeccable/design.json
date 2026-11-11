@@ -1,0 +1,895 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-11T01:47:29Z",
+  "title": "Design System: coros-coach",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "Coach Green",
+        "canonical": "#2f6f55",
+        "tonalRamp": [
+          "#040e09",
+          "#122b20",
+          "#234b3a",
+          "#376e57",
+          "#589077",
+          "#86b09c",
+          "#b4d1c3",
+          "#e2f3eb"
+        ]
+      },
+      "hit": {
+        "role": "primary",
+        "displayName": "Coach Green (in-target mark)",
+        "canonical": "#2f6f55",
+        "tonalRamp": [
+          "#040e09",
+          "#122b20",
+          "#234b3a",
+          "#376e57",
+          "#589077",
+          "#86b09c",
+          "#b4d1c3",
+          "#e2f3eb"
+        ]
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "Coach Green (focus ring)",
+        "canonical": "#2f6f55",
+        "tonalRamp": [
+          "#040e09",
+          "#122b20",
+          "#234b3a",
+          "#376e57",
+          "#589077",
+          "#86b09c",
+          "#b4d1c3",
+          "#e2f3eb"
+        ]
+      },
+      "target": {
+        "role": "primary",
+        "displayName": "Plan Wash",
+        "canonical": "#e6f0ea",
+        "tonalRamp": [
+          "#0a0c0b",
+          "#222624",
+          "#3e4440",
+          "#5c635f",
+          "#7d8580",
+          "#a0a7a3",
+          "#c6cac8",
+          "#ecefed"
+        ]
+      },
+      "target-edge": {
+        "role": "primary",
+        "displayName": "Plan Edge",
+        "canonical": "#b9d3c4",
+        "tonalRamp": [
+          "#080c0a",
+          "#1e2822",
+          "#37463e",
+          "#52675b",
+          "#73887c",
+          "#99aaa0",
+          "#c0cdc5",
+          "#e9f0ec"
+        ]
+      },
+      "off": {
+        "role": "secondary",
+        "displayName": "Off-Target Coral",
+        "canonical": "#d0603f",
+        "tonalRamp": [
+          "#190501",
+          "#411508",
+          "#6e2914",
+          "#9e3f22",
+          "#c56144",
+          "#dd8e76",
+          "#f4b9a8",
+          "#ffe6db"
+        ]
+      },
+      "off-ink": {
+        "role": "secondary",
+        "displayName": "Coral Ink",
+        "canonical": "#b04a2c",
+        "tonalRamp": [
+          "#180502",
+          "#40170b",
+          "#6c2b19",
+          "#9b4228",
+          "#c16449",
+          "#da8f7a",
+          "#f1baaa",
+          "#ffe6dd"
+        ]
+      },
+      "caution": {
+        "role": "tertiary",
+        "displayName": "Readiness Amber",
+        "canonical": "#d39a2a",
+        "tonalRamp": [
+          "#130900",
+          "#362000",
+          "#5c3a00",
+          "#865600",
+          "#a9780c",
+          "#c59e5e",
+          "#e0c599",
+          "#fcecd3"
+        ]
+      },
+      "page": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#fbfbfa",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252524",
+          "#424241",
+          "#616160",
+          "#828281",
+          "#a5a5a4",
+          "#c9c9c8",
+          "#eeeeed"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#18181a",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#252527",
+          "#424244",
+          "#616163",
+          "#828285",
+          "#a5a5a7",
+          "#c9c9cc",
+          "#eeeef1"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "#5c5c62",
+        "tonalRamp": [
+          "#0b0b0f",
+          "#24242a",
+          "#414147",
+          "#606067",
+          "#828288",
+          "#a4a4ab",
+          "#c8c8cf",
+          "#eeeef5"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Grey",
+        "canonical": "#8b8b91",
+        "tonalRamp": [
+          "#0b0b0f",
+          "#252429",
+          "#414147",
+          "#616166",
+          "#828288",
+          "#a4a4aa",
+          "#c8c8cf",
+          "#eeeef4"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#ececea",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252524",
+          "#424240",
+          "#616160",
+          "#828281",
+          "#a5a5a3",
+          "#c9c9c7",
+          "#eeeeec"
+        ]
+      },
+      "axis": {
+        "role": "neutral",
+        "displayName": "Axis",
+        "canonical": "#d6d6d3",
+        "tonalRamp": [
+          "#0b0b09",
+          "#252523",
+          "#424240",
+          "#61615f",
+          "#828280",
+          "#a5a5a2",
+          "#c9c9c6",
+          "#efefec"
+        ]
+      },
+      "easy": {
+        "role": "neutral",
+        "displayName": "Easy Wash",
+        "canonical": "#f2f2f0",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252524",
+          "#424240",
+          "#616160",
+          "#828281",
+          "#a5a5a3",
+          "#c9c9c7",
+          "#eeeeec"
+        ]
+      },
+      "chip": {
+        "role": "neutral",
+        "displayName": "Chip",
+        "canonical": "#f3f3f1",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252524",
+          "#424240",
+          "#616160",
+          "#828281",
+          "#a5a5a3",
+          "#c9c9c7",
+          "#eeeeec"
+        ]
+      },
+      "z-ink-light": {
+        "role": "zone",
+        "displayName": "Zone Ink Deep",
+        "canonical": "#1f3a2d",
+        "tonalRamp": [
+          "#070d0a",
+          "#1d2822",
+          "#35473d",
+          "#4f685b",
+          "#6f8a7c",
+          "#96aba0",
+          "#bfcdc5",
+          "#e8f1ec"
+        ]
+      },
+      "z-ink-dark": {
+        "role": "zone",
+        "displayName": "Zone Ink White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "accent-dark": {
+        "role": "primary",
+        "displayName": "Mint (dark accent)",
+        "canonical": "#7fc3a2",
+        "tonalRamp": [
+          "#030e08",
+          "#102b1f",
+          "#214c39",
+          "#346f54",
+          "#569175",
+          "#84b19a",
+          "#b3d2c1",
+          "#e2f4ea"
+        ]
+      },
+      "hit-dark": {
+        "role": "primary",
+        "displayName": "Mint (dark in-target mark)",
+        "canonical": "#7fc3a2",
+        "tonalRamp": [
+          "#030e08",
+          "#102b1f",
+          "#214c39",
+          "#346f54",
+          "#569175",
+          "#84b19a",
+          "#b3d2c1",
+          "#e2f4ea"
+        ]
+      },
+      "focus-dark": {
+        "role": "primary",
+        "displayName": "Mint (dark focus ring)",
+        "canonical": "#7fc3a2",
+        "tonalRamp": [
+          "#030e08",
+          "#102b1f",
+          "#214c39",
+          "#346f54",
+          "#569175",
+          "#84b19a",
+          "#b3d2c1",
+          "#e2f4ea"
+        ]
+      },
+      "off-dark": {
+        "role": "secondary",
+        "displayName": "Dark Coral",
+        "canonical": "#ec8a6b",
+        "tonalRamp": [
+          "#170602",
+          "#3d190d",
+          "#682f1c",
+          "#96462d",
+          "#bc684d",
+          "#d5927d",
+          "#eebcac",
+          "#ffe7de"
+        ]
+      },
+      "off-ink-dark": {
+        "role": "secondary",
+        "displayName": "Dark Coral Ink",
+        "canonical": "#f09a7d",
+        "tonalRamp": [
+          "#160703",
+          "#3b1b10",
+          "#643221",
+          "#904b34",
+          "#b56c54",
+          "#d09581",
+          "#e9beb0",
+          "#ffe8e0"
+        ]
+      },
+      "page-dark": {
+        "role": "neutral",
+        "displayName": "Night Paper",
+        "canonical": "#111113",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#252527",
+          "#424244",
+          "#616163",
+          "#828285",
+          "#a5a5a7",
+          "#c9c9cc",
+          "#eeeef1"
+        ]
+      },
+      "ink-dark": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "canonical": "#ededee",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#252526",
+          "#424243",
+          "#616162",
+          "#828283",
+          "#a5a5a6",
+          "#c9c9ca",
+          "#eeeeef"
+        ]
+      },
+      "ink-2-dark": {
+        "role": "neutral",
+        "displayName": "Night Graphite",
+        "canonical": "#a8a8ad",
+        "tonalRamp": [
+          "#0b0b0e",
+          "#252528",
+          "#414146",
+          "#616165",
+          "#828286",
+          "#a4a4a9",
+          "#c8c8ce",
+          "#eeeef3"
+        ]
+      },
+      "muted-dark": {
+        "role": "neutral",
+        "displayName": "Night Muted",
+        "canonical": "#7c7c82",
+        "tonalRamp": [
+          "#0b0b0f",
+          "#242429",
+          "#414147",
+          "#616166",
+          "#828288",
+          "#a4a4ab",
+          "#c8c8cf",
+          "#eeeef4"
+        ]
+      },
+      "rule-dark": {
+        "role": "neutral",
+        "displayName": "Night Hairline",
+        "canonical": "#232326",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#252528",
+          "#424245",
+          "#616164",
+          "#828286",
+          "#a4a4a8",
+          "#c9c9cd",
+          "#eeeef2"
+        ]
+      },
+      "axis-dark": {
+        "role": "neutral",
+        "displayName": "Night Axis",
+        "canonical": "#333337",
+        "tonalRamp": [
+          "#0b0b0e",
+          "#252528",
+          "#414146",
+          "#616165",
+          "#828286",
+          "#a4a4a9",
+          "#c8c8ce",
+          "#eeeef3"
+        ]
+      },
+      "easy-dark": {
+        "role": "neutral",
+        "displayName": "Night Easy Wash",
+        "canonical": "#1b1b1e",
+        "tonalRamp": [
+          "#0b0b0e",
+          "#252528",
+          "#424245",
+          "#616164",
+          "#828286",
+          "#a4a4a9",
+          "#c9c9cd",
+          "#eeeef2"
+        ]
+      },
+      "chip-dark": {
+        "role": "neutral",
+        "displayName": "Night Chip",
+        "canonical": "#1b1b1e",
+        "tonalRamp": [
+          "#0b0b0e",
+          "#252528",
+          "#424245",
+          "#616164",
+          "#828286",
+          "#a4a4a9",
+          "#c9c9cd",
+          "#eeeef2"
+        ]
+      },
+      "z-ink-light-dark": {
+        "role": "zone",
+        "displayName": "Night Zone Ink Pale",
+        "canonical": "#e6f2eb",
+        "tonalRamp": [
+          "#0a0c0b",
+          "#222624",
+          "#3d4440",
+          "#5b645f",
+          "#7b857f",
+          "#9fa7a3",
+          "#c5cbc7",
+          "#ecefed"
+        ]
+      },
+      "z-ink-dark-dark": {
+        "role": "zone",
+        "displayName": "Night Zone Ink Deep",
+        "canonical": "#10241a",
+        "tonalRamp": [
+          "#080c0a",
+          "#1f2823",
+          "#38463e",
+          "#53675c",
+          "#74887d",
+          "#99aaa0",
+          "#c1ccc6",
+          "#eaf0ec"
+        ]
+      },
+      "z1": {
+        "role": "zone",
+        "displayName": "Zone 1",
+        "canonical": "#dcebe2",
+        "tonalRamp": [
+          "#dcebe2",
+          "#b3d2c0",
+          "#7fb198",
+          "#4b8a6c",
+          "#2f6f55"
+        ]
+      },
+      "z2": {
+        "role": "zone",
+        "displayName": "Zone 2",
+        "canonical": "#b3d2c0",
+        "tonalRamp": [
+          "#dcebe2",
+          "#b3d2c0",
+          "#7fb198",
+          "#4b8a6c",
+          "#2f6f55"
+        ]
+      },
+      "z3": {
+        "role": "zone",
+        "displayName": "Zone 3",
+        "canonical": "#7fb198",
+        "tonalRamp": [
+          "#dcebe2",
+          "#b3d2c0",
+          "#7fb198",
+          "#4b8a6c",
+          "#2f6f55"
+        ]
+      },
+      "z4": {
+        "role": "zone",
+        "displayName": "Zone 4",
+        "canonical": "#4b8a6c",
+        "tonalRamp": [
+          "#dcebe2",
+          "#b3d2c0",
+          "#7fb198",
+          "#4b8a6c",
+          "#2f6f55"
+        ]
+      },
+      "z5": {
+        "role": "zone",
+        "displayName": "Zone 5",
+        "canonical": "#2f6f55",
+        "tonalRamp": [
+          "#dcebe2",
+          "#b3d2c0",
+          "#7fb198",
+          "#4b8a6c",
+          "#2f6f55"
+        ]
+      },
+      "z1-dark": {
+        "role": "zone",
+        "displayName": "Night Zone 1",
+        "canonical": "#24392f",
+        "tonalRamp": [
+          "#24392f",
+          "#2f5443",
+          "#3f7a5f",
+          "#5c9e7f",
+          "#7fc3a2"
+        ]
+      },
+      "z2-dark": {
+        "role": "zone",
+        "displayName": "Night Zone 2",
+        "canonical": "#2f5443",
+        "tonalRamp": [
+          "#24392f",
+          "#2f5443",
+          "#3f7a5f",
+          "#5c9e7f",
+          "#7fc3a2"
+        ]
+      },
+      "z3-dark": {
+        "role": "zone",
+        "displayName": "Night Zone 3",
+        "canonical": "#3f7a5f",
+        "tonalRamp": [
+          "#24392f",
+          "#2f5443",
+          "#3f7a5f",
+          "#5c9e7f",
+          "#7fc3a2"
+        ]
+      },
+      "z4-dark": {
+        "role": "zone",
+        "displayName": "Night Zone 4",
+        "canonical": "#5c9e7f",
+        "tonalRamp": [
+          "#24392f",
+          "#2f5443",
+          "#3f7a5f",
+          "#5c9e7f",
+          "#7fc3a2"
+        ]
+      },
+      "z5-dark": {
+        "role": "zone",
+        "displayName": "Night Zone 5",
+        "canonical": "#7fc3a2",
+        "tonalRamp": [
+          "#24392f",
+          "#2f5443",
+          "#3f7a5f",
+          "#5c9e7f",
+          "#7fc3a2"
+        ]
+      },
+      "target-dark": {
+        "role": "primary",
+        "displayName": "Night Plan Wash",
+        "canonical": "rgba(127,195,162,.13)",
+        "tonalRamp": [
+          "#030e08",
+          "#102b1f",
+          "#214c39",
+          "#346f54",
+          "#569175",
+          "#84b19a",
+          "#b3d2c1",
+          "#e2f4ea"
+        ]
+      },
+      "target-edge-dark": {
+        "role": "primary",
+        "displayName": "Night Plan Edge",
+        "canonical": "rgba(127,195,162,.4)",
+        "tonalRamp": [
+          "#030e08",
+          "#102b1f",
+          "#214c39",
+          "#346f54",
+          "#569175",
+          "#84b19a",
+          "#b3d2c1",
+          "#e2f4ea"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Session title, once per page."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles, each followed by a muted sub-line."
+      },
+      "figure-xl": {
+        "displayName": "Figure XL",
+        "purpose": "Single hero number of a section (RPE)."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Summary stats."
+      },
+      "figure-sm": {
+        "displayName": "Figure Small",
+        "purpose": "Context readings (HRV, sleep, RHR, load)."
+      },
+      "quote": {
+        "displayName": "Quote",
+        "purpose": "The athlete's own words, max 46ch."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Coach verdict paragraph, max 62ch."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Impact items and running text."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Table cells; 14px under 720px."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Date line, status line, sub-lines, proposal note."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Stat labels, table heads, legend, tags, tooltip."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Chart ticks, scale ends, footer."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(.16,1,.3,1)",
+        "purpose": "Tooltip fade and 4px rise."
+      },
+      {
+        "name": "duration-tip",
+        "value": "160ms",
+        "purpose": "Tooltip show/hide; disabled under prefers-reduced-motion."
+      },
+      {
+        "name": "redraw-debounce",
+        "value": "120ms",
+        "purpose": "Chart redraw after resize."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "chart-compact",
+        "value": "520px",
+        "purpose": "Container width below which charts shorten and labels abbreviate."
+      },
+      {
+        "name": "compact",
+        "value": "max-width: 720px",
+        "purpose": "2-col stats and context, 56px section gap, tighter table."
+      },
+      {
+        "name": "wide",
+        "value": "min-width: 900px",
+        "purpose": "1000px column; paired sections side by side with 64px gap."
+      }
+    ],
+    "themes": {
+      "strategy": "prefers-color-scheme with manual override via :root[data-theme=light|dark]; dark tokens use the -dark suffix in frontmatter.",
+      "rootVariables": ":root{--page:#fbfbfa;--ink:#18181a;--ink-2:#5c5c62;--muted:#8b8b91;--rule:#ececea;--axis:#d6d6d3;--accent:#2f6f55;--target:#e6f0ea;--target-edge:#b9d3c4;--easy:#f2f2f0;--hit:#2f6f55;--off:#d0603f;--off-ink:#b04a2c;--caution:#d39a2a;--chip:#f3f3f1;--focus:#2f6f55;--z1:#dcebe2;--z2:#b3d2c0;--z3:#7fb198;--z4:#4b8a6c;--z5:#2f6f55}"
+    },
+    "fonts": {
+      "source": "https://fonts.googleapis.com/css2?family=Onest:wght@300..600&display=swap",
+      "weightsUsed": [
+        300,
+        400,
+        500
+      ]
+    },
+    "focus": {
+      "value": "outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px",
+      "purpose": "Global :focus-visible ring."
+    }
+  },
+  "components": [
+    {
+      "name": "Status Line",
+      "kind": "custom",
+      "refersTo": "status-ok",
+      "description": "Outcome line under the title: caution dot, outcome word, supporting facts separated by middots.",
+      "html": "<div class=\"ds-status\"><span class=\"ds-status-main\"><span class=\"ds-dot\"></span>Mostly on target</span><span class=\"ds-sep\">·</span><span>3 of 5 reps in target</span><span class=\"ds-sep\">·</span><span>Compliance 98 %</span></div>",
+      "css": "font-family:'Onest',system-ui,sans-serif;.ds-status{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;font-size:14px;color:var(--ink-2,#5c5c62);font-family:'Onest',system-ui,sans-serif;}.ds-status-main{display:inline-flex;align-items:center;gap:7px;color:var(--ink,#18181a);font-weight:500}.ds-dot{width:8px;height:8px;border-radius:50%;background:var(--caution,#d39a2a)}.ds-sep{color:var(--axis,#d6d6d3)}"
+    },
+    {
+      "name": "Stat",
+      "kind": "card",
+      "refersTo": "stat",
+      "description": "Summary figure between hairlines: label, light tabular figure, plan line and delta. No box.",
+      "html": "<div class=\"ds-stats\"><div><div class=\"ds-l\">Avg rep pace</div><b>3:45/km</b><div class=\"ds-p\">target 3:39–3:46<span class=\"ds-d ds-good\">in target</span></div></div><div><div class=\"ds-l\">Distance</div><b>11.5 km</b><div class=\"ds-p\">planned 11.0 km<span class=\"ds-d\">+0.5 km</span></div></div></div>",
+      "css": ".ds-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 16px;padding:28px 0;border-top:1px solid var(--rule,#ececea);border-bottom:1px solid var(--rule,#ececea);font-family:'Onest',system-ui,sans-serif;color:var(--ink,#18181a)}.ds-l,.ds-p{font-size:13px;color:var(--muted,#8b8b91)}.ds-stats b{display:block;font-size:28px;line-height:1.2;font-weight:400;letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums}.ds-p{margin-top:2px}.ds-d{display:block;color:var(--ink-2,#5c5c62)}.ds-good{color:var(--accent,#2f6f55)}"
+    },
+    {
+      "name": "Jump Link",
+      "kind": "button",
+      "refersTo": "jump-link",
+      "description": "In-page link to the plan impact: accent text with a down-arrow icon, 40px tap height, underline on hover.",
+      "html": "<a class=\"ds-jump\" href=\"#\">Impact on the plan <svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M10 4v12M5 11l5 5 5-5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ".ds-jump{display:inline-flex;align-items:center;gap:6px;min-height:40px;color:var(--accent,#2f6f55);font-size:15px;font-weight:500;text-decoration:none;font-family:'Onest',system-ui,sans-serif;}.ds-jump:hover{text-decoration:underline;text-underline-offset:4px}.ds-jump:focus-visible{outline:2px solid var(--focus,#2f6f55);outline-offset:3px;border-radius:4px}"
+    },
+    {
+      "name": "Theme Toggle",
+      "kind": "button",
+      "refersTo": "theme-toggle",
+      "description": "40px round icon button; chip wash on hover.",
+      "html": "<button class=\"ds-theme\" type=\"button\" aria-label=\"Toggle light or dark theme\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M15.5 12.6A6.5 6.5 0 017.4 4.5a6.5 6.5 0 108.1 8.1z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linejoin=\"round\"/></svg></button>",
+      "css": ".ds-theme{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;background:transparent;color:var(--ink-2,#5c5c62);border:0;cursor:pointer}.ds-theme:hover{background:var(--chip,#f3f3f1)}.ds-theme:focus-visible{outline:2px solid var(--focus,#2f6f55);outline-offset:3px}"
+    },
+    {
+      "name": "Rep Table",
+      "kind": "custom",
+      "refersTo": "table-cell",
+      "description": "Hairline table with tabular right-aligned numbers and dot + word status.",
+      "html": "<table class=\"ds-table\"><thead><tr><th>Rep</th><th class=\"ds-num\">Pace /km</th><th class=\"ds-num\">Gap</th><th>Status</th></tr></thead><tbody><tr><td class=\"ds-rn\">3</td><td class=\"ds-num\">3:44</td><td class=\"ds-num\">—</td><td><span class=\"ds-st\">In target</span></td></tr><tr><td class=\"ds-rn\">5</td><td class=\"ds-num\">3:50</td><td class=\"ds-num\"><span class=\"ds-gap\">+4 s</span></td><td><span class=\"ds-st ds-slow\">Slow</span></td></tr></tbody></table>",
+      "css": ".ds-table{width:100%;border-collapse:collapse;font-size:15px;font-family:'Onest',system-ui,sans-serif;color:var(--ink,#18181a)}.ds-table th,.ds-table td{white-space:nowrap}.ds-table th{text-align:left;font-weight:400;color:var(--muted,#8b8b91);font-size:13px;padding:0 8px 10px;border-bottom:1px solid var(--rule,#ececea)}.ds-table td{padding:13px 8px;border-bottom:1px solid var(--rule,#ececea);font-variant-numeric:tabular-nums}.ds-table th:first-child,.ds-table td:first-child{padding-left:0}.ds-table th:last-child,.ds-table td:last-child{padding-right:0}.ds-table tr:last-child td{border-bottom:0}.ds-num{text-align:right!important}.ds-rn{color:var(--muted,#8b8b91)}.ds-gap{color:var(--off-ink,#b04a2c)}.ds-st{display:inline-flex;align-items:center;gap:7px;font-size:14px;color:var(--ink-2,#5c5c62)}.ds-st::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--hit,#2f6f55)}.ds-slow{color:var(--off-ink,#b04a2c)}.ds-slow::before{background:var(--off,#d0603f)}"
+    },
+    {
+      "name": "Plan Band + Actual Line",
+      "kind": "custom",
+      "refersTo": "plan-band",
+      "description": "Signature chart mark: planned target as a soft rounded band, actual value as a round-capped line on top; coral when off target.",
+      "html": "<svg class=\"ds-chart\" viewBox=\"0 0 320 120\" width=\"320\" height=\"120\" role=\"img\" aria-label=\"Two reps against target bands\"><line x1=\"0\" x2=\"320\" y1=\"110\" y2=\"110\" stroke=\"var(--axis,#d6d6d3)\"/><rect class=\"ds-hit\" tabindex=\"0\" x=\"11\" y=\"40\" width=\"138\" height=\"24\" rx=\"3\" fill=\"var(--target,#e6f0ea)\" stroke=\"var(--target-edge,#b9d3c4)\"/><line x1=\"12.5\" x2=\"147.5\" y1=\"52\" y2=\"52\" stroke=\"var(--hit,#2f6f55)\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><text x=\"80\" y=\"30\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--ink-2,#5c5c62)\">R3 · 3:44</text><rect class=\"ds-hit\" tabindex=\"0\" x=\"171\" y=\"40\" width=\"138\" height=\"24\" rx=\"3\" fill=\"var(--target,#e6f0ea)\" stroke=\"var(--target-edge,#b9d3c4)\"/><line x1=\"172.5\" x2=\"307.5\" y1=\"76\" y2=\"76\" stroke=\"var(--off,#d0603f)\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><text x=\"240\" y=\"30\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--ink-2,#5c5c62)\">R5 · 3:50</text><text x=\"240\" y=\"93\" text-anchor=\"middle\" font-size=\"12\" fill=\"var(--off-ink,#b04a2c)\">+4s</text></svg>",
+      "css": ".ds-chart{display:block;overflow:visible;font-family:'Onest',system-ui,sans-serif;}.ds-chart text{font-family:inherit}.ds-hit{cursor:crosshair}.ds-hit:focus{outline:none}.ds-hit:focus-visible{stroke:var(--focus,#2f6f55);stroke-width:2}"
+    },
+    {
+      "name": "Zone Bars",
+      "kind": "custom",
+      "refersTo": "zone-bar",
+      "description": "Stacked intended vs actual time in zones, filled from the five-step green ramp.",
+      "html": "<div class=\"ds-zones\"><div class=\"ds-zrow\"><span>Intended</span><i style=\"flex:10;background:var(--z1,#dcebe2);color:#1f3a2d\">10</i><i style=\"flex:20;background:var(--z2,#b3d2c0);color:#1f3a2d\">20</i><i style=\"flex:3;background:var(--z3,#7fb198)\"></i><i style=\"flex:10;background:var(--z4,#4b8a6c);color:#fff\">10</i><i style=\"flex:12;background:var(--z5,#2f6f55);color:#fff\">12</i></div></div>",
+      "css": ".ds-zones{font-family:'Onest',system-ui,sans-serif;font-size:12px}.ds-zrow{display:flex;align-items:center;gap:3px}.ds-zrow span{width:67px;font-size:13px;color:var(--muted,#8b8b91)}.ds-zrow i{height:28px;border-radius:4px;display:grid;place-items:center;font-style:normal}"
+    },
+    {
+      "name": "Tooltip",
+      "kind": "custom",
+      "refersTo": "tooltip",
+      "description": "Inverted chart tooltip; fades and rises in over 160ms.",
+      "html": "<div class=\"ds-tip\"><div class=\"ds-t\">Rep 5</div><div class=\"ds-r\">Target 3:39–3:46/km</div><div class=\"ds-r\">Actual 3:50/km (+4 s)</div></div>",
+      "css": ".ds-tip{display:inline-block;background:var(--ink,#18181a);color:var(--page,#fbfbfa);border-radius:8px;padding:8px 11px;font-size:13px;max-width:240px;font-family:'Onest',system-ui,sans-serif;transition:opacity .16s cubic-bezier(.16,1,.3,1),transform .16s cubic-bezier(.16,1,.3,1)}.ds-t{font-weight:500;margin-bottom:2px}.ds-r{opacity:.8;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Impact List",
+      "kind": "custom",
+      "description": "Hairline-divided proposals with a closing muted note that nothing changes without OK.",
+      "html": "<div class=\"ds-impact\"><ul><li><b>Jeudi, footing facile</b><span>Strictement en Z1–Z2 (≤ 145 bpm).</span></li><li><b>Samedi, tempo 3 × 10′</b><span>Si la VFC est encore basse, passer à 2 × 12′.</span></li></ul><p>Proposals only. Nothing changes in the plan until you say OK.</p></div>",
+      "css": ".ds-impact{font-family:'Onest',system-ui,sans-serif;color:var(--ink,#18181a)}.ds-impact ul{list-style:none;padding:0;margin:0}.ds-impact li{padding:16px 0;border-top:1px solid var(--rule,#ececea);font-size:16px}.ds-impact li:first-child{border-top:0}.ds-impact b{display:block;font-weight:500}.ds-impact span{color:var(--ink-2,#5c5c62)}.ds-impact p{margin-top:12px;font-size:14px;color:var(--muted,#8b8b91)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Plan Under the Run",
+    "overview": "A coach's recap read on a phone straight after a session, outdoors, at a glance. The system is the category-standard training report stripped to type, space and one accent: an off-white page with no containers, hairline rules between groups, Onest at light-to-medium weights, and a single muted green that means \"planned\" or \"in target\". What the athlete planned is always drawn as a soft green band; what they ran is drawn on top of it as a line or figure. Everything else is ink on paper.\n\nDensity is calm rather than sparse. Sections stack in one column with large, even gaps (64px), key figures are big and light, and supporting text sits in a muted grey at 13–14px. Colour carries meaning, never decoration: green for plan and success, coral only for off-target, amber only as a readiness-caution dot. Status is a small dot followed by a word, never a filled pill. The world refuses cards, badges, heavy coloured bands and blue SaaS chrome.\n\nThe page carries light and dark themes as equals: it follows the OS preference and accepts a manual override (`data-theme=\"light\" | \"dark\"` on the root). Dark mode is a near-black page with a lifted mint green accent and translucent plan bands.",
+    "keyCharacteristics": [
+      "Off-white page, no cards, hairline rules (1px) as the only structure.",
+      "One green accent, one off-target coral, one caution amber; nothing else is chromatic.",
+      "Planned = soft band underneath; actual = line or figure on top.",
+      "Large, light, tabular figures; medium-weight headings; muted small labels.",
+      "Status as dot + text.",
+      "Light and dark at parity, OS-driven with a manual toggle."
+    ],
+    "rules": [
+      {
+        "name": "The One Green Rule",
+        "body": "Green means planned or in target. It is never used for decoration, headings or brand flourish.",
+        "section": "colors"
+      },
+      {
+        "name": "The Coral Means Off Rule",
+        "body": "Coral appears only where a measured value falls outside its planned band. A screen with every rep on target has no coral on it.",
+        "section": "colors"
+      },
+      {
+        "name": "The Amber Dot Rule",
+        "body": "Readiness caution is a single small amber dot beside a word. It never becomes a banner, a fill or a text colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Light Figures Rule",
+        "body": "Numbers get bigger and lighter, not bolder: key figures sit at 300–400, and no text exceeds 500.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Every number that can be compared (table cells, stats, tooltip rows) uses `font-variant-numeric: tabular-nums`.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "Labels, heads and status words are sentence case at normal tracking. Hierarchy comes from size, weight and the ink/graphite/muted steps.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Container Rule",
+        "body": "Nothing is boxed. Groups are separated by space and hairlines, never by cards, panels, fills or shadows.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** draw every planned target as a soft band (Plan Wash + 1px Plan Edge for work, Easy Wash for recovery) and the actual value on top of it.",
+      "**Do** separate groups with 1px Hairlines and the 64px section rhythm; keep the page on Paper.",
+      "**Do** show status as a 7–8px dot plus a sentence-case word.",
+      "**Do** set comparable numbers in tabular figures, large and light (300–400).",
+      "**Do** make every chart datum keyboard-focusable with the inverted tooltip.",
+      "**Do** define every colour for both themes and honour both the OS preference and the manual `data-theme` override.",
+      "**Do** use inline SVG icons drawn with `currentColor`."
+    ],
+    "donts": [
+      "**Don't** put content in cards, panels, tinted boxes or shadowed containers.",
+      "**Don't** use filled status pills or badges; use dot + word.",
+      "**Don't** use green, coral or amber decoratively; each carries one meaning.",
+      "**Don't** set text in `off` coral or `caution` amber; text uses `off-ink`, and amber stays a dot.",
+      "**Don't** introduce a second accent hue or blue product chrome.",
+      "**Don't** set any text above weight 500.",
+      "**Don't** use COROS or Garmin branding, colours or marks."
+    ]
+  }
+}

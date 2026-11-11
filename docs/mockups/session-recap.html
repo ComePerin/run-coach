@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session Recap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300..600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --page: #fbfbfa;
+  --ink: #18181a;
+  --ink-2: #5c5c62;
+  --muted: #8b8b91;
+  --rule: #ececea;
+  --axis: #d6d6d3;
+  --accent: #2f6f55;
+  --target: #e6f0ea;
+  --target-edge: #b9d3c4;
+  --easy: #f2f2f0;
+  --hit: #2f6f55;
+  --off: #d0603f;
+  --off-ink: #b04a2c;
+  --caution: #d39a2a;
+  --z1: #dcebe2; --z2: #b3d2c0; --z3: #7fb198; --z4: #4b8a6c; --z5: #2f6f55;
+  --z-ink-light: #1f3a2d; --z-ink-dark: #ffffff;
+  --chip: #f3f3f1;
+  --focus: #2f6f55;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #111113; --ink: #ededee; --ink-2: #a8a8ad; --muted: #7c7c82;
+    --rule: #232326; --axis: #333337; --accent: #7fc3a2;
+    --target: rgba(127,195,162,.13); --target-edge: rgba(127,195,162,.4); --easy: #1b1b1e;
+    --hit: #7fc3a2; --off: #ec8a6b; --off-ink: #f09a7d;
+    --z1: #24392f; --z2: #2f5443; --z3: #3f7a5f; --z4: #5c9e7f; --z5: #7fc3a2;
+    --z-ink-light: #e6f2eb; --z-ink-dark: #10241a; --chip: #1b1b1e; --focus: #7fc3a2;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #111113; --ink: #ededee; --ink-2: #a8a8ad; --muted: #7c7c82;
+  --rule: #232326; --axis: #333337; --accent: #7fc3a2;
+  --target: rgba(127,195,162,.13); --target-edge: rgba(127,195,162,.4); --easy: #1b1b1e;
+  --hit: #7fc3a2; --off: #ec8a6b; --off-ink: #f09a7d;
+  --z1: #24392f; --z2: #2f5443; --z3: #3f7a5f; --z4: #5c9e7f; --z5: #7fc3a2;
+  --z-ink-light: #e6f2eb; --z-ink-dark: #10241a; --chip: #1b1b1e; --focus: #7fc3a2;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font-family: "Onest", system-ui, sans-serif; font-size: 16px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--target); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+.num, td { font-variant-numeric: tabular-nums; }
+svg.i { width: 1em; height: 1em; flex: none; }
+
+main { max-width: 760px; margin: 0 auto; padding: 20px 20px 64px; }
+.chrome { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.mock { font-size: 12px; color: var(--muted); }
+.theme-btn {
+  display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+  background: transparent; color: var(--ink-2); border: 0; cursor: pointer; font-size: 18px;
+}
+.theme-btn:hover { background: var(--chip); }
+
+header.verdict-head { padding: 40px 0 8px; }
+.meta { margin: 0; font-size: 14px; color: var(--muted); }
+h1 { margin: 10px 0 0; font-weight: 500; font-size: clamp(32px, 7vw, 44px); line-height: 1.1; letter-spacing: -.025em; text-wrap: balance; }
+.status { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 16px; font-size: 14px; color: var(--ink-2); }
+.status .main { display: inline-flex; align-items: center; gap: 7px; color: var(--ink); font-weight: 500; }
+.status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--caution); }
+.status .sep { color: var(--axis); }
+.verdict { margin: 24px 0 0; font-size: 18px; line-height: 1.6; color: var(--ink); max-width: 62ch; }
+.jump { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; min-height: 40px; color: var(--accent); font-size: 15px; font-weight: 500; text-decoration: none; }
+.jump:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-top: 40px; padding: 28px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.stat .l { font-size: 13px; color: var(--muted); }
+.stat b { display: block; font-size: 28px; line-height: 1.2; font-weight: 400; letter-spacing: -.02em; margin-top: 4px; }
+.stat .p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.stat .d { display: block; color: var(--ink-2); }
+.stat .d.good { color: var(--accent); }
+
+section.sheet { margin-top: 64px; min-width: 0; }
+h2 { margin: 0; font-size: 19px; line-height: 1.3; font-weight: 500; letter-spacing: -.01em; }
+.sub { margin: 4px 0 20px; color: var(--muted); font-size: 14px; max-width: 64ch; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr); }
+
+svg.chart { display: block; width: 100%; overflow: visible; }
+svg.chart text { font-family: inherit; }
+svg.chart .hit-area { cursor: crosshair; }
+svg.chart .hit-area:focus { outline: none; }
+svg.chart .hit-area:focus-visible { fill: var(--target); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); margin-top: 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.sw-line { width: 14px; height: 2px; border-radius: 1px; display: inline-block; }
+
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { white-space: nowrap; }
+th { text-align: left; font-weight: 400; color: var(--muted); font-size: 13px; padding: 0 8px 10px; border-bottom: 1px solid var(--rule); }
+td { padding: 13px 8px; border-bottom: 1px solid var(--rule); }
+th:first-child, td:first-child { padding-left: 0; }
+th:last-child, td:last-child { padding-right: 0; }
+td.num, th.num { text-align: right; }
+td.rn { color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.gap-off { color: var(--off-ink); }
+.st { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; color: var(--ink-2); }
+.st::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--hit); }
+.st.slow { color: var(--off-ink); }
+.st.slow::before { background: var(--off); }
+
+.rpe { display: flex; align-items: baseline; gap: 10px; margin: 0 0 14px; }
+.rpe b { font-size: 48px; line-height: 1; font-weight: 300; letter-spacing: -.03em; }
+.rpe span { color: var(--muted); font-size: 15px; }
+.rpe-scale { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+.rpe-scale i { height: 4px; border-radius: 2px; background: var(--rule); }
+.rpe-scale i.on { background: var(--accent); }
+.rpe-exp { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin-top: 6px; font-size: 12px; color: var(--muted); }
+.rpe-exp .x { grid-column: 7 / span 2; text-align: center; }
+.rpe-exp .a { grid-column: 1; }
+.rpe-exp .b { grid-column: 10; text-align: right; }
+blockquote { margin: 28px 0 0; padding: 0; font-size: 20px; line-height: 1.5; font-weight: 300; letter-spacing: -.01em; color: var(--ink); max-width: 46ch; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 14px; font-size: 13px; color: var(--muted); }
+
+.ctx { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 24px; }
+.ctx > div { font-size: 13px; color: var(--muted); }
+.ctx .l { display: flex; align-items: center; gap: 7px; }
+.ctx b { display: block; font-size: 22px; line-height: 1.25; color: var(--ink); font-weight: 400; letter-spacing: -.015em; margin: 2px 0; }
+.dotc { width: 7px; height: 7px; border-radius: 50%; background: var(--caution); display: inline-block; }
+
+.impact { list-style: none; padding: 0; margin: 20px 0 0; }
+.impact li { padding: 16px 0; border-top: 1px solid var(--rule); font-size: 16px; }
+.impact li:first-child { border-top: 0; }
+.impact b { display: block; font-weight: 500; }
+.impact span { color: var(--ink-2); }
+.proposal { margin-top: 12px; font-size: 14px; color: var(--muted); }
+
+footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 80px; }
+
+#tip {
+  position: fixed; pointer-events: none; z-index: 10; opacity: 0; transform: translateY(4px);
+  transition: opacity .16s cubic-bezier(.16,1,.3,1), transform .16s cubic-bezier(.16,1,.3,1);
+  background: var(--ink); color: var(--page); border-radius: 8px; padding: 8px 11px; font-size: 13px; max-width: 240px;
+}
+#tip.on { opacity: 1; transform: none; }
+#tip .t { font-weight: 500; margin-bottom: 2px; }
+#tip .r { opacity: .8; font-variant-numeric: tabular-nums; }
+
+@media (min-width: 900px) {
+  main { max-width: 1000px; }
+  .grid2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; }
+}
+@media (max-width: 720px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }
+  .ctx { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  section.sheet { margin-top: 56px; }
+  th, td { padding-left: 4px; padding-right: 4px; }
+  table { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { #tip { transition: none; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-down" viewBox="0 0 20 20"><path d="M10 4v12M5 11l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 20 20"><path d="M15.5 12.6A6.5 6.5 0 017.4 4.5a6.5 6.5 0 108.1 8.1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+</svg>
+
+<main>
+  <div class="chrome">
+    <span class="mock">Mock data · draft for review</span>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle light or dark theme"><svg class="i"><use href="#i-moon"/></svg></button>
+  </div>
+
+  <!-- 1. Verdict -->
+  <header class="verdict-head">
+    <p class="meta">Tue 10 Nov 2026 · Week 4 of 9 · Build phase · Key session</p>
+    <h1>5 × 1000 m at I pace</h1>
+    <div class="status">
+      <span class="main"><span class="dot"></span>Mostly on target</span>
+      <span class="sep">·</span><span>3 of 5 reps in target</span>
+      <span class="sep">·</span><span>Compliance 98 %</span>
+    </div>
+    <p class="verdict" lang="fr">Séance réussie dans l'ensemble : les 3 premières répétitions sont dans la cible, les deux dernières légèrement lentes (+1 et +4 s/km) avec une dérive cardiaque de 12 bpm. Ça colle avec ta VFC basse ce matin et tes jambes lourdes : c'est de la fatigue passagère, pas un manque de forme.</p>
+    <a class="jump" href="#impact">Impact on the plan <svg class="i"><use href="#i-down"/></svg></a>
+  </header>
+
+  <!-- 4. Summary stats -->
+  <section class="stats" id="tiles" style="margin-top:40px" aria-label="Session summary"></section>
+
+  <!-- 2. Planned vs actual -->
+  <section class="sheet">
+    <h2>Pace: planned vs actual</h2>
+    <p class="sub">Shaded bands are the planned target for each step; lines are your average pace per lap. Faster is higher.</p>
+    <div id="paceChart"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--target);box-shadow:inset 0 0 0 1px var(--target-edge)"></i>Rep target 3:39–3:46/km</span>
+      <span><i class="sw" style="background:var(--easy)"></i>Easy / jog range</span>
+      <span><i class="sw-line" style="background:var(--hit)"></i>Actual, in target</span>
+      <span><i class="sw-line" style="background:var(--off)"></i>Actual, off target</span>
+    </div>
+  </section>
+
+  <!-- 3. Reps + HR drift -->
+  <div class="grid2">
+    <section class="sheet">
+      <h2>Reps</h2>
+      <p class="sub">Target 3:39–3:46/km, 2′30 jog between reps.</p>
+      <table>
+        <thead><tr><th>Rep</th><th class="num">Pace /km</th><th class="num">Gap</th><th class="num">HR avg / max</th><th>Status</th></tr></thead>
+        <tbody id="repRows"></tbody>
+      </table>
+    </section>
+    <section class="sheet">
+      <h2>Heart rate across reps</h2>
+      <p class="sub">Average HR per rep. +12 bpm from rep 1 to rep 5 at similar pace = cardiac drift.</p>
+      <div id="hrChart"></div>
+      <div class="legend">
+        <span><i class="sw-line" style="background:var(--hit)"></i>Avg HR per rep</span>
+        <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="3.5" fill="none" stroke="var(--muted)" stroke-width="1.5"/></svg>Max HR</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- 5. Zones + feel -->
+  <div class="grid2">
+    <section class="sheet">
+      <h2>Time in HR zones</h2>
+      <p class="sub">What the session intended vs what you did (minutes).</p>
+      <div id="zoneChart"></div>
+      <div class="legend" id="zoneLegend"></div>
+    </section>
+    <section class="sheet">
+      <h2>How it felt</h2>
+      <p class="sub">From your message after the session.</p>
+      <div class="rpe"><b>8</b><span>/ 10 RPE · expected 7–8</span></div>
+      <div class="rpe-scale" role="img" aria-label="RPE 8 of 10, expected 7 to 8">
+        <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+        <i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i>
+      </div>
+      <div class="rpe-exp" aria-hidden="true"><span class="a">1</span><span class="x">expected</span><span class="b">10</span></div>
+      <blockquote lang="fr">« Jambes lourdes sur les deux dernières, souffle OK. Un peu de vent de face sur la ligne droite. »</blockquote>
+      <div class="tags"><span class="tag">Heavy legs</span><span class="tag">Breathing fine</span><span class="tag">Headwind</span><span class="tag">No pain</span></div>
+    </section>
+  </div>
+
+  <!-- 6. Context -->
+  <section class="sheet">
+    <h2>Context</h2>
+    <p class="sub">Readiness that morning and what the session cost.</p>
+    <div class="ctx">
+      <div class="warn"><span class="l"><span class="dotc"></span>Readiness</span><b>Yellow</b></div>
+      <div><span class="l">HRV (night)</span><b>52 ms</b>baseline 56–80</div>
+      <div><span class="l">Sleep</span><b>6 h 25</b>14-day avg 7 h 10</div>
+      <div><span class="l">Resting HR</span><b>48 bpm</b>28-day avg 46</div>
+      <div><span class="l">Training load</span><b>102</b>load ratio 1.12 (optimal)</div>
+      <div><span class="l">Training effect</span><b>3.4 aerobic</b>2.6 anaerobic</div>
+    </div>
+  </section>
+
+  <!-- 7. Plan impact -->
+  <section class="sheet" id="impact">
+    <h2>Impact on the plan</h2>
+    <ul class="impact" lang="fr">
+      <li><div><b>Volume inchangé</b><span>La séance est validée, la progression de la semaine 5 reste la même.</span></div></li>
+      <li><div><b>Jeudi, footing facile</b><span>Strictement en Z1–Z2 (≤ 145 bpm), quitte à marcher dans les côtes.</span></div></li>
+      <li><div><b>Samedi, tempo 3 × 10′</b><span>Si la VFC est encore sous la normale vendredi matin, passer à 2 × 12′.</span></div></li>
+    </ul>
+    <p class="proposal">Proposals only. Nothing changes in the plan until you say OK.</p>
+  </section>
+
+  <footer>Generated by coros-coach · mock data for design review · local file, not shared</footer>
+</main>
+<div id="tip" role="tooltip"></div>
+
+<script>
+// ---------------------------------------------------------------- mock data (shape mirrors future script output)
+const steps = [
+  { name: "Warm-up", kind: "easy", band: [290, 330], dur: 900, dist: 3.0, pace: 300, hr: 132, hrMax: 141 },
+  { name: "Rep 1", kind: "rep", band: [219, 226], dur: 221, dist: 1.0, pace: 221, hr: 166, hrMax: 171 },
+  { name: "Jog 1", kind: "jog", band: [330, 400], dur: 150, dist: 0.40, pace: 372, hr: 148, hrMax: 166 },
+  { name: "Rep 2", kind: "rep", band: [219, 226], dur: 223, dist: 1.0, pace: 223, hr: 169, hrMax: 175 },
+  { name: "Jog 2", kind: "jog", band: [330, 400], dur: 150, dist: 0.41, pace: 368, hr: 151, hrMax: 169 },
+  { name: "Rep 3", kind: "rep", band: [219, 226], dur: 224, dist: 1.0, pace: 224, hr: 172, hrMax: 178 },
+  { name: "Jog 3", kind: "jog", band: [330, 400], dur: 150, dist: 0.40, pace: 375, hr: 154, hrMax: 172 },
+  { name: "Rep 4", kind: "rep", band: [219, 226], dur: 227, dist: 1.0, pace: 227, hr: 175, hrMax: 181 },
+  { name: "Jog 4", kind: "jog", band: [330, 400], dur: 150, dist: 0.39, pace: 385, hr: 157, hrMax: 175 },
+  { name: "Rep 5", kind: "rep", band: [219, 226], dur: 230, dist: 1.0, pace: 230, hr: 178, hrMax: 184 },
+  { name: "Cool-down", kind: "easy", band: [300, 345], dur: 600, dist: 1.92, pace: 313, hr: 141, hrMax: 158 },
+];
+const tiles = [
+  { label: "Duration", value: "53:45", plan: "planned 55:00", delta: "−1:15" },
+  { label: "Distance", value: "11.5 km", plan: "planned 11.0 km", delta: "+0.5 km" },
+  { label: "Avg rep pace", value: "3:45/km", plan: "target 3:39–3:46", delta: "in target", good: true },
+  { label: "Avg HR", value: "152 bpm", plan: "reps 172 bpm", delta: "max 184" },
+];
+const zones = [
+  { z: "Z1", intended: 10, actual: 12 },
+  { z: "Z2", intended: 20, actual: 17 },
+  { z: "Z3", intended: 3, actual: 6 },
+  { z: "Z4", intended: 10, actual: 8 },
+  { z: "Z5", intended: 12, actual: 10.75 },
+];
+
+// ---------------------------------------------------------------- helpers
+const NS = "http://www.w3.org/2000/svg";
+const fmtPace = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
+const fmtDur = fmtPace;
+const reps = steps.filter(s => s.kind === "rep");
+const icon = id => `<svg class="i" aria-hidden="true"><use href="#${id}"/></svg>`;
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, attrs = {}) {
+  const t = el("text", { x, y, fill: "var(--muted)", "font-size": 12, ...attrs }, parent);
+  t.textContent = s; return t;
+}
+function statusOf(s) {
+  if (s.kind !== "rep") return null;
+  const gap = s.pace < s.band[0] ? s.pace - s.band[0] : s.pace > s.band[1] ? s.pace - s.band[1] : 0;
+  return { gap, ok: gap === 0 };
+}
+const tip = document.getElementById("tip");
+function place(x, y) {
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let tx = x + 14, ty = y - h - 12;
+  if (tx + w > innerWidth - 8) tx = x - w - 14;
+  if (tx < 8) tx = 8;
+  if (ty < 8) ty = y + 18;
+  tip.style.left = tx + "px"; tip.style.top = ty + "px";
+}
+function bindTip(node, title, rows) {
+  node.setAttribute("tabindex", "0");
+  node.setAttribute("role", "img");
+  node.setAttribute("aria-label", `${title}: ${rows.join(", ")}`);
+  node.classList.add("hit-area");
+  const fill = () => { tip.innerHTML = `<div class="t">${title}</div>` + rows.map(r => `<div class="r">${r}</div>`).join(""); tip.classList.add("on"); };
+  const show = e => { fill(); const pt = e.touches ? e.touches[0] : e; place(pt.clientX, pt.clientY); };
+  node.addEventListener("mouseenter", show);
+  node.addEventListener("mousemove", e => place(e.clientX, e.clientY));
+  node.addEventListener("mouseleave", () => tip.classList.remove("on"));
+  node.addEventListener("touchstart", show, { passive: true });
+  node.addEventListener("focus", () => { fill(); const r = node.getBoundingClientRect(); place(r.left + r.width / 2, r.top); });
+  node.addEventListener("blur", () => tip.classList.remove("on"));
+}
+document.addEventListener("touchstart", e => { if (!e.target.closest("svg.chart")) tip.classList.remove("on"); }, { passive: true });
+addEventListener("scroll", () => tip.classList.remove("on"), { passive: true });
+
+
+// ---------------------------------------------------------------- stats
+document.getElementById("tiles").innerHTML = tiles.map(t => `
+  <div class="stat"><div class="l">${t.label}</div><b>${t.value}</b>
+  <div class="p">${t.plan}<span class="d${t.good ? " good" : ""}">${t.delta}</span></div></div>`).join("");
+
+// ---------------------------------------------------------------- rep table
+document.getElementById("repRows").innerHTML = reps.map((s, i) => {
+  const st = statusOf(s);
+  const gap = st.ok ? "—" : `<span class="gap-off">+${st.gap} s</span>`;
+  const badge = st.ok
+    ? `<span class="st ok">In target</span>`
+    : `<span class="st slow">Slow</span>`;
+  return `<tr class="${st.ok ? "" : "slip"}"><td class="rn">${i + 1}</td><td class="num">${fmtPace(s.pace)}</td><td class="num">${gap}</td>
+    <td class="num">${s.hr} / ${s.hrMax}</td><td>${badge}</td></tr>`;
+}).join("");
+
+// ---------------------------------------------------------------- pace chart
+function drawPace() {
+  const host = document.getElementById("paceChart");
+  host.innerHTML = "";
+  const W = host.clientWidth, small = W < 520, H = small ? 260 : 310;
+  const m = { t: 30, r: 6, b: 28, l: 40 };
+  const svg = el("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, height: H, role: "group",
+    "aria-label": "Pace per lap against planned target bands. Reps 1 to 3 in target, reps 4 and 5 slightly slow." }, host);
+  const total = steps.reduce((a, s) => a + s.dur, 0);
+  const pMin = 205, pMax = 405;
+  const x = t => m.l + (t / total) * (W - m.l - m.r);
+  const y = p => m.t + ((p - pMin) / (pMax - pMin)) * (H - m.t - m.b);
+
+  for (let p = 210; p <= 400; p += 30) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(p), y2: y(p), stroke: "var(--rule)", "stroke-width": 1 }, svg);
+    txt(svg, m.l - 7, y(p) + 4, fmtPace(p), { "text-anchor": "end" });
+  }
+  el("line", { x1: m.l, x2: W - m.r, y1: H - m.b, y2: H - m.b, stroke: "var(--axis)" }, svg);
+  const tickEvery = small ? 600 : 300;
+  for (let t = 0; t <= total; t += tickEvery) txt(svg, x(t), H - m.b + 18, `${t / 60}′`, { "text-anchor": "middle" });
+
+  let t0 = 0;
+  steps.forEach(s => {
+    const x0 = x(t0), x1 = x(t0 + s.dur), w = x1 - x0;
+    const isRep = s.kind === "rep";
+    el("rect", { x: x0 + 1, y: y(s.band[0]), width: Math.max(1, w - 2), height: y(s.band[1]) - y(s.band[0]), rx: 3,
+      fill: isRep ? "var(--target)" : "var(--easy)", stroke: isRep ? "var(--target-edge)" : "none", "stroke-width": 1 }, svg);
+    const st = statusOf(s);
+    const color = st && !st.ok ? "var(--off)" : "var(--hit)";
+    el("line", { x1: x0 + 2.5, x2: x1 - 2.5, y1: y(s.pace), y2: y(s.pace), stroke: color,
+      "stroke-width": isRep ? 2.5 : 1.5, "stroke-linecap": "round" }, svg);
+    if (isRep) {
+      const n = reps.indexOf(s) + 1;
+      txt(svg, x0 + w / 2, y(s.band[0]) - 10, small ? `R${n}` : `R${n} · ${fmtPace(s.pace)}`,
+        { "text-anchor": "middle", fill: "var(--ink-2)", "font-size": 12 });
+      if (!st.ok) txt(svg, x0 + w / 2, Math.max(y(s.pace), y(s.band[1])) + 17, `+${st.gap}s`,
+        { "text-anchor": "middle", fill: "var(--off-ink)", "font-size": 12 });
+    } else if (s.kind === "easy" && w > 64) {
+      txt(svg, x0 + w / 2, y(s.band[0]) - 10, s.name, { "text-anchor": "middle", fill: "var(--ink-2)" });
+    }
+    const hit = el("rect", { x: x0, y: m.t - 22, width: w, height: H - m.t - m.b + 22, fill: "transparent" }, svg);
+    bindTip(hit, s.name, [
+      `Target ${fmtPace(s.band[0])}–${fmtPace(s.band[1])}/km`,
+      `Actual ${fmtPace(s.pace)}/km` + (st && !st.ok ? ` (+${st.gap} s)` : st ? " · in target" : ""),
+      `${fmtDur(s.dur)} · ${s.dist.toFixed(2)} km`,
+      `HR ${s.hr} avg · ${s.hrMax} max`,
+    ]);
+    t0 += s.dur;
+  });
+}
+
+// ---------------------------------------------------------------- HR drift chart
+function drawHr() {
+  const host = document.getElementById("hrChart");
+  host.innerHTML = "";
+  const W = host.clientWidth, H = 220;
+  const m = { t: 18, r: 16, b: 28, l: 36 };
+  const svg = el("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, height: H, role: "group",
+    "aria-label": "Average HR per rep rising from 166 to 178 bpm." }, host);
+  const hMin = 160, hMax = 190;
+  const x = i => m.l + 16 + i * ((W - m.l - m.r - 32) / (reps.length - 1));
+  const y = h => m.t + (1 - (h - hMin) / (hMax - hMin)) * (H - m.t - m.b);
+  for (let h = hMin; h <= hMax; h += 10) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(h), y2: y(h), stroke: "var(--rule)" }, svg);
+    txt(svg, m.l - 7, y(h) + 4, h, { "text-anchor": "end" });
+  }
+  reps.forEach((s, i) => txt(svg, x(i), H - m.b + 18, `R${i + 1}`, { "text-anchor": "middle" }));
+  const area = `M${x(0)},${y(hMin)} ` + reps.map((s, i) => `L${x(i)},${y(s.hr)}`).join(" ") + ` L${x(reps.length - 1)},${y(hMin)} Z`;
+  
+  el("polyline", { points: reps.map((s, i) => `${x(i)},${y(s.hr)}`).join(" "), fill: "none",
+    stroke: "var(--hit)", "stroke-width": 1.75, "stroke-linejoin": "round" }, svg);
+  reps.forEach((s, i) => {
+    el("circle", { cx: x(i), cy: y(s.hrMax), r: 3.5, fill: "var(--page)", stroke: "var(--muted)", "stroke-width": 1.5 }, svg);
+    el("circle", { cx: x(i), cy: y(s.hr), r: 4, fill: "var(--hit)", stroke: "var(--page)", "stroke-width": 2 }, svg);
+    if (i === 0 || i === reps.length - 1)
+      txt(svg, x(i), y(s.hr) + 20, `${s.hr}`, { "text-anchor": "middle", fill: "var(--ink)", "font-size": 13 });
+    const hit = el("rect", { x: x(i) - 22, y: m.t, width: 44, height: H - m.t - m.b, fill: "transparent" }, svg);
+    bindTip(hit, `Rep ${i + 1}`, [`HR ${s.hr} avg · ${s.hrMax} max`, `Pace ${fmtPace(s.pace)}/km`]);
+  });
+}
+
+// ---------------------------------------------------------------- zones chart
+function drawZones() {
+  const host = document.getElementById("zoneChart");
+  host.innerHTML = "";
+  const W = host.clientWidth, H = 100;
+  const m = { l: 70, r: 2 };
+  const svg = el("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, height: H, role: "group",
+    "aria-label": "Time in zones in minutes. Intended: " + zones.map(z => `${z.z} ${z.intended}`).join(", ") +
+      ". Actual: " + zones.map(z => `${z.z} ${Math.round(z.actual)}`).join(", ") + "." }, host);
+  const rows = [{ key: "intended", label: "Intended" }, { key: "actual", label: "Actual" }];
+  const maxTotal = Math.max(...rows.map(r => zones.reduce((a, z) => a + z[r.key], 0)));
+  rows.forEach((r, ri) => {
+    const yy = 10 + ri * 50, bh = 28;
+    txt(svg, 0, yy + bh / 2 + 5, r.label, { fill: "var(--muted)", "font-size": 13 });
+    let acc = 0;
+    zones.forEach((z, zi) => {
+      const v = z[r.key];
+      const x0 = m.l + (acc / maxTotal) * (W - m.l - m.r);
+      const w = (v / maxTotal) * (W - m.l - m.r);
+      const rect = el("rect", { x: x0, y: yy, width: Math.max(0, w - 3), height: bh, rx: 4, fill: `var(--z${zi + 1})` }, svg);
+      if (w > 22) txt(svg, x0 + (w - 3) / 2, yy + bh / 2 + 5, Math.round(v),
+        { "text-anchor": "middle", fill: zi < 2 ? "var(--z-ink-light)" : "var(--z-ink-dark)", "font-size": 12 });
+      bindTip(rect, `${z.z} · ${r.label}`, [`${Math.round(v)} min`, `Intended ${z.intended} · actual ${Math.round(z.actual)}`]);
+      acc += v;
+    });
+  });
+  document.getElementById("zoneLegend").innerHTML =
+    zones.map((z, i) => `<span><i class="sw" style="background:var(--z${i + 1})"></i>${z.z}</span>`).join("");
+}
+
+function drawAll() { drawPace(); drawHr(); drawZones(); }
+drawAll();
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 120); });
+
+// ---------------------------------------------------------------- theme toggle
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+});
+</script>
+</body>
+</html>
