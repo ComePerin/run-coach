@@ -109,7 +109,7 @@ def _step(sec: dict, in_group: bool, threshold_s: float | None) -> dict:
         per_km = sum(band) / 2 if band else (threshold_s * 1.25 if threshold_s else EASY_PACE_S)
         secs, length = v / 1000 * per_km, RC.short_dist(v)
     else:
-        secs, length = FREE_STEP_S, "until lap"
+        secs, length = FREE_STEP_S, RC.short_dur(FREE_STEP_S)  # lap-ended: show its nominal length
     if band:
         target = _pace_range(*band)
     elif hr:
