@@ -10,7 +10,7 @@ import plan as PL
 import pytest
 from test_plan import INTERVALS, make_plan
 
-EXAMPLES = Path(__file__).resolve().parent.parent / ".claude" / "skills" / "coros-workout" / "examples"
+EXAMPLES = Path(__file__).resolve().parent.parent / ".claude" / "skills" / "run-workout" / "examples"
 RUN_SETTINGS = {"threshold_pace": 3.876, "max_hr": 195}
 
 

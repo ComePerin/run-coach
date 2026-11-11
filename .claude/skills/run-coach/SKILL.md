@@ -79,7 +79,7 @@ zones, no percentages, no climb targets, no % effort (`plan.py push` refuses the
 
 ## Workflow C — status report
 
-For "give me a report / where am I?", use the **coros-report** skill (`scripts/report.py`), then come back here
+For "give me a report / where am I?", use the **run-report** skill (`scripts/report.py`), then come back here
 only if the athlete accepts the proposed adjustments.
 
 ## Workflow D — "what should I do today?"

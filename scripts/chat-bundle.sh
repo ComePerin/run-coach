@@ -13,7 +13,7 @@ cp claude-chat/project-instructions.md \
    .claude/skills/run-coach/references/periodization.md \
    .claude/skills/run-coach/references/session-library.md \
    scripts/readiness.py \
-   .claude/skills/coros-workout/examples/*.json \
+   .claude/skills/run-workout/examples/*.json \
    "$out/"
 echo "→ $out/ ($(find "$out" -type f | wc -l | tr -d ' ') files)"
 echo "  1. paste project-instructions.md into the project's instructions"

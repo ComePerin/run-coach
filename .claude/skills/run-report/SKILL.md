@@ -1,5 +1,5 @@
 ---
-name: coros-report
+name: run-report
 description: Draft a "current state of training" report from the athlete's COROS or Garmin data and their active training plan. Use when the user asks for a training report, a status / progress update, a recap of the plan so far, "where am I in my training?", "how is my plan going?", a weekly or monthly summary, or a report to share with a coach. Read-only - it never writes to COROS.
 ---
 

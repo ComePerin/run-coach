@@ -130,7 +130,7 @@ def test_render_roundtrip(tmp_path):
 def test_skill_examples_are_valid():
     import json
 
-    examples = Path(__file__).parent.parent / ".claude" / "skills" / "coros-workout" / "examples"
+    examples = Path(__file__).parent.parent / ".claude" / "skills" / "run-workout" / "examples"
     files = sorted(examples.glob("*.json"))
     assert len(files) >= 5
     for f in files:

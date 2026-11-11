@@ -26,11 +26,11 @@ The agent lists them at the start of every conversation (type `menu` to see them
 | | Feature | Ask for example | Skill |
 |---|---|---|---|
 | 📊 | **Analyse** activities, laps, sleep, HRV, resting HR, training load | "How was my sleep this month?" | — |
-| ⌚ | **Create a workout on the watch** (run, bike, trail), validated and read back | "Add a 45-minute easy ride tomorrow" | `coros-workout` |
+| ⌚ | **Create a workout on the watch** (run, bike, trail), validated and read back | "Add a 45-minute easy ride tomorrow" | `run-workout` |
 | 🗓️ | **Build a training plan** from your COROS baseline, goal and time budget | "8-week 10K plan, 4 sessions a week" | `run-coach` |
 | 🔄 | **Review and adapt** the plan: planned vs done, missed sessions, fatigue | "Update my plan" | `run-coach` |
 | 🚦 | **What should I do today?** readiness from HRV, resting HR, sleep, recovery, load | "Should I do my intervals today?" | `run-coach` |
-| 📝 | **Training report**: progress, adherence, key sessions, load, fitness vs goal | "Give me a report on my last 4 weeks" | `coros-report` |
+| 📝 | **Training report**: progress, adherence, key sessions, load, fitness vs goal | "Give me a report on my last 4 weeks" | `run-report` |
 
 Writes to your COROS calendar (or FIT exports for Garmin) always need your explicit OK: the agent shows a dry run
 first.
@@ -124,7 +124,7 @@ documentation. It relies on [custom connectors](https://support.claude.com/en/ar
    `dist/claude-chat/`):
    `docs/mcp-reference.md`, `docs/garmin-reference.md` (Garmin users), `docs/course-json.md`, `docs/coaching-science.md`,
    `.claude/skills/run-coach/references/{decision-process,periodization,session-library}.md`,
-   `scripts/readiness.py` (readiness rules) and the workout examples in `.claude/skills/coros-workout/examples/`.
+   `scripts/readiness.py` (readiness rules) and the workout examples in `.claude/skills/run-workout/examples/`.
 5. **Start a chat in the project**, make sure the COROS connector is enabled (**+** → *Connectors*) and say *"hi"*:
    Claude lists the features and checks the connection.
 
@@ -195,7 +195,7 @@ Details, endpoints, limits and what is estimated: [`docs/garmin-reference.md`](d
              └──────────────▲───────────────────────┬──────────────┘
                             │ scripts/coros.py       │
    ┌────────────────────────┴──────┐      ┌─────────▼──────────────────────────┐
-   │ coros-workout skill           │      │ run-coach skill                     │
+   │ run-workout skill             │      │ run-coach skill                     │
    │ text → course JSON → validate │      │ profile → plan.yaml → validate      │
    │ → create → read back          │      │ → push 7 days → sync actuals        │
    └───────────────────────────────┘      │ → readiness → adapt → journal       │
@@ -265,9 +265,9 @@ This repository is meant to be shared, your training data is not:
 |---|---|
 | `CLAUDE.md` | loads `AGENTS.md` for Claude Code |
 | `AGENTS.md` | agent guide: session start menu, setup, MCP essentials, rules, data persistence |
-| `.claude/skills/coros-workout/` | workout builder skill + validated examples |
+| `.claude/skills/run-workout/` | workout builder skill + validated examples |
 | `.claude/skills/run-coach/` | coach skill + references (decision process, session library, periodisation, plan schema) |
-| `.claude/skills/coros-report/` | training-status report skill (read-only) |
+| `.claude/skills/run-report/` | training-status report skill (read-only) |
 | `claude-chat/` | project instructions for Claude chat |
 | `docs/mcp-reference.md` | the 34 COROS MCP tools, formats, units, limits, quirks, sport codes |
 | `docs/garmin-reference.md` | Garmin Personal API: endpoints used, computed substitutes, intervals.icu delivery, FIT export, limits |
