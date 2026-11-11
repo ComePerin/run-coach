@@ -55,6 +55,15 @@ weeks:
       anaerobic_te: 2.4
     feedback: ''                   # athlete's words (RPE, pain, feelings) — fill from conversation
     notes: ''                      # coach's notes, e.g. why it was adjusted
+    recap:                         # coach-written parts of the HTML session recap (scripts/recap.py), athlete's language
+      lang: fr
+      verdict: Séance réussie dans l'ensemble… (2–3 sentences: how it went and why)
+      rpe: 8                       # athlete's RPE /10, from the conversation
+      rpe_expected: [7, 8]
+      quote: Jambes lourdes sur les deux dernières, souffle OK.   # athlete's words (falls back to feedback:)
+      tags: [Heavy legs, Breathing fine]
+      impact:                      # proposals only, nothing applied before the athlete's OK
+      - {title: Volume inchangé, text: La progression de la semaine 5 reste la même.}
   unplanned:                       # activities not matching a session (set by sync)
   - {date: '2026-10-07', sport: Bouldering, duration_min: 95}
 ```

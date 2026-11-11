@@ -99,6 +99,32 @@ def call(name: str, arguments: dict[str, Any] | None = None, *, cache: bool = Tr
     return result
 
 
+def download_fit(activity_id: str | int) -> bytes:
+    """Return the original FIT file of an activity (read-only GET, unzipped). Not cached: it holds the GPS track."""
+    import io
+    import zipfile
+
+    gpa = _client_module()
+    with gpa.PersonalApiAuthenticator() as auth:
+        for force in (False, True):
+            try:
+                with gpa.GarminPersonalApiClient(_token(gpa, auth, force)) as client:
+                    raw = client.download_activity(activity_id)
+                break
+            except gpa.HttpError as exc:
+                if exc.status_code != 401 or force:
+                    raise GarminError(f"download_activity failed: HTTP {exc.status_code}") from exc
+            except gpa.GarminPersonalApiError as exc:
+                raise GarminError(f"download_activity failed: {exc}") from exc
+    if raw[:2] != b"PK":
+        return raw
+    with zipfile.ZipFile(io.BytesIO(raw)) as zf:
+        names = [n for n in zf.namelist() if n.lower().endswith(".fit")]
+        if not names:
+            raise GarminError("the activity archive holds no .fit file")
+        return zf.read(names[0])
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="cmd", required=True)

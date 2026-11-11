@@ -28,6 +28,7 @@ Tools (run from the repo root, with `.venv/bin/python`):
 | `scripts/plan.py init/validate/render/status` | create, check, render, view a plan |
 | `scripts/plan.py sync PLAN [--details]` | fetch activities + readiness, match to sessions, render |
 | `scripts/plan.py push PLAN [--days 7] [--yes] [--files]` | COROS: create/update the next sessions on the calendar · Garmin: send them to intervals.icu → Garmin Connect calendar (updates in place), or FIT files in `exports/` without intervals.icu / with `--files` (dry run without `--yes`) |
+| `scripts/recap.py build --plan PLAN --session ID` | HTML recap of one done session (laps from the FIT file vs planned steps, HR drift, zones, readiness) → `plans/<slug>/recaps/` |
 | `scripts/coros.py call TOOL '{json}'` | any other COROS tool (laps, FIT, sleep…) — see `docs/mcp-reference.md` |
 | `scripts/garmin.py call NAME '{json}'` | any other Garmin endpoint (activity detail, stress, original file…) — see `docs/garmin-reference.md` |
 
@@ -70,7 +71,11 @@ zones, no percentages, no climb targets, no % effort (`plan.py push` refuses the
 5. `plan.py validate` → `plan.py render` → append a `journal.md` entry (format in `plan-schema.md`).
 6. Summarise to the athlete: what was done vs planned (✅/⚠️/❌), readiness, what you changed and why, next 7 days.
    Ask before `plan.py push … --yes`.
-7. Persist (see *Persistence*).
+7. **Key session done → recap page.** Write the session's `recap:` block (verdict, RPE, quote, tags, impact — see
+   `plan-schema.md`; impact items are proposals, the same ones you just asked about), then
+   `recap.py build --plan PLAN --session ID`. It prints `coach_fields_missing` and `warnings` (e.g. lap count ≠
+   planned steps): fill what is missing, rerun, and give the athlete the file path. Never invent the RPE or the quote.
+8. Persist (see *Persistence*).
 
 ## Workflow C — status report
 

@@ -56,6 +56,7 @@ readiness and report code receives the same data shapes from both.
 | `scripts/workout.py` | COROS: validate → create/update → read back one scheduled workout · Garmin: `send` (intervals.icu) or `export` (FIT file) |
 | `scripts/plan.py` | plan engine: init / validate / render / push (COROS calendar or FIT export) / sync / profile / readiness / zones |
 | `scripts/readiness.py` | deterministic readiness score + pace zones + Garmin substitutes (TRIMP load ratio, Riegel threshold) |
+| `scripts/recap.py` | HTML recap of one session: FIT laps vs planned steps, HR drift, zones, readiness + coach `recap:` block |
 | `scripts/report.py` | draft a training-status report (markdown with `<!-- COACH -->` placeholders) |
 | `.claude/skills/coros-workout/` | skill: build one workout from natural language |
 | `.claude/skills/coros-coach/` | skill: endurance coach (plan, push, review, adapt) |

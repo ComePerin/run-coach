@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300..600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --page: #fbfbfa;
+  --ink: #18181a;
+  --ink-2: #5c5c62;
+  --muted: #707076;
+  --rule: #ececea;
+  --axis: #d6d6d3;
+  --accent: #2f6f55;
+  --target: #e6f0ea;
+  --target-edge: #b9d3c4;
+  --easy: #f2f2f0;
+  --hit: #2f6f55;
+  --off: #d0603f;
+  --off-ink: #b04a2c;
+  --caution: #b7801a;
+  --z1: #dcebe2; --z2: #b3d2c0; --z3: #7fb198; --z4: #4b8a6c; --z5: #2f6f55;
+  --z-ink-light: #1f3a2d; --z-ink-dark: #ffffff;
+  --chip: #f3f3f1;
+  --focus: #2f6f55;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #111113; --ink: #ededee; --ink-2: #a8a8ad; --muted: #7c7c82;
+    --rule: #232326; --axis: #333337; --accent: #7fc3a2;
+    --target: rgba(127,195,162,.13); --target-edge: rgba(127,195,162,.4); --easy: #1b1b1e;
+    --hit: #7fc3a2; --off: #ec8a6b; --off-ink: #f09a7d; --caution: #e0ac45;
+    --z1: #24392f; --z2: #2f5443; --z3: #3f7a5f; --z4: #5c9e7f; --z5: #7fc3a2;
+    --z-ink-light: #e6f2eb; --z-ink-dark: #10241a; --chip: #1b1b1e; --focus: #7fc3a2;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #111113; --ink: #ededee; --ink-2: #a8a8ad; --muted: #7c7c82;
+  --rule: #232326; --axis: #333337; --accent: #7fc3a2;
+  --target: rgba(127,195,162,.13); --target-edge: rgba(127,195,162,.4); --easy: #1b1b1e;
+  --hit: #7fc3a2; --off: #ec8a6b; --off-ink: #f09a7d; --caution: #e0ac45;
+  --z1: #24392f; --z2: #2f5443; --z3: #3f7a5f; --z4: #5c9e7f; --z5: #7fc3a2;
+  --z-ink-light: #e6f2eb; --z-ink-dark: #10241a; --chip: #1b1b1e; --focus: #7fc3a2;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font-family: "Onest", system-ui, sans-serif; font-size: 16px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--target); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+.num, td { font-variant-numeric: tabular-nums; }
+svg.i { width: 1em; height: 1em; flex: none; }
+
+main { max-width: 760px; margin: 0 auto; padding: 20px 20px 64px; }
+.chrome { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.mock { font-size: 12px; color: var(--muted); }
+.theme-btn {
+  display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+  background: transparent; color: var(--ink-2); border: 0; cursor: pointer; font-size: 18px;
+}
+.theme-btn:hover { background: var(--chip); }
+
+header.verdict-head { padding: 40px 0 8px; }
+.meta { margin: 0; font-size: 14px; color: var(--muted); }
+h1 { margin: 10px 0 0; font-weight: 500; font-size: clamp(32px, 7vw, 44px); line-height: 1.1; letter-spacing: -.025em; text-wrap: balance; }
+.status { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 16px; font-size: 14px; color: var(--ink-2); }
+.status .main { display: inline-flex; align-items: center; gap: 7px; color: var(--ink); font-weight: 500; }
+.status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--caution); }
+.status .dot.ok { background: var(--hit); }
+.status .dot.off { background: var(--off); }
+.status .dot.none { background: var(--axis); }
+.status .sep { color: var(--axis); }
+.verdict { margin: 24px 0 0; font-size: 18px; line-height: 1.6; color: var(--ink); max-width: 62ch; }
+.jump { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; min-height: 40px; color: var(--accent); font-size: 15px; font-weight: 500; text-decoration: none; }
+.jump:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-top: 40px; padding: 28px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.stat .l { font-size: 13px; color: var(--muted); }
+.stat b { display: block; font-size: 28px; line-height: 1.2; font-weight: 400; letter-spacing: -.02em; margin-top: 4px; }
+.stat .p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.stat .d { display: block; color: var(--ink-2); }
+.stat .d.good { color: var(--accent); }
+
+section.sheet { margin-top: 64px; min-width: 0; }
+h2 { margin: 0; font-size: 19px; line-height: 1.3; font-weight: 500; letter-spacing: -.01em; }
+.sub { margin: 4px 0 20px; color: var(--muted); font-size: 14px; max-width: 64ch; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr); }
+
+svg.chart { display: block; width: 100%; overflow: visible; }
+svg.chart text { font-family: inherit; }
+svg.chart .hit-area { cursor: crosshair; }
+svg.chart .hit-area:focus { outline: none; }
+svg.chart .hit-area:focus-visible { fill: var(--target); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); margin-top: 14px; }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.sw-line { width: 14px; height: 2px; border-radius: 1px; display: inline-block; }
+
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { white-space: nowrap; }
+th { text-align: left; font-weight: 400; color: var(--muted); font-size: 13px; padding: 0 8px 10px; border-bottom: 1px solid var(--rule); }
+td { padding: 13px 8px; border-bottom: 1px solid var(--rule); }
+th:first-child, td:first-child { padding-left: 0; }
+th:last-child, td:last-child { padding-right: 0; }
+td.num, th.num { text-align: right; }
+td.rn { color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.gap-off { color: var(--off-ink); }
+.st { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; color: var(--ink-2); }
+.st::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--hit); }
+.st.slow { color: var(--off-ink); }
+.st.slow::before { background: var(--off); }
+
+.rpe { display: flex; align-items: baseline; gap: 10px; margin: 0 0 14px; }
+.rpe b { font-size: 48px; line-height: 1; font-weight: 300; letter-spacing: -.03em; }
+.rpe span { color: var(--muted); font-size: 15px; }
+.rpe-scale { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+.rpe-scale i { height: 4px; border-radius: 2px; background: var(--rule); }
+.rpe-scale i.on { background: var(--accent); }
+.rpe-exp { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin-top: 6px; font-size: 12px; color: var(--muted); }
+.rpe-exp .x { grid-column: 7 / span 2; text-align: center; }
+.rpe-exp .a { grid-column: 1; }
+.rpe-exp .b { grid-column: 10; text-align: right; }
+blockquote { margin: 28px 0 0; padding: 0; font-size: 20px; line-height: 1.5; font-weight: 300; letter-spacing: -.01em; color: var(--ink); max-width: 46ch; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 14px; font-size: 13px; color: var(--muted); }
+
+.ctx { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 24px; }
+.ctx > div { font-size: 13px; color: var(--muted); }
+.ctx .l { display: flex; align-items: center; gap: 7px; }
+.ctx b { display: block; font-size: 22px; line-height: 1.25; color: var(--ink); font-weight: 400; letter-spacing: -.015em; margin: 2px 0; }
+.dotc.ok { background: var(--hit); } .dotc.off { background: var(--off); }
+.dotc { width: 7px; height: 7px; border-radius: 50%; background: var(--caution); display: inline-block; }
+
+.impact { list-style: none; padding: 0; margin: 20px 0 0; }
+.impact li { padding: 16px 0; border-top: 1px solid var(--rule); font-size: 16px; }
+.impact li:first-child { border-top: 0; }
+.impact b { display: block; font-weight: 500; }
+.impact span { color: var(--ink-2); }
+.proposal { margin-top: 12px; font-size: 14px; color: var(--muted); }
+
+.todo { color: var(--muted); font-style: italic; }
+[hidden] { display: none !important; }
+footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 80px; }
+
+#tip {
+  position: fixed; pointer-events: none; z-index: 10; opacity: 0; transform: translateY(4px);
+  transition: opacity .16s cubic-bezier(.16,1,.3,1), transform .16s cubic-bezier(.16,1,.3,1);
+  background: var(--ink); color: var(--page); border-radius: 8px; padding: 8px 11px; font-size: 13px; max-width: 240px;
+}
+#tip.on { opacity: 1; transform: none; }
+#tip .t { font-weight: 500; margin-bottom: 2px; }
+#tip .r { opacity: .8; font-variant-numeric: tabular-nums; }
+
+@media (min-width: 900px) {
+  main { max-width: 1000px; }
+  .grid2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; }
+}
+@media (max-width: 720px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }
+  .ctx { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  section.sheet { margin-top: 56px; }
+  th, td { padding-left: 4px; padding-right: 4px; }
+  table { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { #tip { transition: none; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-down" viewBox="0 0 20 20"><path d="M10 4v12M5 11l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 20 20"><path d="M15.5 12.6A6.5 6.5 0 017.4 4.5a6.5 6.5 0 108.1 8.1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+</svg>
+
+<main>
+  <div class="chrome">
+    <span class="mock" id="badge"></span>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle light or dark theme"><svg class="i"><use href="#i-moon"/></svg></button>
+  </div>
+
+  <header class="verdict-head">
+    <p class="meta" id="meta"></p>
+    <h1 id="title"></h1>
+    <div class="status" id="status"></div>
+    <p class="verdict" id="verdict"></p>
+    <a class="jump" href="#impact" id="jump">Impact on the plan <svg class="i"><use href="#i-down"/></svg></a>
+  </header>
+
+  <section class="stats" id="tiles" style="margin-top:40px" aria-label="Session summary"></section>
+
+  <section class="sheet" id="paceSec">
+    <h2 id="paceTitle">Pace: planned vs actual</h2>
+    <p class="sub" id="paceSub"></p>
+    <div id="paceChart"></div>
+    <div class="legend" id="paceLegend"></div>
+  </section>
+
+  <div class="grid2" id="repGrid">
+    <section class="sheet">
+      <h2>Reps</h2>
+      <p class="sub" id="repSub"></p>
+      <table>
+        <thead><tr><th>Rep</th><th class="num">Pace /km</th><th class="num">Gap</th><th class="num">HR avg / max</th><th>Status</th></tr></thead>
+        <tbody id="repRows"></tbody>
+      </table>
+    </section>
+    <section class="sheet" id="hrSec">
+      <h2>Heart rate across reps</h2>
+      <p class="sub" id="hrSub"></p>
+      <div id="hrChart"></div>
+      <div class="legend">
+        <span><i class="sw-line" style="background:var(--hit)"></i>Avg HR per rep</span>
+        <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="3.5" fill="none" stroke="var(--muted)" stroke-width="1.5"/></svg>Max HR</span>
+      </div>
+    </section>
+  </div>
+
+  <div class="grid2">
+    <section class="sheet" id="zoneSec">
+      <h2>Time in HR zones</h2>
+      <p class="sub" id="zoneSub"></p>
+      <div id="zoneChart"></div>
+      <div class="legend" id="zoneLegend"></div>
+    </section>
+    <section class="sheet" id="feelSec">
+      <h2>How it felt</h2>
+      <p class="sub">From your message after the session.</p>
+      <div id="feel"></div>
+    </section>
+  </div>
+
+  <section class="sheet" id="ctxSec">
+    <h2>Context</h2>
+    <p class="sub">Readiness that morning and what the session cost.</p>
+    <div class="ctx" id="ctx"></div>
+  </section>
+
+  <section class="sheet" id="impact">
+    <h2>Impact on the plan</h2>
+    <ul class="impact" id="impactList"></ul>
+    <p class="proposal">Proposals only. Nothing changes in the plan until you say OK.</p>
+  </section>
+
+  <footer id="footer"></footer>
+</main>
+<div id="tip" role="tooltip"></div>
+
+<script id="recap-data" type="application/json">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById("recap-data").textContent);
+const steps = D.steps || [];
+const reps = steps.filter(s => s.kind === "rep");
+const zones = D.zones || null;
+
+// ---------------------------------------------------------------- helpers
+const NS = "http://www.w3.org/2000/svg";
+const $ = id => document.getElementById(id);
+const fmtPace = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
+const fmtDur = s => s >= 3600 ? `${Math.floor(s / 3600)}:${fmtPace(s % 3600).padStart(5, "0")}` : fmtPace(s);
+function h(tag, attrs = {}, text) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) if (v != null) e.setAttribute(k, v);
+  if (text != null) e.textContent = text;
+  return e;
+}
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, attrs = {}) {
+  const t = el("text", { x, y, fill: "var(--muted)", "font-size": 12, ...attrs }, parent);
+  t.textContent = s; return t;
+}
+function todo(node, what) { node.textContent = `Not written yet: ${what}.`; node.classList.add("todo"); }
+function statusOf(s) {
+  if (s.kind !== "rep" || !s.band || s.pace == null) return null;
+  const gap = s.pace < s.band[0] ? s.pace - s.band[0] : s.pace > s.band[1] ? s.pace - s.band[1] : 0;
+  return { gap, ok: gap <= 0 };   // faster than target counts as in target, gap shown as negative
+}
+const gapLabel = st => st.gap > 0 ? `+${st.gap} s` : st.gap < 0 ? `${st.gap} s` : "—";
+const tip = $("tip");
+function place(x, y) {
+  const w = tip.offsetWidth, hh = tip.offsetHeight;
+  let tx = x + 14, ty = y - hh - 12;
+  if (tx + w > innerWidth - 8) tx = x - w - 14;
+  if (tx < 8) tx = 8;
+  if (ty < 8) ty = y + 18;
+  tip.style.left = tx + "px"; tip.style.top = ty + "px";
+}
+function bindTip(node, title, rows) {
+  node.setAttribute("tabindex", "0");
+  node.setAttribute("role", "img");
+  node.setAttribute("aria-label", `${title}: ${rows.join(", ")}`);
+  node.classList.add("hit-area");
+  const fill = () => {
+    tip.replaceChildren(h("div", { class: "t" }, title), ...rows.map(r => h("div", { class: "r" }, r)));
+    tip.classList.add("on");
+  };
+  const show = e => { fill(); const pt = e.touches ? e.touches[0] : e; place(pt.clientX, pt.clientY); };
+  node.addEventListener("mouseenter", show);
+  node.addEventListener("mousemove", e => place(e.clientX, e.clientY));
+  node.addEventListener("mouseleave", () => tip.classList.remove("on"));
+  node.addEventListener("touchstart", show, { passive: true });
+  node.addEventListener("focus", () => { fill(); const r = node.getBoundingClientRect(); place(r.left + r.width / 2, r.top); });
+  node.addEventListener("blur", () => tip.classList.remove("on"));
+}
+document.addEventListener("touchstart", e => { if (!e.target.closest("svg.chart")) tip.classList.remove("on"); }, { passive: true });
+addEventListener("scroll", () => tip.classList.remove("on"), { passive: true });
+
+// ---------------------------------------------------------------- static text
+if (D.badge) $("badge").textContent = D.badge; else $("badge").hidden = true;
+$("meta").textContent = D.meta || "";
+$("title").textContent = D.title || "Session";
+{
+  const st = $("status");
+  const lvl = (D.status && D.status.level) || "none";
+  const main = h("span", { class: "main" });
+  main.append(h("span", { class: `dot ${lvl === "mostly" ? "" : lvl}` }), (D.status && D.status.label) || "No planned target");
+  st.append(main);
+  for (const bit of D.status_bits || []) st.append(h("span", { class: "sep" }, "·"), h("span", {}, bit));
+}
+if (D.verdict && D.verdict.text) { $("verdict").textContent = D.verdict.text; if (D.verdict.lang) $("verdict").lang = D.verdict.lang; }
+else if (D.in_plan === false) $("verdict").hidden = true;
+else todo($("verdict"), "coach verdict");
+$("footer").textContent = D.footer || "";
+
+$("tiles").replaceChildren(...(D.tiles || []).map(t => {
+  const c = h("div", { class: "stat" });
+  c.append(h("div", { class: "l" }, t.label), h("b", {}, t.value));
+  const p = h("div", { class: "p" }, t.plan || "");
+  if (t.delta) p.append(h("span", { class: `d${t.good ? " good" : ""}` }, t.delta));
+  c.append(p); return c;
+}));
+if (!(D.tiles || []).length) $("tiles").hidden = true;
+
+// ---------------------------------------------------------------- pace section text
+const hasBands = steps.some(s => s.band);
+if (!hasBands) $("paceTitle").textContent = "Pace per lap";
+$("paceSub").textContent = hasBands ? "Shaded bands are the planned target for each step; lines are your average pace per lap. Faster is higher."
+  : "Your average pace per lap. Faster is higher.";
+if (D.in_plan === false) { $("impact").hidden = true; $("jump").hidden = true; }
+{
+  const items = [];
+  if (D.rep_target_label) items.push(["sw", "background:var(--target);box-shadow:inset 0 0 0 1px var(--target-edge)", `Rep target ${D.rep_target_label}`]);
+  if (steps.some(s => s.kind !== "rep" && s.band)) items.push(["sw", "background:var(--easy)", "Easy / jog range"]);
+  items.push(["sw-line", "background:var(--hit)", reps.length ? "Actual, in target" : "Actual"]);
+  if (reps.some(s => { const st = statusOf(s); return st && !st.ok; })) items.push(["sw-line", "background:var(--off)", "Actual, off target"]);
+  $("paceLegend").replaceChildren(...items.map(([c, style, label]) => { const s = h("span"); s.append(h("i", { class: c, style }), label); return s; }));
+}
+if (!steps.some(s => s.pace != null)) $("paceSec").hidden = true;
+
+// ---------------------------------------------------------------- rep table
+if (reps.length) {
+  $("repSub").textContent = D.rep_sub || "";
+  $("hrSub").textContent = D.hr_sub || "Average HR per rep.";
+  $("repRows").replaceChildren(...reps.map((s, i) => {
+    const st = statusOf(s);
+    const tr = h("tr");
+    const gap = h("td", { class: "num" });
+    if (st && !st.ok) gap.append(h("span", { class: "gap-off" }, gapLabel(st))); else gap.textContent = st ? gapLabel(st) : "—";
+    tr.append(h("td", { class: "rn" }, String(i + 1)), h("td", { class: "num" }, s.pace != null ? fmtPace(s.pace) : "—"), gap,
+      h("td", { class: "num" }, s.hr ? `${s.hr} / ${s.hrMax ?? "—"}` : "—"));
+    const stc = h("td");
+    if (st) stc.append(h("span", { class: `st${st.ok ? "" : " slow"}` }, st.ok ? "In target" : "Slow"));
+    else stc.textContent = "—";
+    tr.append(stc); return tr;
+  }));
+} else $("repGrid").hidden = true;
+if (reps.filter(s => s.hr).length < 2) $("hrSec").hidden = true;
+
+// ---------------------------------------------------------------- zones / feel / context / impact
+if (zones) {
+  $("zoneSub").textContent = D.zones_sub || "What the session intended vs what you did (minutes).";
+  $("zoneLegend").replaceChildren(...zones.map((z, i) => { const s = h("span"); s.append(h("i", { class: "sw", style: `background:var(--z${i + 1})` }), z.z); return s; }));
+} else $("zoneSec").hidden = true;
+
+{
+  const f = D.feel || {};
+  const box = $("feel");
+  if (f.rpe != null) {
+    const r = h("div", { class: "rpe" });
+    const exp = f.rpe_expected ? ` · expected ${f.rpe_expected[0]}–${f.rpe_expected[1]}` : "";
+    r.append(h("b", {}, String(f.rpe)), h("span", {}, `/ 10 RPE${exp}`));
+    const scale = h("div", { class: "rpe-scale", role: "img", "aria-label": `RPE ${f.rpe} of 10${exp}` });
+    for (let i = 1; i <= 10; i++) scale.append(h("i", { class: i <= f.rpe ? "on" : null }));
+    const ex = h("div", { class: "rpe-exp", "aria-hidden": "true" });
+    ex.append(h("span", { class: "a" }, "1"));
+    if (f.rpe_expected) ex.append(h("span", { class: "x", style: `grid-column:${f.rpe_expected[0]} / ${f.rpe_expected[1] + 1}` }, "expected"));
+    ex.append(h("span", { class: "b" }, "10"));
+    box.append(r, scale, ex);
+  }
+  if (f.quote) box.append(h("blockquote", { lang: f.lang || null }, `« ${f.quote} »`));
+  if ((f.tags || []).length) { const t = h("div", { class: "tags" }); t.append(...f.tags.map(x => h("span", { class: "tag" }, x))); box.append(t); }
+  if (!box.childNodes.length) { const p = h("p"); todo(p, "athlete feedback"); box.append(p); }
+}
+
+if ((D.context || []).length) {
+  $("ctx").replaceChildren(...D.context.map(c => {
+    const d = h("div");
+    const l = h("span", { class: "l" });
+    if (c.level) l.append(h("span", { class: `dotc ${c.level === "yellow" ? "" : c.level === "green" ? "ok" : "off"}` }));
+    l.append(c.label);
+    d.append(l, h("b", {}, c.value));
+    if (c.sub) d.append(c.sub);
+    return d;
+  }));
+} else $("ctxSec").hidden = true;
+
+if ((D.impact || []).length) {
+  $("impactList").replaceChildren(...D.impact.map(it => {
+    const li = h("li", { lang: D.impact_lang || null });
+    const d = h("div"); d.append(h("b", {}, it.title), h("span", {}, it.text || ""));
+    li.append(d); return li;
+  }));
+} else { const li = h("li"); todo(li, "plan impact"); $("impactList").append(li); }
+
+// ---------------------------------------------------------------- pace chart
+function drawPace() {
+  const host = $("paceChart");
+  host.replaceChildren();
+  const pts = steps.filter(s => s.pace != null);
+  if (!pts.length) return;
+  const W = host.clientWidth, small = W < 520, H = small ? 260 : 310;
+  const m = { t: 30, r: 6, b: 28, l: 40 };
+  const svg = el("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, height: H, role: "group", "aria-label": D.pace_aria || "Pace per step against planned targets." }, host);
+  const total = steps.reduce((a, s) => a + s.dur, 0);
+  const vals = steps.flatMap(s => [s.pace, ...(s.band || [])]).filter(v => v != null);
+  const pMin = Math.floor((Math.min(...vals) - 12) / 15) * 15, pMax = Math.ceil((Math.max(...vals) + 12) / 15) * 15;
+  const x = t => m.l + (t / total) * (W - m.l - m.r);
+  const y = p => m.t + ((p - pMin) / (pMax - pMin)) * (H - m.t - m.b);
+  const stepP = (pMax - pMin) > 150 ? 30 : 15;
+  for (let p = Math.ceil(pMin / stepP) * stepP; p <= pMax; p += stepP) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(p), y2: y(p), stroke: "var(--rule)", "stroke-width": 1 }, svg);
+    txt(svg, m.l - 7, y(p) + 4, fmtPace(p), { "text-anchor": "end" });
+  }
+  el("line", { x1: m.l, x2: W - m.r, y1: H - m.b, y2: H - m.b, stroke: "var(--axis)" }, svg);
+  const minutes = total / 60, every = [5, 10, 15, 20, 30].find(e => minutes / e <= (small ? 6 : 12)) || 60;
+  for (let t = 0; t <= total; t += every * 60) txt(svg, x(t), H - m.b + 18, `${t / 60}′`, { "text-anchor": "middle" });
+
+  let t0 = 0;
+  steps.forEach(s => {
+    const x0 = x(t0), x1 = x(t0 + s.dur), w = x1 - x0;
+    const isRep = s.kind === "rep";
+    if (s.band) el("rect", { x: x0 + 1, y: y(s.band[0]), width: Math.max(1, w - 2), height: Math.max(2, y(s.band[1]) - y(s.band[0])), rx: 3,
+      fill: isRep ? "var(--target)" : "var(--easy)", stroke: isRep ? "var(--target-edge)" : "none", "stroke-width": 1 }, svg);
+    const st = statusOf(s);
+    if (s.pace != null) el("line", { x1: x0 + 2.5, x2: Math.max(x0 + 3, x1 - 2.5), y1: y(s.pace), y2: y(s.pace),
+      stroke: st && !st.ok ? "var(--off)" : "var(--hit)", "stroke-width": isRep ? 2.5 : 1.5, "stroke-linecap": "round" }, svg);
+    const top = Math.min(...[s.pace, ...(s.band || [])].filter(v => v != null).map(y));
+    if (isRep) {
+      const n = reps.indexOf(s) + 1;
+      if (w > 14) txt(svg, x0 + w / 2, top - 10, small || w < 70 || s.pace == null ? `R${n}` : `R${n} · ${fmtPace(s.pace)}`, { "text-anchor": "middle", fill: "var(--ink-2)", "font-size": 12 });
+      if (st && !st.ok && w > 14) txt(svg, x0 + w / 2, Math.max(y(s.pace), s.band ? y(s.band[1]) : 0) + 17, `+${st.gap}s`, { "text-anchor": "middle", fill: "var(--off-ink)", "font-size": 12 });
+    } else if (s.kind === "easy" && w > 64) {
+      txt(svg, x0 + w / 2, top - 10, s.name, { "text-anchor": "middle", fill: "var(--ink-2)" });
+    }
+    const hit = el("rect", { x: x0, y: m.t - 22, width: Math.max(1, w), height: H - m.t - m.b + 22, fill: "transparent" }, svg);
+    const rows = [];
+    if (s.band) rows.push(`Target ${fmtPace(s.band[0])}–${fmtPace(s.band[1])}/km`);
+    if (s.pace != null) rows.push(`Actual ${fmtPace(s.pace)}/km` + (st && !st.ok ? ` (+${st.gap} s)` : st ? " · in target" : ""));
+    rows.push(`${fmtDur(s.dur)}${s.dist != null ? ` · ${s.dist.toFixed(2)} km` : ""}`);
+    if (s.hr) rows.push(`HR ${s.hr} avg${s.hrMax ? ` · ${s.hrMax} max` : ""}`);
+    bindTip(hit, s.name, rows);
+    t0 += s.dur;
+  });
+}
+
+// ---------------------------------------------------------------- HR drift chart
+function drawHr() {
+  const host = $("hrChart");
+  host.replaceChildren();
+  const rr = reps.filter(s => s.hr);
+  if (rr.length < 2) return;
+  const W = host.clientWidth, H = 220;
+  const m = { t: 18, r: 16, b: 28, l: 36 };
+  const svg = el("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, height: H, role: "group",
+    "aria-label": `Average HR per rep from ${rr[0].hr} to ${rr[rr.length - 1].hr} bpm.` }, host);
+  const hMin = Math.floor((Math.min(...rr.map(s => s.hr)) - 4) / 10) * 10;
+  const hMax = Math.ceil((Math.max(...rr.map(s => s.hrMax || s.hr)) + 2) / 10) * 10;
+  const x = i => m.l + 16 + i * ((W - m.l - m.r - 32) / (rr.length - 1));
+  const y = v => m.t + (1 - (v - hMin) / (hMax - hMin)) * (H - m.t - m.b);
+  for (let v = hMin; v <= hMax; v += 10) {
+    el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: "var(--rule)" }, svg);
+    txt(svg, m.l - 7, y(v) + 4, v, { "text-anchor": "end" });
+  }
+  rr.forEach((s, i) => txt(svg, x(i), H - m.b + 18, `R${reps.indexOf(s) + 1}`, { "text-anchor": "middle" }));
+  el("polyline", { points: rr.map((s, i) => `${x(i)},${y(s.hr)}`).join(" "), fill: "none", stroke: "var(--hit)", "stroke-width": 1.75, "stroke-linejoin": "round" }, svg);
+  rr.forEach((s, i) => {
+    if (s.hrMax) el("circle", { cx: x(i), cy: y(s.hrMax), r: 3.5, fill: "var(--page)", stroke: "var(--muted)", "stroke-width": 1.5 }, svg);
+    el("circle", { cx: x(i), cy: y(s.hr), r: 4, fill: "var(--hit)", stroke: "var(--page)", "stroke-width": 2 }, svg);
+    if (i === 0 || i === rr.length - 1) txt(svg, x(i), y(s.hr) + 20, `${s.hr}`, { "text-anchor": "middle", fill: "var(--ink)", "font-size": 13 });
+    const hit = el("rect", { x: x(i) - 22, y: m.t, width: 44, height: H - m.t - m.b, fill: "transparent" }, svg);
+    bindTip(hit, `Rep ${reps.indexOf(s) + 1}`, [`HR ${s.hr} avg${s.hrMax ? ` · ${s.hrMax} max` : ""}`, s.pace != null ? `Pace ${fmtPace(s.pace)}/km` : ""].filter(Boolean));
+  });
+}
+
+// ---------------------------------------------------------------- zones chart
+function drawZones() {
+  const host = $("zoneChart");
+  host.replaceChildren();
+  if (!zones) return;
+  const W = host.clientWidth, H = 100, m = { l: 70, r: 2 };
+  const rows = [{ key: "intended", label: "Intended" }, { key: "actual", label: "Actual" }].filter(r => zones.some(z => z[r.key] != null));
+  const svg = el("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, height: H, role: "group",
+    "aria-label": "Time in zones in minutes. " + rows.map(r => `${r.label}: ` + zones.map(z => `${z.z} ${Math.round(z[r.key] || 0)}`).join(", ")).join(". ") + "." }, host);
+  const maxTotal = Math.max(...rows.map(r => zones.reduce((a, z) => a + (z[r.key] || 0), 0)));
+  rows.forEach((r, ri) => {
+    const yy = 10 + ri * 50, bh = 28;
+    txt(svg, 0, yy + bh / 2 + 5, r.label, { fill: "var(--muted)", "font-size": 13 });
+    let acc = 0;
+    zones.forEach((z, zi) => {
+      const v = z[r.key] || 0;
+      const x0 = m.l + (acc / maxTotal) * (W - m.l - m.r);
+      const w = (v / maxTotal) * (W - m.l - m.r);
+      if (w <= 0) return;
+      const rect = el("rect", { x: x0, y: yy, width: Math.max(0, w - 3), height: bh, rx: 4, fill: `var(--z${zi + 1})` }, svg);
+      if (w > 22) txt(svg, x0 + (w - 3) / 2, yy + bh / 2 + 5, Math.round(v), { "text-anchor": "middle", fill: zi < 3 ? "var(--z-ink-light)" : "var(--z-ink-dark)", "font-size": 12 });
+      bindTip(rect, `${z.z} · ${r.label}`, [`${Math.round(v)} min`, `Intended ${z.intended != null ? Math.round(z.intended) : "—"} · actual ${z.actual != null ? Math.round(z.actual) : "—"}`]);
+      acc += v;
+    });
+  });
+}
+
+function drawAll() { drawPace(); drawHr(); drawZones(); }
+drawAll();
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 120); });
+
+$("themeBtn").addEventListener("click", () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+});
+</script>
+</body>
+</html>
