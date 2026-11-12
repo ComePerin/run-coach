@@ -8,7 +8,7 @@
 - Without PLAN: reports the last N weeks of training from the activity history.
 
 All numbers are computed here. The report contains `<!-- COACH: ... -->` placeholders that the agent replaces with
-its assessment (see .claude/skills/coros-report/SKILL.md). Default output: plans/<slug>/reports/YYYY-MM-DD.md, or
+its assessment (see .claude/skills/run-report/SKILL.md). Default output: plans/<slug>/reports/YYYY-MM-DD.md, or
 reports/YYYY-MM-DD.md without a plan.
 """
 

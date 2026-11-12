@@ -1,4 +1,4 @@
-# coros-coach
+# run-coach
 
 Turn an AI agent into a running / trail / cycling coach that works from your **COROS** or **Garmin** watch data.
 It reads everything through the official [COROS MCP](https://github.com/coroslab/COROS-MCP) or Garmin's official
@@ -26,11 +26,11 @@ The agent lists them at the start of every conversation (type `menu` to see them
 | | Feature | Ask for example | Skill |
 |---|---|---|---|
 | 📊 | **Analyse** activities, laps, sleep, HRV, resting HR, training load | "How was my sleep this month?" | — |
-| ⌚ | **Create a workout on the watch** (run, bike, trail), validated and read back | "Add a 45-minute easy ride tomorrow" | `coros-workout` |
-| 🗓️ | **Build a training plan** from your COROS baseline, goal and time budget | "8-week 10K plan, 4 sessions a week" | `coros-coach` |
-| 🔄 | **Review and adapt** the plan: planned vs done, missed sessions, fatigue | "Update my plan" | `coros-coach` |
-| 🚦 | **What should I do today?** readiness from HRV, resting HR, sleep, recovery, load | "Should I do my intervals today?" | `coros-coach` |
-| 📝 | **Training report**: progress, adherence, key sessions, load, fitness vs goal | "Give me a report on my last 4 weeks" | `coros-report` |
+| ⌚ | **Create a workout on the watch** (run, bike, trail), validated and read back | "Add a 45-minute easy ride tomorrow" | `run-workout` |
+| 🗓️ | **Build a training plan** from your COROS baseline, goal and time budget | "8-week 10K plan, 4 sessions a week" | `run-coach` |
+| 🔄 | **Review and adapt** the plan: planned vs done, missed sessions, fatigue | "Update my plan" | `run-coach` |
+| 🚦 | **What should I do today?** readiness from HRV, resting HR, sleep, recovery, load | "Should I do my intervals today?" | `run-coach` |
+| 📝 | **Training report**: progress, adherence, key sessions, load, fitness vs goal | "Give me a report on my last 4 weeks" | `run-report` |
 
 Writes to your COROS calendar (or FIT exports for Garmin) always need your explicit OK: the agent shows a dry run
 first.
@@ -55,7 +55,7 @@ Click **Use this template** on GitHub and create a **private** repository (recom
 contain health data, see [Your data](#your-data)), then clone it. Or simply:
 
 ```bash
-git clone https://github.com/Z3ZEL/coros-coach && cd coros-coach
+git clone https://github.com/Z3ZEL/run-coach && cd run-coach
 ```
 
 ### 2. Connect your COROS account
@@ -123,8 +123,8 @@ documentation. It relies on [custom connectors](https://support.claude.com/en/ar
 4. **Knowledge** — upload these files to the project (or run `scripts/chat-bundle.sh` to collect them in
    `dist/claude-chat/`):
    `docs/mcp-reference.md`, `docs/garmin-reference.md` (Garmin users), `docs/course-json.md`, `docs/coaching-science.md`,
-   `.claude/skills/coros-coach/references/{decision-process,periodization,session-library}.md`,
-   `scripts/readiness.py` (readiness rules) and the workout examples in `.claude/skills/coros-workout/examples/`.
+   `.claude/skills/run-coach/references/{decision-process,periodization,session-library}.md`,
+   `scripts/readiness.py` (readiness rules) and the workout examples in `.claude/skills/run-workout/examples/`.
 5. **Start a chat in the project**, make sure the COROS connector is enabled (**+** → *Connectors*) and say *"hi"*:
    Claude lists the features and checks the connection.
 
@@ -150,7 +150,7 @@ Same agent, same plans and reports; data comes from Garmin's official **Personal
 1. **Create a Personal API key** in Garmin Connect: <https://connect.garmin.com/app/settings/personalApiToken>.
 2. **Install and store the key** (the key is saved in `~/.config/garmin/`, outside the repo, readable only by you):
    ```bash
-   git clone https://github.com/Z3ZEL/coros-coach && cd coros-coach
+   git clone https://github.com/Z3ZEL/run-coach && cd run-coach
    scripts/setup.sh --garmin            # creates .venv, asks for the key (hidden input), checks it
    .venv/bin/python scripts/plan.py profile   # your baseline → athlete/profile.yaml (records provider: garmin)
    ```
@@ -195,7 +195,7 @@ Details, endpoints, limits and what is estimated: [`docs/garmin-reference.md`](d
              └──────────────▲───────────────────────┬──────────────┘
                             │ scripts/coros.py       │
    ┌────────────────────────┴──────┐      ┌─────────▼──────────────────────────┐
-   │ coros-workout skill           │      │ coros-coach skill                   │
+   │ run-workout skill             │      │ run-coach skill                     │
    │ text → course JSON → validate │      │ profile → plan.yaml → validate      │
    │ → create → read back          │      │ → push 7 days → sync actuals        │
    └───────────────────────────────┘      │ → readiness → adapt → journal       │
@@ -265,9 +265,9 @@ This repository is meant to be shared, your training data is not:
 |---|---|
 | `CLAUDE.md` | loads `AGENTS.md` for Claude Code |
 | `AGENTS.md` | agent guide: session start menu, setup, MCP essentials, rules, data persistence |
-| `.claude/skills/coros-workout/` | workout builder skill + validated examples |
-| `.claude/skills/coros-coach/` | coach skill + references (decision process, session library, periodisation, plan schema) |
-| `.claude/skills/coros-report/` | training-status report skill (read-only) |
+| `.claude/skills/run-workout/` | workout builder skill + validated examples |
+| `.claude/skills/run-coach/` | coach skill + references (decision process, session library, periodisation, plan schema) |
+| `.claude/skills/run-report/` | training-status report skill (read-only) |
 | `claude-chat/` | project instructions for Claude chat |
 | `docs/mcp-reference.md` | the 34 COROS MCP tools, formats, units, limits, quirks, sport codes |
 | `docs/garmin-reference.md` | Garmin Personal API: endpoints used, computed substitutes, intervals.icu delivery, FIT export, limits |

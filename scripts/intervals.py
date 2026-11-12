@@ -34,7 +34,7 @@ KEY_FILE = CONFIG_DIR / "api-key"
 ATHLETE_FILE = CONFIG_DIR / "athlete-id"
 SETTINGS_PAGE = "https://intervals.icu/settings"
 EVENT_TYPE = {1: "Run", 2: "Ride", 5: "TrailRun"}
-USER_AGENT = "coros-coach (+https://github.com/Z3ZEL/coros-coach)"
+USER_AGENT = "run-coach (+https://github.com/Z3ZEL/run-coach)"
 
 
 class IntervalsError(RuntimeError):

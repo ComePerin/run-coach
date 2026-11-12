@@ -130,7 +130,7 @@ def test_render_roundtrip(tmp_path):
 def test_skill_examples_are_valid():
     import json
 
-    examples = Path(__file__).parent.parent / ".claude" / "skills" / "coros-workout" / "examples"
+    examples = Path(__file__).parent.parent / ".claude" / "skills" / "run-workout" / "examples"
     files = sorted(examples.glob("*.json"))
     assert len(files) >= 5
     for f in files:
@@ -140,6 +140,6 @@ def test_skill_examples_are_valid():
 
 
 def test_example_plan_template_is_valid():
-    example = Path(__file__).parent.parent / ".claude" / "skills" / "coros-coach" / "references" / "example-plan.yaml"
+    example = Path(__file__).parent.parent / ".claude" / "skills" / "run-coach" / "references" / "example-plan.yaml"
     errors, _ = PL.validate(PL.load_plan(example))
     assert errors == []
